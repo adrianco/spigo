@@ -1,4 +1,4 @@
 spigo
 =====
 
-Simulate P2P Interactions in Go
+Simulate Protocol Interactions in Go
