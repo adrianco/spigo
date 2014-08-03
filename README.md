@@ -3,6 +3,8 @@ spigo
 
 Simulate Protocol Interactions in Go
 
+![ten pirates](spigo-yEd.png)
+
 Uses a common message protocol called Gotocol which contains a channel of the same type. This allows message listener endpoints to be passed around to dynamically create an arbitrary interconnection network.
 
 Using terminology from Promise Theory each message also has an Imposition code that tells the receiver how to interpret it, and an Intention body string that can be used as a simple string, or to encode a more complex structured type or a Promise.
