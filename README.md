@@ -13,4 +13,4 @@ Initial implementation creates the FSM and ten pirates, the FSM sends a Hello Pi
 
 There is a test program that exercises the Namedrop message, this is where the FSM or a Pirate passes on the name of a third party, and each Pirate builds up a buddy list of names and the listener channel for each buddy.
 
-The basic framework is in place, but the interesting behaviors haven't been added yet.
+The basic framework is in place, but the interesting behaviors haven't been added yet. See the pdf for some Occam code and results for the original version of this circa 2007.
