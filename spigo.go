@@ -8,16 +8,20 @@ import (
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/fsm"
 	"github.com/adrianco/spigo/pirate"
+	"github.com/adrianco/spigo/graphml"
 )
 
 func main() {
 	fmt.Println("Spigo")
+	graphml.Setup()
 	const population = 10
 	noodles := make(map[string]chan gotocol.Message, population)
 	for i := 1; i <= population; i++ {
 		name := fmt.Sprintf("Pirate%d", i)
+		graphml.Node(name)
 		noodles[name] = make(chan gotocol.Message)
 		go pirate.Listen(noodles[name])
 	}
 	fsm.Touch(noodles)
+	graphml.Close()
 }

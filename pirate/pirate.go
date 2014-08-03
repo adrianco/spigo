@@ -6,6 +6,7 @@ package pirate
 import (
 	"fmt"
 	"github.com/adrianco/spigo/gotocol"
+	"github.com/adrianco/spigo/graphml"
 )
 
 // all configuration and state is sent via messages
@@ -27,9 +28,11 @@ func Listen(listener chan gotocol.Message) {
 				name = msg.Intention
 			}
 		case gotocol.NameDrop:
-			if len(buddies) < dunbar {
+			// don't remember too many buddies and don't talk to myself
+			if len(buddies) < dunbar && msg.Intention != name {
 				// remember how to talk to this buddy
 				buddies[msg.Intention] = msg.ResponseChan
+				graphml.Edge(msg.Intention, name)
 			}
 		case gotocol.Goodbye:
 			// if my creator told me to die, reply

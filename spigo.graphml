@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <graphml xmlns="http://graphml.graphdrawing.org/xmlns/graphml"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns/graphml http://www.yworks.com/xml/schema/graphml/1.0/ygraphml.xsd"
+    xmlns:y="http://www.yworks.com/xml/graphml">
+    <key id="d0" for="node" yfiles.type="nodegraphics"/>
+    <key id="d1" for="edge" yfiles.type="edgegraphics"/>
+    <graph id="spigo" edgedefault="directed">
+      <node id="Pirate1"/>
+      <node id="Pirate2"/>
+      <node id="Pirate3"/>
+      <node id="Pirate4"/>
+      <node id="Pirate5"/>
+      <node id="Pirate6"/>
+      <node id="Pirate7"/>
+      <node id="Pirate8"/>
+      <node id="Pirate9"/>
+      <node id="Pirate10"/>
+      <edge id="e0" source="Pirate4" target="Pirate9"/>
+      <edge id="e1" source="Pirate1" target="Pirate9"/>
+      <edge id="e2" source="Pirate8" target="Pirate10"/>
+      <edge id="e3" source="Pirate2" target="Pirate10"/>
+      <edge id="e4" source="Pirate1" target="Pirate3"/>
+      <edge id="e5" source="Pirate4" target="Pirate3"/>
+      <edge id="e6" source="Pirate2" target="Pirate7"/>
+      <edge id="e7" source="Pirate5" target="Pirate7"/>
+      <edge id="e8" source="Pirate5" target="Pirate4"/>
+      <edge id="e9" source="Pirate1" target="Pirate4"/>
+      <edge id="e10" source="Pirate10" target="Pirate5"/>
+      <edge id="e11" source="Pirate7" target="Pirate5"/>
+      <edge id="e12" source="Pirate10" target="Pirate6"/>
+      <edge id="e13" source="Pirate4" target="Pirate8"/>
+      <edge id="e14" source="Pirate4" target="Pirate8"/>
+      <edge id="e15" source="Pirate3" target="Pirate1"/>
+      <edge id="e16" source="Pirate7" target="Pirate1"/>
+      <edge id="e17" source="Pirate7" target="Pirate2"/>
+      <edge id="e18" source="Pirate4" target="Pirate2"/>
+    </graph>
+  </graphml>
