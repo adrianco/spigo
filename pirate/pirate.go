@@ -4,7 +4,7 @@
 package pirate
 
 import (
-	"fmt"
+//	"fmt"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphml"
 )
@@ -18,7 +18,7 @@ func Listen(listener chan gotocol.Message) {
 	var msg gotocol.Message
 	for {
 		msg = <-listener
-		fmt.Println(msg)
+		//fmt.Println(msg)
 		switch msg.Imposition {
 		case gotocol.Hello:
 			switch {
