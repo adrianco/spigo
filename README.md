@@ -3,7 +3,7 @@ spigo
 
 Simulate Protocol Interactions in Go
 
-![ten pirates](spigo-yEd.png)
+![100 pirates seeded with two random friends each](spigo100x2.png)
 
 Uses a common message protocol called Gotocol which contains a channel of the same type. This allows message listener endpoints to be passed around to dynamically create an arbitrary interconnection network.
 
@@ -11,7 +11,7 @@ Using terminology from Promise Theory each message also has an Imposition code t
 
 There is a central controller, the FSM, and a number of independent Pirates who listen to the FSM and to each other.
 
-Initial implementation creates the FSM and ten pirates, the FSM sends a Hello PirateNN message to name them which includes the FSM listener channel for back-chat. FSM then iterates through the pirates, telling each of them about two of their buddies at random to seed the network. FSM then sends a Goodbye message to each, the Pirate then quits and confirms by sending a Goodbye message back to the FSM.
+Initial implementation creates the FSM and 100 pirates, the FSM sends a Hello PirateNN message to name them which includes the FSM listener channel for back-chat. FSM then iterates through the pirates, telling each of them about two of their buddies at random to seed the network. FSM then sends a Goodbye message to each, the Pirate then quits and confirms by sending a Goodbye message back to the FSM.
 
 Simulation is logged to a file spigo.graphml each time spigo runs. The graphml format includes XML gibberish header followed by definitions of the node names and the edges that have formed between them. Graphml can be visualized using the yEd tool from yFiles. I'm looking for a browser based graph visualization that could show this in realtime.
 
