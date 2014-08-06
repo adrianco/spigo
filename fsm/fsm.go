@@ -37,12 +37,12 @@ func Touch(noodles map[string]chan gotocol.Message) {
         }
 	for len(noodles) > 0 {
 		msg = <-listener
-		fmt.Println(msg)
+		// fmt.Println(msg)
 		if msg.Imposition == gotocol.Goodbye {
 			delete(noodles, msg.Intention)
-			fmt.Println(len(noodles), " pirates left")
+			fmt.Printf("Pirate population: %v    \r", len(noodles))
 		}
 	}	
-
+	fmt.Println("\nExit");
 }
 

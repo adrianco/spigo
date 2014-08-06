@@ -32,3 +32,7 @@ type Message struct {
 	ResponseChan chan Message // place to send more messages
 	Intention    string       // payload
 }
+
+func (msg Message) GoSend(to chan Message) {
+	go func (c chan Message, m Message) { c <- m; }(to, msg)
+}

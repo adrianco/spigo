@@ -12,9 +12,9 @@ import (
 )
 
 func main() {
-	fmt.Println("Spigo")
-	graphml.Setup()
 	const population = 100
+	fmt.Println("Spigo population", population, "pirates")
+	graphml.Setup()
 	noodles := make(map[string]chan gotocol.Message, population)
 	for i := 1; i <= population; i++ {
 		name := fmt.Sprintf("Pirate%d", i)
