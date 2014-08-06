@@ -5,9 +5,11 @@ Simulate Protocol Interactions in Go
 
 Suitable for fairly large scale simulations, runs well up to 100,000 independent nodes (pirates). Each node is a goroutine, to create 100,000 pirates, send 500,000 messages and wait to shut them all down again takes about 1.5 seconds.
 
+100 Pirates
+-----------
 ![100 pirates seeded with two random friends each](spigo100x2.png)
 
-Uses a common message protocol called Gotocol which contains a channel of the same type. This allows message listener endpoints to be passed around to dynamically create an arbitrary interconnection network.
+Spigo uses a common message protocol called Gotocol which contains a channel of the same type. This allows message listener endpoints to be passed around to dynamically create an arbitrary interconnection network.
 
 Using terminology from Promise Theory each message also has an Imposition code that tells the receiver how to interpret it, and an Intention body string that can be used as a simple string, or to encode a more complex structured type or a Promise.
 
@@ -25,6 +27,7 @@ Jason's list of interesting Gossip papers might contain something interesting to
 
 Benchmark result
 ================
+```
 $ time spigo -p=100000
 Spigo population 100000 pirates
 Hello
@@ -36,6 +39,7 @@ Exit
 real	0m1.452s
 user	0m1.056s
 sys	0m0.317s
+```
 
 Up to about 200,000 pirates time is linear with count. Beyond that it slows down and with 1,000,000 initialization takes about 47s, and the process uses about 5GB RAM so there's probably an inefficiency in the way the map of names and channels is being created, or its taking a long time to steal 5GB RAM from other things on my 8GB RAM MacBook Air.
 
