@@ -4,7 +4,22 @@ spigo
 Simulate Protocol Interactions in Go
 
 Suitable for fairly large scale simulations, runs well up to 100,000 independent nodes (pirates). Each node is a goroutine, to create 100,000 pirates, send 500,000 messages and wait to shut them all down again takes about 1.5 seconds.
-
+```
+Usage:
+$ spigo -h
+Usage of spigo:
+  -d=10: Simulation duration in seconds
+  -g=false: Enable GraphML logging
+  -p=100: Pirate population
+  
+$ spigo
+Spigo population 100 pirates
+Hello
+Talk amongst yourselves for 10s
+Go away
+Pirate population: 0     
+Exit
+```
 100 Pirates after seeding with two random friends
 -----------
 ![100 pirates seeded with two random friends each](spigo100x2.png)
