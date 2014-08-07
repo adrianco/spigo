@@ -31,7 +31,7 @@ Spigo uses a common message protocol called Gotocol which contains a channel of 
 
 Using terminology from Promise Theory each message also has an Imposition code that tells the receiver how to interpret it, and an Intention body string that can be used as a simple string, or to encode a more complex structured type or a Promise.
 
-There is a central controller, the FSM, and a number of independent Pirates who listen to the FSM and to each other.
+There is a central controller, the FSM (Flexible Simulation Manager or [Flying Spaghetti Monster](http://www.venganza.org/about/)), and a number of independent Pirates who listen to the FSM and to each other.
 
 Current implementation creates the FSM and a default of 100 pirates, which can be set on the command line with -p=100. The FSM sends a Hello PirateNN message to name them which includes the FSM listener channel for back-chat. FSM then iterates through the pirates, telling each of them about two of their buddies at random to seed the network, and telling them to start Chatting to each other. FSM sleeps for a number of seconds then sends a Goodbye message to each. The Pirate responds to messages until it's told to Chat, then it also wakes up every second and tells one of its buddies about another one until it gets a Goodbye message, then it quits and confirms by sending a Goodbye message back to the FSM. FSM counts down until all the Pirates have quit then exits.
 
