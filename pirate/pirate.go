@@ -4,10 +4,10 @@
 package pirate
 
 import (
-//	"fmt"
-	"time"
+	//	"fmt"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphml"
+	"time"
 )
 
 // all configuration and state is sent via messages
@@ -22,32 +22,32 @@ func Listen(listener chan gotocol.Message) {
 	for {
 		select {
 		case msg = <-listener:
-		//fmt.Println(msg)
-		switch msg.Imposition {
-		case gotocol.Hello:
-			switch {
-			case name == "":
-				// if I don't have a name yet
-				fsm = msg.ResponseChan // remember who named me
-				name = msg.Intention
+			//fmt.Println(msg)
+			switch msg.Imposition {
+			case gotocol.Hello:
+				switch {
+				case name == "":
+					// if I don't have a name yet
+					fsm = msg.ResponseChan // remember who named me
+					name = msg.Intention
+				}
+			case gotocol.NameDrop:
+				// don't remember too many buddies and don't talk to myself
+				if len(buddies) < dunbar && msg.Intention != name {
+					// remember how to talk to this buddy
+					buddies[msg.Intention] = msg.ResponseChan
+					graphml.Edge(msg.Intention, name)
+				}
+			case gotocol.Chat:
+				// setup the ticker to run at the specified rate
+				d, e := time.ParseDuration(msg.Intention)
+				if e == nil && d >= time.Millisecond && d <= time.Hour {
+					chatTicker = time.NewTicker(d)
+				}
+			case gotocol.Goodbye:
+				fsm <- gotocol.Message{gotocol.Goodbye, nil, name}
+				return
 			}
-		case gotocol.NameDrop:
-			// don't remember too many buddies and don't talk to myself
-			if len(buddies) < dunbar && msg.Intention != name {
-				// remember how to talk to this buddy
-				buddies[msg.Intention] = msg.ResponseChan
-				graphml.Edge(msg.Intention, name)
-			}
-		case gotocol.Chat:
-			// setup the ticker to run at the specified rate
-			d, e := time.ParseDuration(msg.Intention)
-			if e == nil && d >= time.Millisecond && d <= time.Hour {
-				chatTicker = time.NewTicker(d)
-			}
-		case gotocol.Goodbye:
-			fsm <- gotocol.Message{gotocol.Goodbye, nil, name}
-			return
-		}
 		case _ = <-chatTicker.C:
 			// use Namedrop to tell the last buddy about the first
 			var firstBuddyName string
@@ -60,7 +60,7 @@ func Listen(listener chan gotocol.Message) {
 					} else {
 						lastBuddyChan = ch
 					}
-				gotocol.Message{gotocol.NameDrop, firstBuddyChan, firstBuddyName}.GoSend(lastBuddyChan)
+					gotocol.Message{gotocol.NameDrop, firstBuddyChan, firstBuddyName}.GoSend(lastBuddyChan)
 				}
 			}
 		}

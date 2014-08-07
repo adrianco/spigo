@@ -4,10 +4,10 @@
 package fsm
 
 import (
+	"fmt"
 	"github.com/adrianco/spigo/gotocol"
 	"math/rand"
 	"time"
-	"fmt"
 )
 
 var ChatSleep time.Duration
@@ -30,9 +30,9 @@ func Touch(noodles map[string]chan gotocol.Message) {
 	for i := 0; i < len(names); i++ {
 		// for each pirate tell them about two other random pirates
 		talkto := names[rand.Intn(len(names))]
-		noodles[names[i]] <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto} 
+		noodles[names[i]] <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto}
 		talkto = names[rand.Intn(len(names))]
-		noodles[names[i]] <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto} 
+		noodles[names[i]] <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto}
 		noodles[names[i]] <- gotocol.Message{gotocol.Chat, nil, "2s"}
 	}
 	d := time.Since(start)
@@ -42,8 +42,8 @@ func Touch(noodles map[string]chan gotocol.Message) {
 	}
 	fmt.Println("Go away")
 	for _, noodle := range noodles {
-                noodle <- gotocol.Message{gotocol.Goodbye, nil, "beer volcano"}
-        }
+		noodle <- gotocol.Message{gotocol.Goodbye, nil, "beer volcano"}
+	}
 	for len(noodles) > 0 {
 		msg = <-listener
 		// fmt.Println(msg)
@@ -51,7 +51,6 @@ func Touch(noodles map[string]chan gotocol.Message) {
 			delete(noodles, msg.Intention)
 			fmt.Printf("Pirate population: %v    \r", len(noodles))
 		}
-	}	
-	fmt.Println("\nExit");
+	}
+	fmt.Println("\nExit")
 }
-
