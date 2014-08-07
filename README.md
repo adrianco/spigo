@@ -5,7 +5,6 @@ Simulate Protocol Interactions in Go
 
 Suitable for fairly large scale simulations, runs well up to 100,000 independent nodes (pirates). Each node is a goroutine, to create 100,000 pirates, send 500,000 messages and wait to shut them all down again takes about 1.5 seconds.
 ```
-Usage:
 $ spigo -h
 Usage of spigo:
   -d=10: Simulation duration in seconds
@@ -34,7 +33,9 @@ Using terminology from Promise Theory each message also has an Imposition code t
 
 There is a central controller, the FSM, and a number of independent Pirates who listen to the FSM and to each other.
 
-Initial implementation creates the FSM and a default of 100 pirates, which can be set on the command line with -p=100. The FSM sends a Hello PirateNN message to name them which includes the FSM listener channel for back-chat. FSM then iterates through the pirates, telling each of them about two of their buddies at random to seed the network. FSM then sends a Goodbye message to each, the Pirate then quits and confirms by sending a Goodbye message back to the FSM.
+Current implementation creates the FSM and a default of 100 pirates, which can be set on the command line with -p=100. The FSM sends a Hello PirateNN message to name them which includes the FSM listener channel for back-chat. FSM then iterates through the pirates, telling each of them about two of their buddies at random to seed the network, and telling them to start Chatting to each other. FSM sleeps for a number of seconds then sends a Goodbye message to each. The Pirate responds to messages until it's told to Chat, then it also wakes up every second and tells one of its buddies about another one until it gets a Goodbye message, then it quits and confirms by sending a Goodbye message back to the FSM. FSM counts down until all the Pirates have quit then exits.
+
+The effect is that a complex randomized social graph is generated, with density increasing over time. This can then be used to experiment with trading, gossip and viral algorithms, and individual Pirates can make and break promises to introduce failure modes.
 
 Simulation is logged to a file spigo.graphml with the -g=true command line option. The graphml format includes XML gibberish header followed by definitions of the node names and the edges that have formed between them. Graphml can be visualized using the yEd tool from yFiles. I'm looking for a browser based graph visualization that could show this in realtime.
 
