@@ -5,9 +5,13 @@ Simulate Protocol Interactions in Go
 
 Suitable for fairly large scale simulations, runs well up to 100,000 independent nodes (pirates). Each node is a goroutine, to create 100,000 pirates, send 500,000 messages and wait to shut them all down again takes about 1.5 seconds.
 
-100 Pirates
+100 Pirates after seeding with two random friends
 -----------
 ![100 pirates seeded with two random friends each](spigo100x2.png)
+
+100 Pirates after chatting and making new friends
+-----------
+![100 pirates after chatting](spigo100x2chat.png)
 
 Spigo uses a common message protocol called Gotocol which contains a channel of the same type. This allows message listener endpoints to be passed around to dynamically create an arbitrary interconnection network.
 
@@ -28,7 +32,7 @@ Jason's list of interesting Gossip papers might contain something interesting to
 Benchmark result
 ================
 ```
-$ time spigo -p=100000
+$ time spigo -d=0 -p=100000
 Spigo population 100000 pirates
 Hello
 Talk amongst yourselves
