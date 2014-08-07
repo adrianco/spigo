@@ -3,7 +3,7 @@ spigo
 
 Simulate Protocol Interactions in Go
 
-Suitable for fairly large scale simulations, runs well up to 100,000 independent nodes (pirates). Each node is a goroutine, to create 100,000 pirates, send 500,000 messages and wait to shut them all down again takes about 1.5 seconds.
+Suitable for fairly large scale simulations, runs well up to 100,000 independent nodes (pirates). Each node is a goroutine, to create 100,000 pirates, deliver 600,000 messages and wait to shut them all down again takes about 2 seconds.
 ```
 $ spigo -h
 Usage of spigo:
@@ -47,7 +47,7 @@ Jason's list of interesting Gossip papers might contain something interesting to
 
 Benchmark result
 ================
-During setup FSM delivers three messages to each Pirate, and the message delivery rate is measured at about 650,000 msg/sec.
+At one point during setup FSM delivers three messages to each Pirate in turn, and the message delivery rate for that loop is measured at about 650,000 msg/sec. There are three additional messages per pirate in each run, plus whatever chatting occurs.
 ```
 $ time spigo -d=0 -p=100000
 Spigo population 100000 pirates
