@@ -3,31 +3,31 @@
 package gotocol
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 // all configuration and state is sent via messages
 func pirateListen(listener chan Message) {
-        var buddy chan Message
-        var msg Message
-        for {
-                msg = <-listener
-                fmt.Println(msg)
-                if msg.ResponseChan != nil {
-                        buddy = msg.ResponseChan
-                }
-                switch msg.Imposition {
-                case Hello:
-                case NameDrop:
-                        if buddy != nil {
-                                Message{Hello, listener, "Pirate"}.GoSend(buddy)
-                        }
+	var buddy chan Message
+	var msg Message
+	for {
+		msg = <-listener
+		fmt.Println(msg)
+		if msg.ResponseChan != nil {
+			buddy = msg.ResponseChan
+		}
+		switch msg.Imposition {
+		case Hello:
+		case NameDrop:
+			if buddy != nil {
+				Message{Hello, listener, "Pirate"}.GoSend(buddy)
+			}
 		case Chat:
-                case Goodbye:
-                        return
-                }
-        }
+		case Goodbye:
+			return
+		}
+	}
 }
 
 func TestImpose(t *testing.T) {

@@ -4,20 +4,20 @@
 package main
 
 import (
-	"fmt"
 	"flag"
-	"time"
-	"github.com/adrianco/spigo/gotocol"
+	"fmt"
 	"github.com/adrianco/spigo/fsm"
-	"github.com/adrianco/spigo/pirate"
+	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphml"
+	"github.com/adrianco/spigo/pirate"
+	"time"
 )
 
 var Population, duration int
 
 func main() {
-	flag.IntVar(&Population,"p", 100, "Pirate population")
-	flag.IntVar(&duration,"d", 10, "Simulation duration in seconds")
+	flag.IntVar(&Population, "p", 100, "Pirate population")
+	flag.IntVar(&duration, "d", 10, "Simulation duration in seconds")
 	flag.BoolVar(&graphml.Enabled, "g", false, "Enable GraphML logging")
 	flag.Parse()
 	fmt.Println("Spigo population", Population, "pirates")

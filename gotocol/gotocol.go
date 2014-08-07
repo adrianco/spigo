@@ -41,5 +41,5 @@ type Message struct {
 }
 
 func (msg Message) GoSend(to chan Message) {
-	go func (c chan Message, m Message) { c <- m; }(to, msg)
+	go func(c chan Message, m Message) { c <- m }(to, msg)
 }
