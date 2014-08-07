@@ -47,18 +47,20 @@ Jason's list of interesting Gossip papers might contain something interesting to
 
 Benchmark result
 ================
+During setup FSM delivers three messages to each Pirate, and the message delivery rate is measured at about 650,000 msg/sec.
 ```
 $ time spigo -d=0 -p=100000
 Spigo population 100000 pirates
 Hello
-Talk amongst yourselves
+Talk amongst yourselves for 0
+Delivered 300000 messages in 465.231966ms
 Go away
 Pirate population: 0        
 Exit
 
-real	0m1.452s
-user	0m1.056s
-sys	0m0.317s
+real	0m2.122s
+user	0m1.574s
+sys	0m0.466s
 ```
 
 Up to about 200,000 pirates time is linear with count. Beyond that it slows down and with 1,000,000 initialization takes about 47s, and the process uses about 5GB RAM so there's probably an inefficiency in the way the map of names and channels is being created, or its taking a long time to steal 5GB RAM from other things on my 8GB RAM MacBook Air.
