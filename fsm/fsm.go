@@ -24,8 +24,9 @@ func Touch(noodles map[string]chan gotocol.Message) {
 		names[i] = name
 		i = i + 1
 	}
-	fmt.Println("Talk amongst yourselves")
+	fmt.Println("Talk amongst yourselves for", ChatSleep)
 	rand.Seed(int64(len(noodles)))
+	start := time.Now()
 	for i := 0; i < len(names); i++ {
 		// for each pirate tell them about two other random pirates
 		talkto := names[rand.Intn(len(names))]
@@ -34,6 +35,8 @@ func Touch(noodles map[string]chan gotocol.Message) {
 		noodles[names[i]] <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto} 
 		noodles[names[i]] <- gotocol.Message{gotocol.Chat, nil, "2s"}
 	}
+	d := time.Since(start)
+	fmt.Println("Delivered", 3*len(names), "messages in", d)
 	if ChatSleep >= time.Millisecond {
 		time.Sleep(ChatSleep)
 	}
