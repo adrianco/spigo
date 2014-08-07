@@ -5,6 +5,7 @@ package pirate
 
 import (
 //	"fmt"
+	"time"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphml"
 )
@@ -16,8 +17,11 @@ func Listen(listener chan gotocol.Message) {
 	var fsm chan gotocol.Message // remember how to talk back to creator
 	var name string              // remember my name
 	var msg gotocol.Message
+	chatTicker := time.NewTicker(time.Hour)
+	chatTicker.Stop()
 	for {
-		msg = <-listener
+		select {
+		case msg = <-listener:
 		//fmt.Println(msg)
 		switch msg.Imposition {
 		case gotocol.Hello:
@@ -34,12 +38,31 @@ func Listen(listener chan gotocol.Message) {
 				buddies[msg.Intention] = msg.ResponseChan
 				graphml.Edge(msg.Intention, name)
 			}
+		case gotocol.Chat:
+			// setup the ticker to run at the specified rate
+			d, e := time.ParseDuration(msg.Intention)
+			if e == nil && d >= time.Millisecond && d <= time.Hour {
+				chatTicker = time.NewTicker(d)
+			}
 		case gotocol.Goodbye:
-			// if my creator told me to die, reply
-			//if msg.ResponseChan == fsm {
-				fsm <- gotocol.Message{gotocol.Goodbye, nil, name}
-				return
-			//}
+			fsm <- gotocol.Message{gotocol.Goodbye, nil, name}
+			return
+		}
+		case _ = <-chatTicker.C:
+			// use Namedrop to tell the last buddy about the first
+			var firstBuddyName string
+			var firstBuddyChan, lastBuddyChan chan gotocol.Message
+			if len(buddies) >= 2 {
+				for name, ch := range buddies {
+					if firstBuddyName == "" {
+						firstBuddyName = name
+						firstBuddyChan = ch
+					} else {
+						lastBuddyChan = ch
+					}
+				gotocol.Message{gotocol.NameDrop, firstBuddyChan, firstBuddyName}.GoSend(lastBuddyChan)
+				}
+			}
 		}
 	}
 }

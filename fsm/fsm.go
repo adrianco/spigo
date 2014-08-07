@@ -6,8 +6,11 @@ package fsm
 import (
 	"github.com/adrianco/spigo/gotocol"
 	"math/rand"
+	"time"
 	"fmt"
 )
+
+var ChatSleep time.Duration
 
 // FSM touches all the noodles that connect to the pirates etc.
 func Touch(noodles map[string]chan gotocol.Message) {
@@ -29,7 +32,10 @@ func Touch(noodles map[string]chan gotocol.Message) {
 		noodles[names[i]] <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto} 
 		talkto = names[rand.Intn(len(names))]
 		noodles[names[i]] <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto} 
-
+		noodles[names[i]] <- gotocol.Message{gotocol.Chat, nil, "2s"}
+	}
+	if ChatSleep >= time.Millisecond {
+		time.Sleep(ChatSleep)
 	}
 	fmt.Println("Go away")
 	for _, noodle := range noodles {

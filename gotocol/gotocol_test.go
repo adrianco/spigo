@@ -23,6 +23,7 @@ func pirateListen(listener chan Message) {
                         if buddy != nil {
                                 Message{Hello, listener, "Pirate"}.GoSend(buddy)
                         }
+		case Chat:
                 case Goodbye:
                         return
                 }

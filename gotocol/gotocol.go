@@ -5,10 +5,15 @@ package gotocol
 
 type Impositions int
 
-// message types to be imposed on the reciever
+// message types to be imposed on the receiver
 const (
+	// Hello ChanToFSM NameForPirate // initial noodly touch
 	Hello Impositions = iota
+	// Namedrop ChanToBuddy NameOfBuddy // here's someone to talk to
 	NameDrop
+	// Chat - "ThisOften:1.0" // chat to buddies every X seconds
+	Chat
+	// Goodbye - - // tell FSM and exit
 	Goodbye // test assumes this is the last and exits
 	numOfImpositions
 )
@@ -20,6 +25,8 @@ func (imps Impositions) String() string {
 		return "Hello"
 	case NameDrop:
 		return "NameDrop"
+	case Chat:
+		return "Chat"
 	case Goodbye:
 		return "Goodbye"
 	}
