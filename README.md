@@ -41,7 +41,7 @@ Simulation is logged to a file spigo.graphml with the -g=true command line optio
 
 There is a test program that exercises the Namedrop message, this is where the FSM or a Pirate passes on the name of a third party, and each Pirate builds up a buddy list of names and the listener channel for each buddy.
 
-The basic framework is in place, but the interesting behaviors, automonous running, and user input to control or stop the simulation haven't been added yet. See the pdf for some Occam code and results for the original version of this circa 2007.
+The basic framework is in place, but the interesting behaviors, automonous running, and user input to control or stop the simulation haven't been added yet. [See the pdf for some Occam code](SkypeSim07.pdf) and results for the original version of this circa 2007.
 
 Jason's list of interesting Gossip papers might contain something interesting to try and implement... http://softwarecarnival.blogspot.com/2014/07/gossip-papers.html
 
