@@ -1,6 +1,6 @@
-// participant in the network, listens to the FSM and to other pirates
-// independently decides whether to make or break promises and behave
-
+// The pirate package defines a participant in the network,
+// which listens to the FSM and to other pirates and
+// independently decides whether to make or break promises and behave.
 package pirate
 
 import (
@@ -16,12 +16,11 @@ func Listen(listener chan gotocol.Message) {
 	buddies := make(map[string]chan gotocol.Message, dunbar)
 	var fsm chan gotocol.Message // remember how to talk back to creator
 	var name string              // remember my name
-	var msg gotocol.Message
 	chatTicker := time.NewTicker(time.Hour)
 	chatTicker.Stop()
 	for {
 		select {
-		case msg = <-listener:
+		case msg := <-listener:
 			//fmt.Println(msg)
 			switch msg.Imposition {
 			case gotocol.Hello:
@@ -48,7 +47,7 @@ func Listen(listener chan gotocol.Message) {
 				fsm <- gotocol.Message{gotocol.Goodbye, nil, name}
 				return
 			}
-		case _ = <-chatTicker.C:
+		case <-chatTicker.C:
 			// use Namedrop to tell the last buddy about the first
 			var firstBuddyName string
 			var firstBuddyChan, lastBuddyChan chan gotocol.Message
@@ -60,7 +59,7 @@ func Listen(listener chan gotocol.Message) {
 					} else {
 						lastBuddyChan = ch
 					}
-					gotocol.Message{gotocol.NameDrop, firstBuddyChan, firstBuddyName}.GoSend(lastBuddyChan)
+					go gotocol.Send(lastBuddyChan, gotocol.Message{gotocol.NameDrop, firstBuddyChan, firstBuddyName})
 				}
 			}
 		}

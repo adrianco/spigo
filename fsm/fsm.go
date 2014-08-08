@@ -1,6 +1,5 @@
 // Flexible State Manager (a.k.a. Flying Spaghetti Monster)
 // Controls everything, touching with its noodles
-
 package fsm
 
 import (
@@ -12,7 +11,7 @@ import (
 
 var ChatSleep time.Duration
 
-// FSM touches all the noodles that connect to the pirates etc.
+// Touch touches all the noodles that connect to the pirates etc.
 func Touch(noodles map[string]chan gotocol.Message) {
 	var msg gotocol.Message
 	names := make([]string, len(noodles)) // indexable name list
@@ -22,18 +21,19 @@ func Touch(noodles map[string]chan gotocol.Message) {
 	for name, noodle := range noodles {
 		noodle <- gotocol.Message{gotocol.Hello, listener, name}
 		names[i] = name
-		i = i + 1
+		i++
 	}
 	fmt.Println("Talk amongst yourselves for", ChatSleep)
 	rand.Seed(int64(len(noodles)))
 	start := time.Now()
-	for i := 0; i < len(names); i++ {
+	for _, name := range names {
+		ch := noodles[name]
 		// for each pirate tell them about two other random pirates
 		talkto := names[rand.Intn(len(names))]
-		noodles[names[i]] <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto}
+		ch <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto}
 		talkto = names[rand.Intn(len(names))]
-		noodles[names[i]] <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto}
-		noodles[names[i]] <- gotocol.Message{gotocol.Chat, nil, "2s"}
+		ch <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto}
+		ch <- gotocol.Message{gotocol.Chat, nil, "2s"}
 	}
 	d := time.Since(start)
 	fmt.Println("Delivered", 3*len(names), "messages in", d)

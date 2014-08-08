@@ -21,7 +21,7 @@ func pirateListen(listener chan Message) {
 		case Hello:
 		case NameDrop:
 			if buddy != nil {
-				Message{Hello, listener, "Pirate"}.GoSend(buddy)
+				go Send(buddy, Message{Hello, listener, "Pirate"})
 			}
 		case Chat:
 		case Goodbye:
@@ -37,7 +37,7 @@ func TestImpose(t *testing.T) {
 	go pirateListen(noodle) // pirate to be controlled directly by noodly touch
 	go pirateListen(p2p)    // pirate that will get messages via the other one
 	// test p2p by telling first pirate about the other
-	Message{NameDrop, p2p, "Mate"}.GoSend(noodle)
+	go Send(noodle, Message{NameDrop, p2p, "Mate"})
 	// test all options including namedrop nil and goodbye
 	for i := 0; i < int(numOfImpositions); i++ {
 		imp.Imposition = Impositions(i)
