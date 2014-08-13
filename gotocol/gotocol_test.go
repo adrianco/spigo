@@ -24,6 +24,8 @@ func pirateListen(listener chan Message) {
 				Message{Hello, listener, "Pirate"}.GoSend(buddy)
 			}
 		case Chat:
+		case GoldCoin:
+		case Inform:
 		case Goodbye:
 			return
 		}

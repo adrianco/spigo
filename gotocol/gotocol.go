@@ -11,8 +11,12 @@ const (
 	Hello Impositions = iota
 	// Namedrop ChanToBuddy NameOfBuddy // here's someone to talk to
 	NameDrop
-	// Chat - "ThisOften:1.0" // chat to buddies every X seconds
+	// Chat - ThisOften // chat to buddies time interval
 	Chat
+	// GoldCoin FromChan HowMuch
+	GoldCoin
+	// Inform FromChan text message
+	Inform
 	// Goodbye - - // tell FSM and exit
 	Goodbye // test assumes this is the last and exits
 	numOfImpositions
@@ -27,6 +31,10 @@ func (imps Impositions) String() string {
 		return "NameDrop"
 	case Chat:
 		return "Chat"
+	case GoldCoin:
+		return "GoldCoin"
+	case Inform:
+		return "Inform"
 	case Goodbye:
 		return "Goodbye"
 	}

@@ -21,15 +21,12 @@ func main() {
 	flag.BoolVar(&graphml.Enabled, "g", false, "Enable GraphML logging")
 	flag.Parse()
 	fmt.Println("Spigo population", Population, "pirates")
-	graphml.Setup()
 	noodles := make(map[string]chan gotocol.Message, Population)
 	for i := 1; i <= Population; i++ {
 		name := fmt.Sprintf("Pirate%d", i)
-		graphml.Node(name)
 		noodles[name] = make(chan gotocol.Message)
 		go pirate.Listen(noodles[name])
 	}
 	fsm.ChatSleep = time.Duration(duration) * time.Second
 	fsm.Touch(noodles)
-	graphml.Close()
 }
