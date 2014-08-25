@@ -1,0 +1,10 @@
+---
+name: spigo - nanoservices in go
+description: Protocol simulator written using goroutines as nanoservices
+keywords: golang, go, nanoservices
+type: Default
+documentation: ''
+images:
+- name: google_golang-runtime_latest
+  source: google/golang-runtime:latest
+  type: Default
