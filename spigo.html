@@ -32,8 +32,12 @@
 					.nodes(dataset.nodes)
 					.links(dataset.edges)
 					.size([w, h])
-					.linkDistance([20])
 					.charge([-50]);
+
+			force.linkDistance(function(d) {
+                               return 10 + 5 * (d.source.size + d.target.size);
+			});
+
 
 			var colors = d3.scale.category10();
 
@@ -57,6 +61,7 @@
 			var addnode = function(name) {
 					//console.log(name);
 					dataset.nodes.push([name]);
+					dataset.nodes[nodecount].size = 0;
 					nodecount++;
 			};
 
@@ -72,7 +77,9 @@
                                 		.data(dataset.nodes)
                                 		.enter()
                               	 		.append("circle")
-                                		.attr("r", 5)
+                                		.attr("r", function(d, i) {
+							return Math.sqrt(d.size) * 2;
+						})
                                 		.style("fill", function(d, i) {
                                 	       		return colors(i);
                                 		})
@@ -82,8 +89,10 @@
 
                         var findnode = function(nodename) {
                                 for (n = 0; n < dataset.nodes.length; n++)
-                                        if (dataset.nodes[n][0] == nodename)
+                                        if (dataset.nodes[n][0] == nodename) {
+						dataset.nodes[n].size++;
                                                 break;
+					}
                                 return dataset.nodes[n];
                         }
 

@@ -45,8 +45,8 @@ func Touch(noodles map[string]chan gotocol.Message) {
 		// send this pirate a random amount of GoldCoin up to 100
 		gold := fmt.Sprintf("%d", rand.Intn(100))
 		noodle <- gotocol.Message{gotocol.GoldCoin, listener, gold}
-		// tell this pirate to start chatting with friends every 1-10s
-		delay := fmt.Sprintf("%ds", 1+rand.Intn(9))
+		// tell this pirate to start chatting with friends every 1-60s
+		delay := fmt.Sprintf("%ds", 1+rand.Intn(59))
 		noodle <- gotocol.Message{gotocol.Chat, nil, delay}
 	}
 	d := time.Since(start)
