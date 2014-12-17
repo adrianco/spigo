@@ -54,18 +54,14 @@
 			});
 
 			// add a node and some edges
-			var addnode = function() {
-					// console.log("More...");
-					dataset.nodes.push(["node" + nodecount]);
-					// connect to one or two random nodes
-					var t = Math.floor(Math.random() * nodecount);
-                                	if ( t != nodecount) // don't connect to self
-						dataset.edges.push({ source: nodecount, target: t });
-						var t2 = Math.floor(Math.random() * nodecount);
-						// if first random node was odd, add another one
-						if ( t % 2 && t2 != nodecount)
-                                                	dataset.edges.push({ source: nodecount, target: t2 });
+			var addnode = function(name) {
+					//console.log(name);
+					dataset.nodes.push([name]);
 					nodecount++;
+			};
+
+			var update = function() {
+					console.log("update");
                         		svg.selectAll("line")
                                 		.data(dataset.edges)
                                 		.enter()
@@ -82,14 +78,41 @@
                                 		})
                                 		.call(force.drag);
 					force.start();
-				};
+			};
 
-			for (i = 0; i < 20; i++)
-				addnode();
+                        var findnode = function(nodename) {
+                                for (n = 0; n < dataset.nodes.length; n++)
+                                        if (dataset.nodes[n][0] == nodename)
+                                                break;
+                                return dataset.nodes[n];
+                        }
+
+			var addedge = function(s, t) {
+				//console.log("edge between " + s  " and " + t);
+				sn = findnode(s);
+				tn = findnode(t);
+				dataset.edges.push({ source: sn, target: tn });
+			};
+
+			//for (i = 0; i < 20; i++)
+			//	addnode();
 
 			// click for more
-			d3.select("p").on("click", addnode);
+			//d3.select("p").on("click", addnode);
 
+			d3.json("spigo.json", function(error, json) {
+  				console.log(json.version);
+				for (i = 0; i < json.graph.length; i++) {
+					element = json.graph[i];
+					if (element.node) {
+						addnode(element.node);
+					}
+					if (element.edge) {
+						addedge(element.source, element.target);
+					}
+				}
+				update();
+			});
 		</script>
 	</body>
 </html>
