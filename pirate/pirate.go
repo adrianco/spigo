@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphml"
+	"github.com/adrianco/spigo/graphjson"
 	"time"
 )
 
@@ -41,6 +42,9 @@ func Listen(listener chan gotocol.Message) {
 					// remember how to talk to this buddy
 					buddies[msg.Intention] = msg.ResponseChan
 					edge := graphml.Edge(msg.Intention, name)
+					if edge == "" {
+						edge = graphjson.Edge(msg.Intention, name)
+					}
 					if edge != "" {
 						gotocol.Message{gotocol.Inform, listener, edge}.GoSend(fsm)
 					}

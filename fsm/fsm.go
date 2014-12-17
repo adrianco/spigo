@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphml"
+	"github.com/adrianco/spigo/graphjson"
 	"math/rand"
 	"time"
 )
@@ -19,10 +20,12 @@ func Touch(noodles map[string]chan gotocol.Message) {
 	names := make([]string, len(noodles)) // indexable name list
 	listener := make(chan gotocol.Message)
 	graphml.Setup()
+	graphjson.Setup()
 	fmt.Println("Hello")
 	i := 0
 	for name, noodle := range noodles {
 		graphml.WriteNode(name)
+		graphjson.WriteNode(name)
 		noodle <- gotocol.Message{gotocol.Hello, listener, name}
 		names[i] = name
 		i = i + 1
@@ -61,6 +64,7 @@ func Touch(noodles map[string]chan gotocol.Message) {
 		switch msg.Imposition {
 		case gotocol.Inform:
 			graphml.Write(msg.Intention)
+			graphjson.Write(msg.Intention)
 		case gotocol.Goodbye:
 			delete(noodles, msg.Intention)
 			fmt.Printf("Pirate population: %v    \r", len(noodles))
@@ -68,4 +72,5 @@ func Touch(noodles map[string]chan gotocol.Message) {
 	}
 	fmt.Println("\nExit")
 	graphml.Close()
+	graphjson.Close()
 }
