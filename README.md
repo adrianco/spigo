@@ -59,14 +59,14 @@ $ time spigo -d=0 -p=100000
 Spigo population 100000 pirates
 Hello
 Talk amongst yourselves for 0
-Delivered 300000 messages in 465.231966ms
+Delivered 400000 messages in 665.723128ms
 Go away
 Pirate population: 0        
 Exit
 
-real	0m2.122s
-user	0m1.574s
-sys	0m0.466s
+real	0m2.544s
+user	0m1.834s
+sys	0m0.628s
 ```
 
 Up to about 200,000 pirates time is linear with count. Beyond that it slows down and with 1,000,000 initialization takes about 47s, and the process uses about 5GB RAM so there's probably an inefficiency in the way the map of names and channels is being created, or its taking a long time to steal 5GB RAM from other things on my 8GB RAM MacBook Air.
