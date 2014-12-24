@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"github.com/adrianco/spigo/fsm"
 	"github.com/adrianco/spigo/gotocol"
-	"github.com/adrianco/spigo/graphml"
 	"github.com/adrianco/spigo/graphjson"
+	"github.com/adrianco/spigo/graphml"
 	"github.com/adrianco/spigo/pirate"
 	"time"
 )
@@ -23,7 +23,7 @@ func main() {
 	flag.BoolVar(&graphjson.Enabled, "j", false, "Enable GraphJSON logging")
 	flag.Parse()
 	if graphml.Enabled && graphjson.Enabled {
-		fmt.Println("Pick either GraphML or JSON output, not both\n");
+		fmt.Println("Pick either GraphML or JSON output, not both\n")
 		return
 	}
 	fmt.Println("Spigo population", Population, "pirates")
