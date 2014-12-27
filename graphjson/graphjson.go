@@ -18,7 +18,7 @@ func Setup() {
 		return
 	}
 	file, _ = os.Create("spigo.json")
-	file.WriteString("{\n  \"version\":\"spigo-0.0\",\n  \"graph\":[")
+	Write(fmt.Sprintf("{\n  \"version\":\"spigo-0.1\",\n  \"args\":\"%v\",\n  \"graph\":[", os.Args))
 	comma = false
 }
 

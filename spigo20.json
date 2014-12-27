@@ -1,6 +1,6 @@
 {
   "version":"spigo-0.1",
-  "args":"[./spigo -j -d=1 -p=10]",
+  "args":"[./spigo -j -d=1 -p=10]"
   "graph":[
     { "node":"Pirate5", "name":"Pirate5" },
     { "node":"Pirate6", "name":"Pirate6" },
