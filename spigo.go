@@ -41,25 +41,31 @@ func main() {
 		dec := json.NewDecoder(file)
 		var f interface{}
 		if err := dec.Decode(&f); err != nil {
-			log.Println(err)
+			log.Fatal(err)
 		}
 		m := f.(map[string]interface{})
 		for k, v := range m {
 			switch vv := v.(type) {
 			case string:
-				fmt.Println(k, "is string", vv)
+				fmt.Println(k, " ", vv)
 			case int:
-				fmt.Println(k, "is int", vv)
+				fmt.Println(k, "=", vv)
 			case []interface{}:
 				fmt.Println(k, "is an array:")
 				for i, u := range vv {
-					fmt.Println(i, u)
+					switch uu := u.(type) {
+					case map[string]interface{}:
+						for l, w := range uu {
+							fmt.Print(" ",l,":", w)
+						}
+						fmt.Println()
+					default: fmt.Println(i, u)
+					}
 				}
 			default:
 				fmt.Println(k, "is of a type I don't know how to handle")
 			}
 		}
-		//log.Println(v["version"])
 		return
 	} else {
 		for i := 1; i <= Population; i++ {
