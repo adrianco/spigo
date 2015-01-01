@@ -13,19 +13,27 @@ func pirateListen(listener chan Message) {
 	var msg Message
 	for {
 		msg = <-listener
-		fmt.Println(msg)
-		if msg.ResponseChan != nil {
-			buddy = msg.ResponseChan
-		}
+		fmt.Println(listener, msg)
+		// handle all message types
 		switch msg.Imposition {
 		case Hello:
 		case NameDrop:
-			if buddy != nil {
-				Message{Hello, listener, "Pirate"}.GoSend(buddy)
+			// remember the buddy for later if we got one
+			if msg.ResponseChan != nil {
+				buddy = msg.ResponseChan
 			}
 		case Chat:
+			// send  a Request if we have a buddy
+			if buddy != nil {
+				Message{GetRequest, listener, "Yo ho ho"}.GoSend(buddy)
+			}
 		case GoldCoin:
 		case Inform:
+		case GetRequest:
+			if msg.ResponseChan != nil {
+				Message{GetResponse, nil, "Bottle of rum"}.GoSend(msg.ResponseChan)
+			}
+		case GetResponse:
 		case Goodbye:
 			return
 		}

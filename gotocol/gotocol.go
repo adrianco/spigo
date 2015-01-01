@@ -7,7 +7,7 @@ type Impositions int
 
 // message types to be imposed on the receiver
 const (
-	// Hello ChanToFSM NameForPirate // initial noodly touch
+	// Hello ChanToParent NameForPirate // initial noodly touch
 	Hello Impositions = iota
 	// Namedrop ChanToBuddy NameOfBuddy // here's someone to talk to
 	NameDrop
@@ -17,6 +17,10 @@ const (
 	GoldCoin
 	// Inform FromChan text message
 	Inform
+	// GetRequest FromChan body // simulate http inbound request
+	GetRequest
+	// GetResponse FromChan body // simulate http outbound response
+	GetResponse
 	// Goodbye - - // tell FSM and exit
 	Goodbye // test assumes this is the last and exits
 	numOfImpositions
@@ -35,6 +39,10 @@ func (imps Impositions) String() string {
 		return "GoldCoin"
 	case Inform:
 		return "Inform"
+	case GetRequest:
+		return "GetRequest"
+	case GetResponse:
+		return "GetResponse"
 	case Goodbye:
 		return "Goodbye"
 	}
@@ -44,10 +52,11 @@ func (imps Impositions) String() string {
 // structure used for all messages, includes a channel of itself
 type Message struct {
 	Imposition   Impositions  // request type
-	ResponseChan chan Message // place to send more messages
+	ResponseChan chan Message // place to send response messages
 	Intention    string       // payload
 }
 
+// asynchronous message send, parks it on a new goroutine until it completes
 func (msg Message) GoSend(to chan Message) {
 	go func(c chan Message, m Message) { c <- m }(to, msg)
 }
