@@ -18,7 +18,7 @@ func Setup() {
 		return
 	}
 	file, _ = os.Create("spigo.json")
-	Write(fmt.Sprintf("{\n  \"version\":\"spigo-0.1\",\n  \"args\":\"%v\",\n  \"graph\":[", os.Args))
+	Write(fmt.Sprintf("{\n  \"version\":\"spigo-0.2\",\n  \"args\":\"%v\",\n  \"graph\":[", os.Args))
 	comma = false
 }
 
@@ -35,12 +35,12 @@ func commaNewline() string {
 	}
 }
 
-func WriteNode(name string) {
+func WriteNode(name, service string) {
 	if Enabled == false {
 		return
 	}
-	// node id should be unique but name is an arbitrary label set the same for now
-	Write(fmt.Sprintf("%v    { \"node\":\"%v\", \"name\":\"%v\" }", commaNewline(), name, name))
+	// node id should be unique and service indicates service type
+	Write(fmt.Sprintf("%v    { \"node\":\"%v\", \"service\":\"%v\" }", commaNewline(), name, service))
 }
 
 func Edge(from, to string) string {

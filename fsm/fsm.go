@@ -1,13 +1,13 @@
 // Flexible State Manager (a.k.a. Flying Spaghetti Monster)
-// Controls everything, touching with its noodles
+// Controls a large collection of pirates, touching with its noodles
 
 package fsm
 
 import (
 	"fmt"
 	"github.com/adrianco/spigo/gotocol"
-	"github.com/adrianco/spigo/graphml"
 	"github.com/adrianco/spigo/graphjson"
+	"github.com/adrianco/spigo/graphml"
 	"math/rand"
 	"time"
 )
@@ -25,7 +25,7 @@ func Touch(noodles map[string]chan gotocol.Message) {
 	i := 0
 	for name, noodle := range noodles {
 		graphml.WriteNode(name)
-		graphjson.WriteNode(name)
+		graphjson.WriteNode(name, "pirate")
 		noodle <- gotocol.Message{gotocol.Hello, listener, name}
 		names[i] = name
 		i = i + 1

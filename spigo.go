@@ -56,10 +56,11 @@ func main() {
 					switch uu := u.(type) {
 					case map[string]interface{}:
 						for l, w := range uu {
-							fmt.Print(" ",l,":", w)
+							fmt.Print(" ", l, ":", w)
 						}
 						fmt.Println()
-					default: fmt.Println(i, u)
+					default:
+						fmt.Println(i, u)
 					}
 				}
 			default:
