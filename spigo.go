@@ -17,22 +17,24 @@ import (
 	"time"
 )
 
-var Population, duration int
+var arch string
+var population, duration int
 var reload bool
 
 func main() {
-	flag.IntVar(&Population, "p", 100, "  Pirate population")
+	flag.StringVar(&arch, "a", "fsm", "Architecture to create")
+	flag.IntVar(&population, "p", 100, "  Pirate population")
 	flag.IntVar(&duration, "d", 10, "   Simulation duration in seconds")
 	flag.BoolVar(&graphml.Enabled, "g", false, "Enable GraphML logging")
 	flag.BoolVar(&graphjson.Enabled, "j", false, "Enable GraphJSON logging")
-	flag.BoolVar(&reload, "r", false, "Reload spigo.json first")
+	flag.BoolVar(&reload, "r", false, "Reload spigo.json to setup architecture")
 	flag.Parse()
 	if graphml.Enabled && graphjson.Enabled {
 		fmt.Println("Pick either GraphML or JSON output, not both\n")
 		return
 	}
-	fmt.Println("Spigo population", Population, "pirates")
-	noodles := make(map[string]chan gotocol.Message, Population)
+	fmt.Println("Spigo population", population, "pirates")
+	noodles := make(map[string]chan gotocol.Message, population)
 	if reload {
 		file, err := os.Open("spigo.json")
 		if err != nil {
@@ -69,12 +71,18 @@ func main() {
 		}
 		return
 	} else {
-		for i := 1; i <= Population; i++ {
+		for i := 1; i <= population; i++ {
 			name := fmt.Sprintf("Pirate%d", i)
 			noodles[name] = make(chan gotocol.Message)
 			go pirate.Listen(noodles[name])
 		}
 	}
-	fsm.ChatSleep = time.Duration(duration) * time.Second
-	fsm.Touch(noodles)
+	// start up the selected architecture
+	switch arch {
+	case "fsm":
+		fsm.ChatSleep = time.Duration(duration) * time.Second
+		fsm.Touch(noodles)
+	default:
+		log.Fatal("Architecture " + arch + " isn't recognized")
+	}
 }

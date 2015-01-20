@@ -20,7 +20,7 @@ func Touch(noodles map[string]chan gotocol.Message) {
 	names := make([]string, len(noodles)) // indexable name list
 	listener := make(chan gotocol.Message)
 	graphml.Setup()
-	graphjson.Setup()
+	graphjson.Setup("fsm")
 	fmt.Println("Hello")
 	i := 0
 	for name, noodle := range noodles {

@@ -13,12 +13,12 @@ var edgeid int // unique id for each edge
 var comma bool
 
 // write the header to the file
-func Setup() {
+func Setup(arch string) {
 	if Enabled == false {
 		return
 	}
 	file, _ = os.Create("spigo.json")
-	Write(fmt.Sprintf("{\n  \"version\":\"spigo-0.2\",\n  \"args\":\"%v\",\n  \"graph\":[", os.Args))
+	Write(fmt.Sprintf("{\n  \"arch\":\"%v\",\n  \"version\":\"spigo-0.3\",\n  \"args\":\"%v\",\n  \"graph\":[", arch, os.Args))
 	comma = false
 }
 
