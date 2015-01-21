@@ -51,10 +51,12 @@ func Edge(from, to string) string {
 	return fmt.Sprintf("%v    { \"edge\":\"e%v\", \"source\":\"%v\", \"target\":\"%v\" }", commaNewline(), edgeid, from, to)
 }
 
-func WriteEdge(from, to string) {
+func WriteEdge(fromTo string) {
 	if Enabled == false {
 		return
 	}
+	var from, to string
+	fmt.Sscanf(fromTo, "%s%s", &from, &to) // two space delimited names
 	Write(Edge(from, to))
 }
 

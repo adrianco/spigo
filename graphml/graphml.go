@@ -40,10 +40,12 @@ func Write(str string) {
 	file.WriteString(str)
 }
 
-func WriteEdge(from, to string) {
+func WriteEdge(fromTo string) {
 	if Enabled == false {
 		return
 	}
+	var from, to string
+	fmt.Sscanf(fromTo, "%s%s", &from, &to) // two space delimited names
 	file.WriteString(Edge(from, to))
 }
 

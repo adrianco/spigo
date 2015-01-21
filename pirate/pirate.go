@@ -6,8 +6,6 @@ package pirate
 import (
 	"fmt"
 	"github.com/adrianco/spigo/gotocol"
-	"github.com/adrianco/spigo/graphml"
-	"github.com/adrianco/spigo/graphjson"
 	"time"
 )
 
@@ -18,35 +16,36 @@ func Listen(listener chan gotocol.Message) {
 	buddies := make(map[string]chan gotocol.Message, dunbar)
 	// remember who sent GoldCoin and how much, to buy favors
 	benefactors := make(map[string]int, dunbar)
-	var booty int                // current GoldCoin balance
-	var fsm chan gotocol.Message // remember how to talk back to creator
-	var name string              // remember my name
+	var booty int                   // current GoldCoin balance
+	var fsm chan gotocol.Message    // remember how to talk back to creator
+	var name string                 // remember my name
+	var logger chan gotocol.Message // if set, send updates
 	var msg gotocol.Message
 	chatTicker := time.NewTicker(time.Hour)
 	chatTicker.Stop()
 	for {
 		select {
 		case msg = <-listener:
-			//fmt.Println(msg)
+			// fmt.Printf("pirate: %v\n", msg)
 			switch msg.Imposition {
 			case gotocol.Hello:
-				switch {
-				case name == "":
-					// if I don't have a name yet
-					fsm = msg.ResponseChan // remember who named me
-					name = msg.Intention
+				if name == "" {
+					// if I don't have a name yet remember what I've been named
+					fsm = msg.ResponseChan // remember how to talk to my namer
+					name = msg.Intention   // message body is my name
 				}
+			case gotocol.Inform:
+				// remember where to send updates
+				logger = msg.ResponseChan
 			case gotocol.NameDrop:
 				// don't remember too many buddies and don't talk to myself
-				if len(buddies) < dunbar && msg.Intention != name {
+				buddy := msg.Intention // message body is buddy name
+				if len(buddies) < dunbar && buddy != name {
 					// remember how to talk to this buddy
-					buddies[msg.Intention] = msg.ResponseChan
-					edge := graphml.Edge(msg.Intention, name)
-					if edge == "" {
-						edge = graphjson.Edge(msg.Intention, name)
-					}
-					if edge != "" {
-						gotocol.Message{gotocol.Inform, listener, edge}.GoSend(fsm)
+					buddies[buddy] = msg.ResponseChan // message channel is buddy's listener
+					if logger != nil {
+						// if it's setup, tell the logger I have a new buddy to talk to
+						gotocol.Message{gotocol.Inform, listener, name + " " + buddy}.GoSend(logger)
 					}
 				}
 			case gotocol.Chat:
@@ -66,7 +65,7 @@ func Listen(listener chan gotocol.Message) {
 					}
 				}
 			case gotocol.Goodbye:
-				fsm <- gotocol.Message{gotocol.Goodbye, nil, name}
+				gotocol.Message{gotocol.Goodbye, nil, name}.GoSend(fsm)
 				return
 			}
 		case _ = <-chatTicker.C:

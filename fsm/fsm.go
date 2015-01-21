@@ -1,13 +1,16 @@
 // Flexible State Manager (a.k.a. Flying Spaghetti Monster)
 // Controls a large collection of pirates, touching with its noodles
+// Logs the architecture (nodes and links) as it evolves
 
 package fsm
 
 import (
 	"fmt"
+	"log"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
 	"github.com/adrianco/spigo/graphml"
+	"github.com/adrianco/spigo/logger"
 	"math/rand"
 	"time"
 )
@@ -17,20 +20,24 @@ var ChatSleep time.Duration
 // FSM touches all the noodles that connect to the pirates etc.
 func Touch(noodles map[string]chan gotocol.Message) {
 	var msg gotocol.Message
-	names := make([]string, len(noodles)) // indexable name list
-	listener := make(chan gotocol.Message)
-	graphml.Setup()
-	graphjson.Setup("fsm")
-	fmt.Println("Hello")
+	names := make([]string, len(noodles))  // indexable name list
+	listener := make(chan gotocol.Message) // listener for fsm
+	log.Println("fsm: Hello")
 	i := 0
+	msgcount := 0
 	for name, noodle := range noodles {
 		graphml.WriteNode(name)
 		graphjson.WriteNode(name, "pirate")
 		noodle <- gotocol.Message{gotocol.Hello, listener, name}
 		names[i] = name
 		i = i + 1
+		if logger.Logchan != nil {
+			// tell the pirate to report new edges to the logger
+			noodle <- gotocol.Message{gotocol.Inform, logger.Logchan, ""}
+			msgcount = 1
+		}
 	}
-	fmt.Println("Talk amongst yourselves for", ChatSleep)
+	log.Println("fsm: Talk amongst yourselves for", ChatSleep)
 	rand.Seed(int64(len(noodles)))
 	start := time.Now()
 	for i := 0; i < len(names); i++ {
@@ -49,28 +56,27 @@ func Touch(noodles map[string]chan gotocol.Message) {
 		delay := fmt.Sprintf("%ds", 1+rand.Intn(59))
 		noodle <- gotocol.Message{gotocol.Chat, nil, delay}
 	}
+	msgcount += 4
 	d := time.Since(start)
-	fmt.Println("Delivered", 4*len(names), "messages in", d)
+	log.Println("fsm: Delivered", msgcount*len(names), "messages in", d)
 	if ChatSleep >= time.Millisecond {
 		time.Sleep(ChatSleep)
 	}
-	fmt.Println("Go away")
+	log.Println("fsm: Go away")
 	for _, noodle := range noodles {
-		noodle <- gotocol.Message{gotocol.Goodbye, nil, "beer volcano"}
+		gotocol.Message{gotocol.Goodbye, nil, "beer volcano"}.GoSend(noodle)
 	}
 	for len(noodles) > 0 {
 		msg = <-listener
-		// fmt.Println(msg)
+		// fmt.Printf("fsm: %v\n", msg)
 		switch msg.Imposition {
-		case gotocol.Inform:
-			graphml.Write(msg.Intention)
-			graphjson.Write(msg.Intention)
 		case gotocol.Goodbye:
 			delete(noodles, msg.Intention)
-			fmt.Printf("Pirate population: %v    \r", len(noodles))
+			fmt.Printf("fsm: Pirate population: %v    \r", len(noodles))
 		}
 	}
-	fmt.Println("\nExit")
-	graphml.Close()
-	graphjson.Close()
+	if logger.Logchan != nil {
+		close(logger.Logchan)
+	}
+	log.Println("fsm: Exit")
 }
