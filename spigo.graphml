@@ -7,78 +7,85 @@
     <key id="d1" for="edge" yfiles.type="edgegraphics"/>
     <key id="d2" for="node" attr.name="Text" attr.type="string"/>
     <graph id="spigo" edgedefault="directed">
+      <node id="Pirate2"><data key="service">pirate</data></node>
+      <node id="Pirate4"><data key="service">pirate</data></node>
+      <node id="Pirate6"><data key="service">pirate</data></node>
       <node id="Pirate7"><data key="service">pirate</data></node>
+      <node id="Pirate8"><data key="service">pirate</data></node>
       <node id="Pirate9"><data key="service">pirate</data></node>
       <node id="Pirate10"><data key="service">pirate</data></node>
       <node id="Pirate1"><data key="service">pirate</data></node>
-      <node id="Pirate2"><data key="service">pirate</data></node>
       <node id="Pirate3"><data key="service">pirate</data></node>
       <node id="Pirate5"><data key="service">pirate</data></node>
-      <node id="Pirate6"><data key="service">pirate</data></node>
-      <node id="Pirate4"><data key="service">pirate</data></node>
-      <node id="Pirate8"><data key="service">pirate</data></node>
-      <edge id="e1" source="Pirate7" target="Pirate2"/>
-      <edge id="e2" source="Pirate7" target="Pirate4"/>
-      <edge id="e3" source="Pirate9" target="Pirate4"/>
-      <edge id="e4" source="Pirate9" target="Pirate2"/>
-      <edge id="e5" source="Pirate10" target="Pirate3"/>
-      <edge id="e6" source="Pirate10" target="Pirate4"/>
-      <edge id="e7" source="Pirate1" target="Pirate5"/>
-      <edge id="e8" source="Pirate1" target="Pirate9"/>
-      <edge id="e9" source="Pirate2" target="Pirate10"/>
-      <edge id="e10" source="Pirate2" target="Pirate1"/>
-      <edge id="e11" source="Pirate3" target="Pirate5"/>
-      <edge id="e12" source="Pirate3" target="Pirate7"/>
-      <edge id="e13" source="Pirate5" target="Pirate6"/>
-      <edge id="e14" source="Pirate5" target="Pirate1"/>
-      <edge id="e15" source="Pirate6" target="Pirate2"/>
-      <edge id="e16" source="Pirate6" target="Pirate2"/>
-      <edge id="e17" source="Pirate4" target="Pirate8"/>
-      <edge id="e18" source="Pirate4" target="Pirate5"/>
-      <edge id="e19" source="Pirate8" target="Pirate3"/>
-      <edge id="e20" source="Pirate8" target="Pirate4"/>
-      <edge id="e21" source="Pirate4" target="Pirate3"/>
-      <edge id="e22" source="Pirate5" target="Pirate9"/>
-      <edge id="e23" source="Pirate4" target="Pirate3"/>
-      <edge id="e24" source="Pirate5" target="Pirate9"/>
-      <edge id="e25" source="Pirate4" target="Pirate3"/>
-      <edge id="e26" source="Pirate5" target="Pirate9"/>
-      <edge id="e27" source="Pirate2" target="Pirate4"/>
-      <edge id="e28" source="Pirate4" target="Pirate3"/>
-      <edge id="e29" source="Pirate5" target="Pirate9"/>
-      <edge id="e30" source="Pirate4" target="Pirate3"/>
-      <edge id="e31" source="Pirate5" target="Pirate9"/>
-      <edge id="e32" source="Pirate5" target="Pirate7"/>
-      <edge id="e33" source="Pirate4" target="Pirate3"/>
-      <edge id="e34" source="Pirate5" target="Pirate9"/>
-      <edge id="e35" source="Pirate10" target="Pirate4"/>
-      <edge id="e36" source="Pirate1" target="Pirate4"/>
-      <edge id="e37" source="Pirate3" target="Pirate4"/>
-      <edge id="e38" source="Pirate4" target="Pirate3"/>
-      <edge id="e39" source="Pirate4" target="Pirate9"/>
-      <edge id="e40" source="Pirate5" target="Pirate9"/>
-      <edge id="e41" source="Pirate2" target="Pirate4"/>
-      <edge id="e42" source="Pirate4" target="Pirate3"/>
-      <edge id="e43" source="Pirate4" target="Pirate9"/>
-      <edge id="e44" source="Pirate5" target="Pirate9"/>
-      <edge id="e45" source="Pirate9" target="Pirate1"/>
-      <edge id="e46" source="Pirate9" target="Pirate5"/>
-      <edge id="e47" source="Pirate6" target="Pirate1"/>
-      <edge id="e48" source="Pirate7" target="Pirate1"/>
-      <edge id="e49" source="Pirate3" target="Pirate5"/>
-      <edge id="e50" source="Pirate8" target="Pirate5"/>
-      <edge id="e51" source="Pirate4" target="Pirate2"/>
-      <edge id="e52" source="Pirate4" target="Pirate9"/>
-      <edge id="e53" source="Pirate1" target="Pirate2"/>
-      <edge id="e54" source="Pirate3" target="Pirate4"/>
-      <edge id="e55" source="Pirate5" target="Pirate9"/>
-      <edge id="e56" source="Pirate2" target="Pirate1"/>
-      <edge id="e57" source="Pirate4" target="Pirate3"/>
-      <edge id="e58" source="Pirate4" target="Pirate9"/>
-      <edge id="e59" source="Pirate4" target="Pirate7"/>
-      <edge id="e60" source="Pirate5" target="Pirate9"/>
-      <edge id="e61" source="Pirate5" target="Pirate7"/>
-      <edge id="e62" source="Pirate2" target="Pirate9"/>
-      <edge id="e63" source="Pirate2" target="Pirate1"/>
-    </graph>
-  </graphml>
+      <edge id="e1" source="Pirate2" target="Pirate8"/>
+      <edge id="e2" source="Pirate2" target="Pirate3"/>
+      <edge id="e3" source="Pirate4" target="Pirate3"/>
+      <edge id="e4" source="Pirate4" target="Pirate8"/>
+      <edge id="e5" source="Pirate6" target="Pirate9"/>
+      <edge id="e6" source="Pirate6" target="Pirate3"/>
+      <edge id="e7" source="Pirate7" target="Pirate10"/>
+      <edge id="e8" source="Pirate7" target="Pirate4"/>
+      <edge id="e9" source="Pirate8" target="Pirate6"/>
+      <edge id="e10" source="Pirate8" target="Pirate7"/>
+      <edge id="e11" source="Pirate9" target="Pirate10"/>
+      <edge id="e12" source="Pirate9" target="Pirate2"/>
+      <edge id="e13" source="Pirate10" target="Pirate1"/>
+      <edge id="e14" source="Pirate10" target="Pirate7"/>
+      <edge id="e15" source="Pirate1" target="Pirate8"/>
+      <edge id="e16" source="Pirate1" target="Pirate8"/>
+      <edge id="e17" source="Pirate3" target="Pirate5"/>
+      <edge id="e18" source="Pirate3" target="Pirate10"/>
+      <edge id="e19" source="Pirate5" target="Pirate9"/>
+      <edge id="e20" source="Pirate5" target="Pirate3"/>
+      <edge id="e21" source="Pirate9" target="Pirate3"/>
+      <edge id="e22" source="Pirate4" target="Pirate10"/>
+      <edge id="e23" source="Pirate9" target="Pirate3"/>
+      <edge id="e24" source="Pirate4" target="Pirate10"/>
+      <edge id="e25" source="Pirate9" target="Pirate3"/>
+      <edge id="e26" source="Pirate10" target="Pirate4"/>
+      <edge id="e27" source="Pirate10" target="Pirate3"/>
+      <edge id="e28" source="Pirate8" target="Pirate3"/>
+      <edge id="e29" source="Pirate9" target="Pirate3"/>
+      <edge id="e30" source="Pirate4" target="Pirate10"/>
+      <edge id="e31" source="Pirate9" target="Pirate3"/>
+      <edge id="e32" source="Pirate4" target="Pirate10"/>
+      <edge id="e33" source="Pirate2" target="Pirate10"/>
+      <edge id="e34" source="Pirate3" target="Pirate10"/>
+      <edge id="e35" source="Pirate9" target="Pirate3"/>
+      <edge id="e36" source="Pirate4" target="Pirate10"/>
+      <edge id="e37" source="Pirate7" target="Pirate6"/>
+      <edge id="e38" source="Pirate3" target="Pirate6"/>
+      <edge id="e39" source="Pirate3" target="Pirate9"/>
+      <edge id="e40" source="Pirate9" target="Pirate3"/>
+      <edge id="e41" source="Pirate10" target="Pirate4"/>
+      <edge id="e42" source="Pirate6" target="Pirate4"/>
+      <edge id="e43" source="Pirate3" target="Pirate10"/>
+      <edge id="e44" source="Pirate8" target="Pirate10"/>
+      <edge id="e45" source="Pirate9" target="Pirate3"/>
+      <edge id="e46" source="Pirate4" target="Pirate3"/>
+      <edge id="e47" source="Pirate4" target="Pirate10"/>
+      <edge id="e48" source="Pirate6" target="Pirate10"/>
+      <edge id="e49" source="Pirate6" target="Pirate10"/>
+      <edge id="e50" source="Pirate1" target="Pirate3"/>
+      <edge id="e51" source="Pirate7" target="Pirate3"/>
+      <edge id="e52" source="Pirate4" target="Pirate3"/>
+      <edge id="e53" source="Pirate5" target="Pirate10"/>
+      <edge id="e54" source="Pirate9" target="Pirate10"/>
+      <edge id="e55" source="Pirate10" target="Pirate8"/>
+      <edge id="e56" source="Pirate10" target="Pirate3"/>
+      <edge id="e57" source="Pirate3" target="Pirate8"/>
+      <edge id="e58" source="Pirate3" target="Pirate10"/>
+      <edge id="e59" source="Pirate3" target="Pirate8"/>
+      <edge id="e60" source="Pirate9" target="Pirate3"/>
+      <edge id="e61" source="Pirate4" target="Pirate3"/>
+      <edge id="e62" source="Pirate4" target="Pirate10"/>
+      <edge id="e63" source="Pirate6" target="Pirate10"/>
+      <edge id="e64" source="Pirate9" target="Pirate3"/>
+      <edge id="e65" source="Pirate4" target="Pirate3"/>
+      <edge id="e66" source="Pirate4" target="Pirate10"/>
+      <edge id="e67" source="Pirate10" target="Pirate3"/>
+      <edge id="e68" source="Pirate6" target="Pirate10"/>
+      <edge id="e69" source="Pirate3" target="Pirate10"/>
+      <edge id="e70" source="Pirate3" target="Pirate10"/>
+      <edge id="e71" source="Pirate3" target="Pirate8"/>
+      <edge id="e72" source="Pirate2" target="Pirate10"/>

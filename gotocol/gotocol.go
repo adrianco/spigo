@@ -15,7 +15,7 @@ const (
 	Chat
 	// GoldCoin FromChan HowMuch
 	GoldCoin
-	// Inform FromChan text message
+	// Inform loggerChan text message
 	Inform
 	// GetRequest FromChan body // simulate http inbound request
 	GetRequest

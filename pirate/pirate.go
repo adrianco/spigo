@@ -1,5 +1,5 @@
-// participant in the network, listens to the FSM and to other pirates
-// independently decides whether to make or break promises and behave
+// participant in the social network, listens to the FSM and to other pirates
+// chats at a variable rate by giving gold and namedropping friends
 
 package pirate
 
@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/adrianco/spigo/gotocol"
 	"log"
+	"math/rand"
 	"time"
 )
 
@@ -24,6 +25,7 @@ func Listen(listener chan gotocol.Message) {
 	var name string                 // remember my name
 	var logger chan gotocol.Message // if set, send updates
 	var msg gotocol.Message
+	var chatrate time.Duration
 	chatTicker := time.NewTicker(time.Hour)
 	chatTicker.Stop()
 	for {
@@ -59,10 +61,14 @@ func Listen(listener chan gotocol.Message) {
 				// setup the ticker to run at the specified rate
 				d, e := time.ParseDuration(msg.Intention)
 				if e == nil && d >= time.Millisecond && d <= time.Hour {
-					chatTicker = time.NewTicker(d)
+					chatrate = d
+					chatTicker = time.NewTicker(chatrate)
+					// assume we got paid before we started chatting
+					rand.Seed(int64(booty))
 				}
 			case gotocol.GoldCoin:
-				coin, e := fmt.Scanf("%d", msg.Intention)
+				var coin int
+				_, e := fmt.Sscanf(msg.Intention, "%d", &coin)
 				if e == nil && coin > 0 {
 					booty += coin
 					for name, ch := range buddies {
@@ -72,22 +78,42 @@ func Listen(listener chan gotocol.Message) {
 					}
 				}
 			case gotocol.Goodbye:
+				log.Printf("%v: Going away with %v gold coins, chatting every %v\n", name, booty, chatrate)
 				gotocol.Message{gotocol.Goodbye, nil, name}.GoSend(fsm)
 				return
 			}
 		case _ = <-chatTicker.C:
-			// use Namedrop to tell the last buddy about the first
-			var firstBuddyName string
-			var firstBuddyChan, lastBuddyChan chan gotocol.Message
-			if len(buddies) >= 2 {
-				for name, ch := range buddies {
-					if firstBuddyName == "" {
-						firstBuddyName = name
-						firstBuddyChan = ch
-					} else {
-						lastBuddyChan = ch
+			if rand.Intn(100) < 50 { // 50% of the time
+				// use Namedrop to tell the last buddy about the first
+				var firstBuddyName string
+				var firstBuddyChan, lastBuddyChan chan gotocol.Message
+				if len(buddies) >= 2 {
+					for name, ch := range buddies {
+						if firstBuddyName == "" {
+							firstBuddyName = name
+							firstBuddyChan = ch
+						} else {
+							lastBuddyChan = ch
+						}
+						gotocol.Message{gotocol.NameDrop, firstBuddyChan, firstBuddyName}.GoSend(lastBuddyChan)
 					}
-					gotocol.Message{gotocol.NameDrop, firstBuddyChan, firstBuddyName}.GoSend(lastBuddyChan)
+				}
+			} else {
+				// send a buddy some money
+				if booty > 0 {
+					donation := rand.Intn(booty)
+					luckyNumber := rand.Intn(len(buddies))
+					if donation > 0 {
+						for _, ch := range buddies {
+							if luckyNumber == 0 {
+								gotocol.Message{gotocol.GoldCoin, listener, fmt.Sprintf("%d", donation)}.GoSend(ch)
+								booty -= donation
+								break
+							} else {
+								luckyNumber -= 1
+							}
+						}
+					}
 				}
 			}
 		}
