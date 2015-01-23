@@ -1,7 +1,6 @@
 // Flexible State Manager (a.k.a. Flying Spaghetti Monster)
 // Controls a large collection of pirates, touching with its noodles
 // Logs the architecture (nodes and links) as it evolves
-
 package fsm
 
 import (
@@ -16,7 +15,7 @@ import (
 var ChatSleep time.Duration
 var Msglog bool
 
-// FSM touches all the noodles that connect to the pirates etc.
+// Touch all the noodles that connect to the pirates to manage them
 func Touch(noodles map[string]chan gotocol.Message) {
 	var msg gotocol.Message
 	names := make([]string, len(noodles))  // indexable name list
@@ -26,7 +25,7 @@ func Touch(noodles map[string]chan gotocol.Message) {
 	msgcount := 0
 	for name, noodle := range noodles {
 		names[i] = name
-		i = i + 1
+		i++
 		// tell the pirate it's name and how to talk back to it's fsm
 		// this must be the first message the pirate sees
 		noodle <- gotocol.Message{gotocol.Hello, listener, name}
@@ -39,9 +38,9 @@ func Touch(noodles map[string]chan gotocol.Message) {
 	log.Println("fsm: Talk amongst yourselves for", ChatSleep)
 	rand.Seed(int64(len(noodles)))
 	start := time.Now()
-	for i := 0; i < len(names); i++ {
+	for _, name := range names {
 		// for each pirate tell them about two other random pirates
-		noodle := noodles[names[i]] // lookup the channel
+		noodle := noodles[name] // lookup the channel
 		// pick a first random pirate to tell this one about
 		talkto := names[rand.Intn(len(names))]
 		noodle <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto}

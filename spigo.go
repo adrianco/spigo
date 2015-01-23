@@ -1,6 +1,5 @@
 // simulate protocol interactions in go - spigo
 // terminology is a mix of promise theory and flying spaghetti monster lore
-
 package main
 
 import (

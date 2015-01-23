@@ -1,5 +1,4 @@
 // functions for writing graphml
-
 package graphml
 
 import (

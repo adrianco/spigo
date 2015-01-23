@@ -1,6 +1,5 @@
 // participant in the social network, listens to the FSM and to other pirates
 // chats at a variable rate by giving gold and namedropping friends
-
 package pirate
 
 import (
@@ -24,13 +23,12 @@ func Listen(listener chan gotocol.Message) {
 	var fsm chan gotocol.Message    // remember how to talk back to creator
 	var name string                 // remember my name
 	var logger chan gotocol.Message // if set, send updates
-	var msg gotocol.Message
 	var chatrate time.Duration
 	chatTicker := time.NewTicker(time.Hour)
 	chatTicker.Stop()
 	for {
 		select {
-		case msg = <-listener:
+		case msg := <-listener:
 			if Msglog {
 				log.Printf("%v: %v\n", name, msg)
 			}
@@ -82,7 +80,7 @@ func Listen(listener chan gotocol.Message) {
 				gotocol.Message{gotocol.Goodbye, nil, name}.GoSend(fsm)
 				return
 			}
-		case _ = <-chatTicker.C:
+		case <-chatTicker.C:
 			if rand.Intn(100) < 50 { // 50% of the time
 				// use Namedrop to tell the last buddy about the first
 				var firstBuddyName string

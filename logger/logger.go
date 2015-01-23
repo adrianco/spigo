@@ -1,5 +1,4 @@
 // Logs the architecture (nodes and links) as it evolves
-
 package logger
 
 import (

@@ -1,5 +1,4 @@
 // Tests for gotocol
-
 package gotocol
 
 import (
@@ -25,7 +24,7 @@ func pirateListen(listener chan Message) {
 		case Chat:
 			// send  a Request if we have a buddy
 			if buddy != nil {
-				Message{GetRequest, listener, "Yo ho ho"}.GoSend(buddy)
+				go Send(buddy, Message{GetRequest, listener, "Yo ho ho"})
 			}
 		case GoldCoin:
 		case Inform:

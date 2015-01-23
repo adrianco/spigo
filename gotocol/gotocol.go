@@ -56,7 +56,12 @@ type Message struct {
 	Intention    string       // payload
 }
 
-// asynchronous message send, parks it on a new goroutine until it completes
+// Send synchronous message
+func Send(to chan<- Message, msg Message) {
+	to <- msg
+}
+
+// GoSend asynchronous message send, parks it on a new goroutine until it completes
 func (msg Message) GoSend(to chan Message) {
 	go func(c chan Message, m Message) { c <- m }(to, msg)
 }
