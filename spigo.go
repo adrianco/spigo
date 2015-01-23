@@ -20,7 +20,7 @@ import (
 
 var arch string
 var population, duration int
-var reload, logging bool
+var reload, msglog bool
 
 func main() {
 	flag.StringVar(&arch, "a", "fsm", "Architecture to create")
@@ -28,13 +28,18 @@ func main() {
 	flag.IntVar(&duration, "d", 10, "   Simulation duration in seconds")
 	flag.BoolVar(&graphml.Enabled, "g", false, "Enable GraphML logging of nodes and edges")
 	flag.BoolVar(&graphjson.Enabled, "j", false, "Enable GraphJSON logging of nodes and edges")
-	flag.BoolVar(&logging, "m", false, "Enable console logging of every message")
+	flag.BoolVar(&msglog, "m", false, "Enable console logging of every message")
 	flag.BoolVar(&reload, "r", false, "Reload spigo.json to setup architecture")
 	flag.Parse()
 	if graphml.Enabled && graphjson.Enabled {
 		log.Fatal("Pick either GraphML or JSON output, not both")
 	}
-	log.Println("Spigo population", population, "pirates")
+	if msglog { // pass on the verbose logging option to all message listeners
+		logger.Msglog = true
+		fsm.Msglog = true
+		pirate.Msglog = true
+	}
+	log.Println("Spigo: population", population, "pirates")
 	noodles := make(map[string]chan gotocol.Message, population)
 	if reload {
 		file, err := os.Open("spigo.json")
@@ -81,18 +86,18 @@ func main() {
 	// start up the selected architecture
 	switch arch {
 	case "fsm":
-                if graphjson.Enabled || graphml.Enabled {
+		if graphjson.Enabled || graphml.Enabled {
 			go logger.GoLog("fsm") // start logger first
 		}
 		fsm.ChatSleep = time.Duration(duration) * time.Second
 		fsm.Touch(noodles)
-		log.Println("fsm complete")
+		log.Println("spigo: fsm complete")
 		if graphjson.Enabled || graphml.Enabled {
 			for {
 				log.Printf("Logger has %v messages left to flush\n", len(logger.Logchan))
 				time.Sleep(time.Second)
 				if len(logger.Logchan) == 0 {
-					break;
+					break
 				}
 			}
 		}

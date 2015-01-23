@@ -6,8 +6,11 @@ package pirate
 import (
 	"fmt"
 	"github.com/adrianco/spigo/gotocol"
+	"log"
 	"time"
 )
+
+var Msglog bool
 
 // all configuration and state is sent via messages
 func Listen(listener chan gotocol.Message) {
@@ -26,7 +29,9 @@ func Listen(listener chan gotocol.Message) {
 	for {
 		select {
 		case msg = <-listener:
-			// fmt.Printf("pirate: %v\n", msg)
+			if Msglog {
+				log.Printf("%v: %v\n", name, msg)
+			}
 			switch msg.Imposition {
 			case gotocol.Hello:
 				if name == "" {
@@ -37,6 +42,8 @@ func Listen(listener chan gotocol.Message) {
 			case gotocol.Inform:
 				// remember where to send updates
 				logger = msg.ResponseChan
+				// logger channel is buffered so no need to use GoSend
+				logger <- gotocol.Message{gotocol.Hello, nil, name + " " + "pirate"}
 			case gotocol.NameDrop:
 				// don't remember too many buddies and don't talk to myself
 				buddy := msg.Intention // message body is buddy name
@@ -45,7 +52,7 @@ func Listen(listener chan gotocol.Message) {
 					buddies[buddy] = msg.ResponseChan // message channel is buddy's listener
 					if logger != nil {
 						// if it's setup, tell the logger I have a new buddy to talk to
-						gotocol.Message{gotocol.Inform, listener, name + " " + buddy}.GoSend(logger)
+						logger <- gotocol.Message{gotocol.Inform, listener, name + " " + buddy}
 					}
 				}
 			case gotocol.Chat:

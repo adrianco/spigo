@@ -35,10 +35,12 @@ func commaNewline() string {
 	}
 }
 
-func WriteNode(name, service string) {
+func WriteNode(serviceName string) {
 	if Enabled == false {
 		return
 	}
+	var name, service string
+	fmt.Sscanf(serviceName, "%s%s", &name, &service) // space delimited
 	// node id should be unique and service indicates service type
 	Write(fmt.Sprintf("%v    { \"node\":\"%v\", \"service\":\"%v\" }", commaNewline(), name, service))
 }

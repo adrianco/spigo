@@ -6,16 +6,15 @@ package fsm
 
 import (
 	"fmt"
-	"log"
 	"github.com/adrianco/spigo/gotocol"
-	"github.com/adrianco/spigo/graphjson"
-	"github.com/adrianco/spigo/graphml"
 	"github.com/adrianco/spigo/logger"
+	"log"
 	"math/rand"
 	"time"
 )
 
 var ChatSleep time.Duration
+var Msglog bool
 
 // FSM touches all the noodles that connect to the pirates etc.
 func Touch(noodles map[string]chan gotocol.Message) {
@@ -26,13 +25,13 @@ func Touch(noodles map[string]chan gotocol.Message) {
 	i := 0
 	msgcount := 0
 	for name, noodle := range noodles {
-		graphml.WriteNode(name)
-		graphjson.WriteNode(name, "pirate")
-		noodle <- gotocol.Message{gotocol.Hello, listener, name}
 		names[i] = name
 		i = i + 1
+		// tell the pirate it's name and how to talk back to it's fsm
+		// this must be the first message the pirate sees
+		noodle <- gotocol.Message{gotocol.Hello, listener, name}
 		if logger.Logchan != nil {
-			// tell the pirate to report new edges to the logger
+			// tell the pirate to report itself and new edges to the logger
 			noodle <- gotocol.Message{gotocol.Inform, logger.Logchan, ""}
 			msgcount = 1
 		}
@@ -52,8 +51,8 @@ func Touch(noodles map[string]chan gotocol.Message) {
 		// send this pirate a random amount of GoldCoin up to 100
 		gold := fmt.Sprintf("%d", rand.Intn(100))
 		noodle <- gotocol.Message{gotocol.GoldCoin, listener, gold}
-		// tell this pirate to start chatting with friends every 1-60s
-		delay := fmt.Sprintf("%ds", 1+rand.Intn(59))
+		// tell this pirate to start chatting with friends every 1 to 10 secs
+		delay := fmt.Sprintf("%ds", 1+rand.Intn(9))
 		noodle <- gotocol.Message{gotocol.Chat, nil, delay}
 	}
 	msgcount += 4
@@ -68,11 +67,15 @@ func Touch(noodles map[string]chan gotocol.Message) {
 	}
 	for len(noodles) > 0 {
 		msg = <-listener
-		// fmt.Printf("fsm: %v\n", msg)
+		if Msglog {
+			log.Printf("fsm: %v\n", msg)
+		}
 		switch msg.Imposition {
 		case gotocol.Goodbye:
 			delete(noodles, msg.Intention)
-			fmt.Printf("fsm: Pirate population: %v    \r", len(noodles))
+			if Msglog {
+				log.Printf("fsm: Pirate population: %v    \n", len(noodles))
+			}
 		}
 	}
 	if logger.Logchan != nil {
