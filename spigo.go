@@ -1,5 +1,5 @@
-// simulate protocol interactions in go - spigo
-// terminology is a mix of promise theory and flying spaghetti monster lore
+// Package main for spigo - simulate protocol interactions in go.
+// Terminology is a mix of promise theory and flying spaghetti monster lore
 package main
 
 import (
@@ -21,6 +21,7 @@ var arch string
 var population, duration int
 var reload, msglog bool
 
+// main handles command line flags and starts up an architecture
 func main() {
 	flag.StringVar(&arch, "a", "fsm", "Architecture to create")
 	flag.IntVar(&population, "p", 100, "  Pirate population")
@@ -79,14 +80,14 @@ func main() {
 		for i := 1; i <= population; i++ {
 			name := fmt.Sprintf("Pirate%d", i)
 			noodles[name] = make(chan gotocol.Message)
-			go pirate.Listen(noodles[name])
+			go pirate.Start(noodles[name])
 		}
 	}
 	// start up the selected architecture
 	switch arch {
 	case "fsm":
 		if graphjson.Enabled || graphml.Enabled {
-			go logger.GoLog("fsm") // start logger first
+			go logger.Start("fsm") // start logger first
 		}
 		fsm.ChatSleep = time.Duration(duration) * time.Second
 		fsm.Touch(noodles)

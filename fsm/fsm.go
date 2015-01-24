@@ -1,6 +1,6 @@
-// Flexible State Manager (a.k.a. Flying Spaghetti Monster)
-// Controls a large collection of pirates, touching with its noodles
-// Logs the architecture (nodes and links) as it evolves
+// Package fsm implements a Flexible State Manager (a.k.a. Flying Spaghetti Monster)
+// It creates and controls a large social network of pirates via channels (the noodly touch)
+// and logs the architecture (nodes and links) as it evolves
 package fsm
 
 import (
@@ -12,7 +12,10 @@ import (
 	"time"
 )
 
+// ChatSleep duration is set via command line flag to tell fsm how long to let pirates chat
 var ChatSleep time.Duration
+
+// Msglog toggles whether to log every message received to the consolei
 var Msglog bool
 
 // Touch all the noodles that connect to the pirates to manage them
@@ -22,7 +25,8 @@ func Touch(noodles map[string]chan gotocol.Message) {
 	listener := make(chan gotocol.Message) // listener for fsm
 	log.Println("fsm: Hello")
 	i := 0
-	msgcount := 0
+	msgcount := 1
+	start := time.Now()
 	for name, noodle := range noodles {
 		names[i] = name
 		i++
@@ -32,12 +36,11 @@ func Touch(noodles map[string]chan gotocol.Message) {
 		if logger.Logchan != nil {
 			// tell the pirate to report itself and new edges to the logger
 			noodle <- gotocol.Message{gotocol.Inform, logger.Logchan, ""}
-			msgcount = 1
+			msgcount = 2
 		}
 	}
 	log.Println("fsm: Talk amongst yourselves for", ChatSleep)
 	rand.Seed(int64(len(noodles)))
-	start := time.Now()
 	for _, name := range names {
 		// for each pirate tell them about two other random pirates
 		noodle := noodles[name] // lookup the channel

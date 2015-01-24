@@ -1,4 +1,4 @@
-// Logs the architecture (nodes and links) as it evolves
+// Package logger Logs the architecture (nodes and links) as it evolves
 package logger
 
 import (
@@ -8,11 +8,14 @@ import (
 	"log"
 )
 
+// Logchan is a buffered channel for sending logging messages to, or nil if logging is off
 var Logchan chan gotocol.Message
+
+// Msglog if true, log each message received on the console
 var Msglog bool
 
-// separate goroutine to gather logging data from pirates
-func GoLog(arch string) {
+// Start the logger, to listen for logging data from pirates
+func Start(arch string) {
 	var msg gotocol.Message
 	var ok bool
 	Logchan = make(chan gotocol.Message, 100) // buffered channel
@@ -21,9 +24,9 @@ func GoLog(arch string) {
 	graphjson.Setup(arch)
 	for {
 		msg, ok = <-Logchan
-                if !ok {
-                        break // channel was closed
-                }
+		if !ok {
+			break // channel was closed
+		}
 		if Msglog {
 			log.Printf("logger(backlog %v): %v\n", len(Logchan), msg)
 		}

@@ -1,11 +1,11 @@
-// protocol support for go providing a way to send a variety of commands
-// and types over a single channel by encoding the type
-
+// Package gotocol provides protocol support to send a variety of commands
+// listener channels and types over a single channel type
 package gotocol
 
+// Impositions is the promise theory term for requests made to a service
 type Impositions int
 
-// message types to be imposed on the receiver
+// Constant definitions for message types to be imposed on the receiver
 const (
 	// Hello ChanToParent NameForPirate // initial noodly touch
 	Hello Impositions = iota
@@ -26,7 +26,7 @@ const (
 	numOfImpositions
 )
 
-// make imposition types printable
+// String handler to make imposition types printable
 func (imps Impositions) String() string {
 	switch imps {
 	case Hello:
@@ -49,14 +49,14 @@ func (imps Impositions) String() string {
 	return "Unknown"
 }
 
-// structure used for all messages, includes a channel of itself
+// Message structure used for all messages, includes a channel of itself
 type Message struct {
 	Imposition   Impositions  // request type
 	ResponseChan chan Message // place to send response messages
 	Intention    string       // payload
 }
 
-// Send synchronous message
+// Send a synchronous message
 func Send(to chan<- Message, msg Message) {
 	to <- msg
 }

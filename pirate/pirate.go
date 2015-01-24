@@ -1,4 +1,4 @@
-// participant in the social network, listens to the FSM and to other pirates
+// Package pirate is a participant in the social network, listens to the FSM and to other pirates
 // chats at a variable rate by giving gold and namedropping friends
 package pirate
 
@@ -10,10 +10,11 @@ import (
 	"time"
 )
 
+// Msglog turns on console logging of messages
 var Msglog bool
 
-// all configuration and state is sent via messages
-func Listen(listener chan gotocol.Message) {
+// Start the pirate, all configuration and state is sent via messages
+func Start(listener chan gotocol.Message) {
 	dunbar := 10 // starting point for how many buddies to remember
 	// remember the channel to talk to named buddies
 	buddies := make(map[string]chan gotocol.Message, dunbar)
@@ -76,7 +77,9 @@ func Listen(listener chan gotocol.Message) {
 					}
 				}
 			case gotocol.Goodbye:
-				log.Printf("%v: Going away with %v gold coins, chatting every %v\n", name, booty, chatrate)
+				if Msglog {
+					log.Printf("%v: Going away with %v gold coins, chatting every %v\n", name, booty, chatrate)
+				}
 				gotocol.Message{gotocol.Goodbye, nil, name}.GoSend(fsm)
 				return
 			}
