@@ -3,7 +3,7 @@ spigo
 
 Simulate Protocol Interactions in Go using nanoservice actors
 
-Suitable for fairly large scale simulations, runs well up to 100,000 independent nanoservice actors (pirates). Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 600,000 messages and wait to shut them all down again takes about 2 seconds. The resulting graph can be visualized via GraphML or rendered be saving to Graph JSON and viewing in a web browser via D3.
+Suitable for fairly large scale simulations, runs well up to 100,000 independent nanoservice actors (pirates). Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,000 messages and wait to shut them all down again takes about 4 seconds. The resulting graph can be visualized via GraphML or rendered by saving to Graph JSON and viewing in a web browser via D3.
 
 ```
 $ spigo -h
@@ -57,7 +57,7 @@ Jason Brown's list of interesting Gossip papers might contain something interest
 
 Benchmark result
 ================
-At one point during setup FSM delivers five messages to each Pirate in turn, and the message delivery rate for that loop is measured at about 270,000 msg/sec. There are three additional messages per pirate in each run, plus whatever chatting occurs.
+At one point during setup FSM delivers five messages to each Pirate in turn, and the message delivery rate for that loop is measured at about 270,000 msg/sec. There are two additional shutdown messages per pirate in each run, plus whatever chatting occurs.
 ```
 $ time spigo -d=0 -p=100000
 2015/01/23 17:31:04 Spigo: population 100000 pirates
