@@ -1,4 +1,4 @@
-// Package fsm implements a Flexible State Manager (a.k.a. Flying Spaghetti Monster)
+// Package fsm implements a Flexible State Manager (Flying Spaghetti Monster)
 // It creates and controls a large social network of pirates via channels (the noodly touch)
 // and logs the architecture (nodes and links) as it evolves
 package fsm
