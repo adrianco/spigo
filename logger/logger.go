@@ -14,12 +14,20 @@ var Logchan chan gotocol.Message
 // Msglog if true, log each message received on the console
 var Msglog bool
 
+// GraphmlEnabled is set from flags to turn on GraphML logging
+var GraphmlEnabled bool
+
+// GraphmlEnabled is set from flags to turn on Graph JSON logging
+var GraphjsonEnabled bool
+
 // Start the logger, to listen for logging data from pirates
 func Start(arch string) {
 	var msg gotocol.Message
 	var ok bool
 	Logchan = make(chan gotocol.Message, 100) // buffered channel
 	log.Println("logger: starting")
+	graphml.Enabled = GraphmlEnabled
+	graphjson.Enabled = GraphjsonEnabled
 	graphml.Setup()
 	graphjson.Setup(arch)
 	for {
