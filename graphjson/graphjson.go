@@ -1,10 +1,11 @@
-// Package graphjson writes a json representation of the spigo network of nodes and edges
-// to spigo.json
+// Package graphjson saves and loads architectures to and from graph json files
 package graphjson
 
-// Imports
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 )
 
@@ -13,15 +14,51 @@ var Enabled bool
 
 var file *os.File
 var edgeid int // unique id for each edge
+
+// Node_0_3 defines a node for version 0.3, used to make json nodes for writing
+type Node_0_3 struct {
+	Node    string `json:"node"`
+	Service string `json:"service"`
+}
+
+// Edge_0_3 defines an edge for version 0.3, used to make json edges for writing
+type Edge_0_3 struct {
+	Edge   string `json:"edge"`
+	Source string `json:"source"`
+	Target string `json:"target"`
+}
+
+// Element_0_3 defines a way to read either a node or an edge in the graph for version 0.3
+type Element_0_3 struct {
+	Node    string `json:"node,omitempty"`
+	Service string `json:"service,omitempty"`
+	Edge    string `json:"edge,omitempty"`
+	Source  string `json:"source,omitempty"`
+	Target  string `json:"target,omitempty"`
+}
+
+// Graph_0_3 defines version 0.3 of the graphjson file format with an array of elements
+type Graph_0_3 struct {
+	Arch    string        `json:"arch"`
+	Version string        `json:"version"`
+	Args    string        `json:"args"`
+	Graph   []Element_0_3 `json:"graph"`
+}
+
+// Graph_Version extracts the version so it can be checked
+type Graph_Version struct {
+	Version string `json:"version"`
+}
+
 var comma bool
 
-// Setup by opening the spigo.json file and writing a header, noting the generated architecture
+// Setup by opening the "arch".json file and writing a header, noting the generated architecture
 // type, version and args for the run
 func Setup(arch string) {
 	if Enabled == false {
 		return
 	}
-	file, _ = os.Create("spigo.json")
+	file, _ = os.Create(arch + ".json")
 	Write(fmt.Sprintf("{\n  \"arch\":\"%v\",\n  \"version\":\"spigo-0.3\",\n  \"args\":\"%v\",\n  \"graph\":[", arch, os.Args))
 	comma = false
 }
@@ -46,18 +83,11 @@ func WriteNode(nameService string) {
 	if Enabled == false {
 		return
 	}
-	var name, service string
-	fmt.Sscanf(nameService, "%s%s", &name, &service) // space delimited
+	var node Node_0_3
+	fmt.Sscanf(nameService, "%s%s", &node.Node, &node.Service) // space delimited
 	// node id should be unique and service indicates service type
-	Write(fmt.Sprintf("%v    { \"node\":\"%v\", \"service\":\"%v\" }", commaNewline(), name, service))
-}
-
-func edge(from, to string) string {
-	if Enabled == false {
-		return ""
-	}
-	edgeid = edgeid + 1
-	return fmt.Sprintf("%v    { \"edge\":\"e%v\", \"source\":\"%v\", \"target\":\"%v\" }", commaNewline(), edgeid, from, to)
+	node_json, _ := json.Marshal(node)
+	Write(fmt.Sprintf("%v    %v", commaNewline(), string(node_json)))
 }
 
 // WriteEdge writes the edge to a file given a space separated from and to node name
@@ -65,9 +95,12 @@ func WriteEdge(fromTo string) {
 	if Enabled == false {
 		return
 	}
-	var from, to string
-	fmt.Sscanf(fromTo, "%s%s", &from, &to) // two space delimited names
-	Write(edge(from, to))
+	edgeid = edgeid + 1
+	var edge Edge_0_3
+	fmt.Sscanf(fromTo, "%s%s", &edge.Source, &edge.Target) // two space delimited names
+	edge.Edge = fmt.Sprintf("e%v", edgeid)
+	edge_json, _ := json.Marshal(edge)
+	Write(fmt.Sprintf("%v    %v", commaNewline(), string(edge_json)))
 }
 
 // Close completes the json file format and closes the file
@@ -77,4 +110,25 @@ func Close() {
 	}
 	Write("\n  ]\n}\n")
 	file.Close()
+}
+
+// ReadArch parses graphjson
+func ReadArch(arch string) *Graph_0_3 {
+	data, err := ioutil.ReadFile(arch + ".json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	v := new(Graph_Version)
+	json.Unmarshal(data, v)
+	log.Println("Version: ", v.Version)
+	switch v.Version {
+	case "spigo-0.3":
+		g := new(Graph_0_3)
+		json.Unmarshal(data, g)
+		log.Println("Architecture: ", g.Arch)
+		return g
+	default:
+		log.Println("Uknown version ", v.Version)
+		return nil
+	}
 }
