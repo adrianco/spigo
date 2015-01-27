@@ -1,7 +1,7 @@
 {
   "arch":"fsm",
   "version":"spigo-0.3",
-  "args":"[./spigo -j -d 0 -p 5]",
+  "args":"[./spigo -p 5 -d 2 -j]",
   "graph":[
     {"node":"Pirate1","service":"pirate"},
     {"node":"Pirate2","service":"pirate"},
