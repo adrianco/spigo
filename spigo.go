@@ -32,10 +32,14 @@ func main() {
 	switch arch {
 	case "fsm":
 		if logger.GraphjsonEnabled || logger.GraphmlEnabled {
-			go logger.Start("fsm") // start logger first
+			go logger.Start(arch) // start logger first
 		}
 		fsm.ChatSleep = time.Duration(duration) * time.Second
-		fsm.Start(reload) // tell fsm to reload or create new pirates
+		if reload {
+			fsm.Reload(arch)
+		} else {
+			fsm.Start()
+		}
 		log.Println("spigo: fsm complete")
 		if logger.Logchan != nil {
 			for {
