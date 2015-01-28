@@ -18,14 +18,42 @@ Usage of spigo:
   -p=100:   Pirate population
   -r=false: Reload spigo.json to setup architecture
   
-$ spigo
-2015/01/23 17:22:02 Spigo: population 100 pirates
-2015/01/23 17:22:02 fsm: Hello
-2015/01/23 17:22:02 fsm: Talk amongst yourselves for 10s
-2015/01/23 17:22:02 fsm: Delivered 500 messages in 2.677788ms
-2015/01/23 17:22:12 fsm: Go away
-2015/01/23 17:22:12 fsm: Exit
-2015/01/23 17:22:12 spigo: fsm complete
+$ ./spigo -d 2 -j -p 10
+2015/01/28 00:23:01 fsm: population 10 pirates
+2015/01/28 00:23:01 logger: starting
+2015/01/28 00:23:01 fsm: Talk amongst yourselves for 2s
+2015/01/28 00:23:01 fsm: Delivered 60 messages in 968.09us
+2015/01/28 00:23:03 fsm: Shutdown
+2015/01/28 00:23:03 fsm: Exit
+2015/01/28 00:23:03 spigo: fsm complete
+2015/01/28 00:23:03 Logger has 0 messages left to flush
+2015/01/28 00:23:03 logger: closing
+
+$ ./spigo -d 2 -r
+2015/01/28 00:23:20 fsm reloading from fsm.json
+2015/01/28 00:23:20 Version:  spigo-0.3
+2015/01/28 00:23:20 Architecture:  fsm
+2015/01/28 00:23:20 Link Pirate7 > Pirate8
+2015/01/28 00:23:20 Link Pirate7 > Pirate5
+2015/01/28 00:23:20 Link Pirate1 > Pirate8
+2015/01/28 00:23:20 Link Pirate1 > Pirate3
+2015/01/28 00:23:20 Link Pirate2 > Pirate7
+2015/01/28 00:23:20 Link Pirate4 > Pirate10
+2015/01/28 00:23:20 Link Pirate4 > Pirate5
+2015/01/28 00:23:20 Link Pirate8 > Pirate4
+2015/01/28 00:23:20 Link Pirate8 > Pirate10
+2015/01/28 00:23:20 Link Pirate9 > Pirate1
+2015/01/28 00:23:20 Link Pirate9 > Pirate8
+2015/01/28 00:23:20 Link Pirate10 > Pirate3
+2015/01/28 00:23:20 Link Pirate10 > Pirate7
+2015/01/28 00:23:20 Link Pirate3 > Pirate8
+2015/01/28 00:23:20 Link Pirate5 > Pirate7
+2015/01/28 00:23:20 Link Pirate5 > Pirate2
+2015/01/28 00:23:20 Link Pirate6 > Pirate10
+2015/01/28 00:23:20 Link Pirate6 > Pirate5
+2015/01/28 00:23:22 fsm: Shutdown
+2015/01/28 00:23:22 fsm: Exit
+2015/01/28 00:23:22 spigo: fsm complete
 ```
 100 Pirates after seeding with two random friends GraphML rendered using yFiles
 -----------
@@ -43,17 +71,21 @@ Using terminology from Promise Theory each message also has an Imposition code t
 
 There is a central controller, the FSM (Flexible Simulation Manager or [Flying Spaghetti Monster](http://www.venganza.org/about/)), and a number of independent Pirates who listen to the FSM and to each other.
 
-Current implementation creates the FSM and a default of 100 pirates, which can be set on the command line with -p=100. The FSM sends a Hello PirateNN message to name them which includes the FSM listener channel for back-chat. FSM then iterates through the pirates, telling each of them about two of their buddies at random to seed the network, giving them a random initial amount of gold coins, and telling them to start chatting to each other at a random pirate specific interval of between 0.1 and 10 seconds. FSM sleeps for a number of seconds then sends a Goodbye message to each. The Pirate responds to messages until it's told to chat, then it also wakes up at intervals and either tells one of its buddies about another one, or passes some of it's gold to a buddy until it gets a Goodbye message, then it quits and confirms by sending a Goodbye message back to the FSM. FSM counts down until all the Pirates have quit then exits.
+Current implementation creates the FSM and a default of 100 pirates, which can be set on the command line with -p=100. The FSM sends a Hello PirateNN message to name them which includes the FSM listener channel for back-chat. FSM then iterates through the pirates, telling each of them about two of their buddies at random to seed the network, giving them a random initial amount of gold coins, and telling them to start chatting to each other at a random pirate specific interval of between 0.1 and 10 seconds.
+
+FSM can also reload from a json file that describes the nodes and edges in the network.
+
+Either way FSM sleeps for a number of seconds then sends a Goodbye message to each. The Pirate responds to messages until it's told to chat, then it also wakes up at intervals and either tells one of its buddies about another one, or passes some of it's gold to a buddy until it gets a Goodbye message, then it quits and confirms by sending a Goodbye message back to the FSM. FSM counts down until all the Pirates have quit then exits.
 
 The effect is that a complex randomized social graph is generated, with density increasing over time. This can then be used to experiment with trading, gossip and viral algorithms, and individual Pirates can make and break promises to introduce failure modes. Each pirate gets a random number of gold coins to start with, and can send them to buddies, and remember which benefactor buddy gave them how much.
 
-Simulation is logged to a file spigo.graphml with the -g command line option or spigo.json with the -j option. Inform messages are sent to a logger service from the pirates, which serializes writes to the file. The graphml format includes XML gibberish header followed by definitions of the node names and the edges that have formed between them. Graphml can be visualized using the yEd tool from yFiles. The graphJSON format is simpler and Javascript code to render it using D3 is in spigo.html.
+Simulation is logged to a file spigo.graphml with the -g command line option or <arch>.json with the -j option. Inform messages are sent to a logger service from the pirates, which serializes writes to the file. The graphml format includes XML gibberish header followed by definitions of the node names and the edges that have formed between them. Graphml can be visualized using the yEd tool from yFiles. The graphJSON format is simpler and Javascript code to render it using D3 is in spigo.html.
 
-There is a test program that exercises the Namedrop message, this is where the FSM or a Pirate passes on the name of a third party, and each Pirate builds up a buddy list of names and the listener channel for each buddy.
+There is a test program that exercises the Namedrop message, this is where the FSM or a Pirate passes on the name of a third party, and each Pirate builds up a buddy list of names and the listener channel for each buddy. Another test program tests the type conversions for JSON readings and writing.
 
-The basic framework is in place, but the interesting behaviors, automonous running, and user input to control or stop the simulation haven't been added yet. [See the pdf for some Occam code](SkypeSim07.pdf) and results for the original version of this circa 2007.
+The basic framework is in place, but more interesting behaviors, automonous running, and user input to control or stop the simulation haven't been added yet. [See the pdf for some Occam code](SkypeSim07.pdf) and results for the original version of this circa 2007.
 
-Next steps include reading in a saved graphJSON to form the initial graph and connecting the output directly to the browser over a websocket so the dynamic behavior of the graph can be seen in real time. A lot of refactoring has cleaned up the code and structure in preparation for more interesting features.
+Next steps include connecting the output directly to the browser over a websocket so the dynamic behavior of the graph can be seen in real time. A lot of refactoring has cleaned up the code and structure in preparation for more interesting features.
 
 Jason Brown's list of interesting Gossip papers might contain something interesting to try and implement... http://softwarecarnival.blogspot.com/2014/07/gossip-papers.html
 
