@@ -37,19 +37,51 @@ func Start(reload bool) {
 	if reload {
 		log.Println("fsm reloading from fsm.json")
 		g := graphjson.ReadArch("fsm")
+		Population = 0 // just to make sure
+		// count how many nodes there are
 		for _, element := range g.Graph {
 			if element.Node != "" {
-				fmt.Println("Create " + element.Service + " " + element.Node)
-			}
-			if element.Edge != "" {
-				fmt.Println("Link " + element.Source + " > " + element.Target)
+				Population++
 			}
 		}
-		return
+		// create the map of channels
+		noodles = make(map[string]chan gotocol.Message, Population)
+		// Start all the Pirates
+		for _, element := range g.Graph {
+			if element.Node != "" && element.Service == "pirate" {
+				name := element.Node
+				noodles[name] = make(chan gotocol.Message)
+				// start the pirate and tell it it's name
+				go pirate.Start(noodles[name])
+				noodles[name] <- gotocol.Message{gotocol.Hello, listener, name}
+                        	if logger.Logchan != nil {
+                               		// tell the pirate to report itself and new edges to the logger
+                                	noodles[name] <- gotocol.Message{gotocol.Inform, logger.Logchan, ""}
+                        	}
+			}
+		}
+		// Make all the connections
+		for _, element := range g.Graph {
+			if element.Edge != "" && element.Source != "" && element.Target != "" {
+				noodles[element.Source] <- gotocol.Message{gotocol.NameDrop, noodles[element.Target], element.Target}
+				log.Println("Link " + element.Source + " > " + element.Target)
+			}
+		}
+		// send money and start the pirates chatting
+		for _, noodle := range noodles {
+			// same as below for now, but will save and read back from file later
+			// anonymously send this pirate a random amount of GoldCoin up to 100
+			gold := fmt.Sprintf("%d", rand.Intn(100))
+			noodle <- gotocol.Message{gotocol.GoldCoin, nil, gold}
+			// tell this pirate to start chatting with friends every 0.1 to 10 secs
+			delay := fmt.Sprintf("%dms", 100+rand.Intn(9900))
+			noodle <- gotocol.Message{gotocol.Chat, nil, delay}
+		}
 	} else {
 		if Population < 2 {
 			log.Fatal("fsm: can't create less than 2 pirates")
 		}
+		// create map of channels and a name index to select randoml nodes from
 		noodles = make(map[string]chan gotocol.Message, Population)
 		names = make([]string, Population) // indexable name list
 		log.Println("fsm: population", Population, "pirates")

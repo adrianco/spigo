@@ -1,7 +1,7 @@
 {
   "arch":"fsm",
   "version":"spigo-0.3",
-  "args":"[./spigo -p 5 -d 2 -j]",
+  "args":"[./spigo -r -j]",
   "graph":[
     {"node":"Pirate1","service":"pirate"},
     {"node":"Pirate2","service":"pirate"},
@@ -16,6 +16,12 @@
     {"edge":"e6","source":"Pirate3","target":"Pirate4"},
     {"edge":"e7","source":"Pirate4","target":"Pirate3"},
     {"edge":"e8","source":"Pirate4","target":"Pirate1"},
-    {"edge":"e9","source":"Pirate5","target":"Pirate1"}
+    {"edge":"e9","source":"Pirate5","target":"Pirate1"},
+    {"edge":"e10","source":"Pirate4","target":"Pirate3"},
+    {"edge":"e11","source":"Pirate4","target":"Pirate3"},
+    {"edge":"e12","source":"Pirate4","target":"Pirate3"},
+    {"edge":"e13","source":"Pirate4","target":"Pirate3"},
+    {"edge":"e14","source":"Pirate4","target":"Pirate3"},
+    {"edge":"e15","source":"Pirate4","target":"Pirate3"}
   ]
 }
