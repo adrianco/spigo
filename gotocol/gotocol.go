@@ -9,7 +9,7 @@ type Impositions int
 const (
 	// Hello ChanToParent NameForPirate // initial noodly touch
 	Hello Impositions = iota
-	// Namedrop ChanToBuddy NameOfBuddy // here's someone to talk to
+	// NameDrop ChanToBuddy NameOfBuddy // here's someone to talk to
 	NameDrop
 	// Chat - ThisOften // chat to buddies time interval
 	Chat

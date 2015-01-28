@@ -111,7 +111,7 @@ func Start(listener chan gotocol.Message) {
 								booty -= donation
 								break
 							} else {
-								luckyNumber -= 1
+								luckyNumber--
 							}
 						}
 					}

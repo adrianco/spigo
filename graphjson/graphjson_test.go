@@ -9,7 +9,7 @@ import (
 
 // reader parses graphjson
 func TestGraph(t *testing.T) {
-	test_json_string := `
+	testJSONstring := `
                 {
                 "arch":"fsm",
                 "version":"spigo-0.3",
@@ -32,16 +32,16 @@ func TestGraph(t *testing.T) {
                         ]
                 }`
 
-	v := new(Graph_Version)
-	json.Unmarshal([]byte(test_json_string), v)
+	v := new(GraphVersion)
+	json.Unmarshal([]byte(testJSONstring), v)
 	fmt.Println("Version: ", v.Version)
 	switch v.Version {
 	case "spigo-0.3":
-		g := new(Graph_0_3)
-		json.Unmarshal([]byte(test_json_string), g)
+		g := new(GraphV0r3)
+		json.Unmarshal([]byte(testJSONstring), g)
 		fmt.Println("Architecture: ", g.Arch)
-		new_json, _ := json.Marshal(g)
-		fmt.Println(string(new_json))
+		newJSON, _ := json.Marshal(g)
+		fmt.Println(string(newJSON))
 	default:
 		fmt.Println("Uknown version ", v.Version)
 	}
