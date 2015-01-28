@@ -72,13 +72,12 @@ func Write(str string) {
 func commaNewline() string {
 	if comma {
 		return ",\n"
-	} else {
-		comma = true
-		return "\n"
 	}
+	comma = true
+	return "\n"
 }
 
-// WriteNote writes the node to a file given a space separated name and service type
+// WriteNode writes the node to a file given a space separated name and service type
 func WriteNode(nameService string) {
 	if Enabled == false {
 		return
