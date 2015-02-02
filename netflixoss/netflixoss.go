@@ -110,8 +110,8 @@ func Start() {
 		// tell the pirate to report itself and new edges to the logger
 		noodles[elbname] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
 	}
-	// tell this elb to start chatting with microservices every 0.1 to 10 secs
-	delay := fmt.Sprintf("%dms", 100+rand.Intn(9900))
+	// tell this elb to start chatting with microservices every 0.1 secs
+	delay := fmt.Sprintf("%dms", 100)
 	log.Println("netflixoss: elb activity rate ", delay)
 	noodles[elbname] <- gotocol.Message{gotocol.Chat, nil, delay}
 	// connect elb to it's intitial dependencies
