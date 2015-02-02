@@ -1,6 +1,7 @@
-// Package karyon simulates a generic business logic microservice
-// Takes incoming traffic and calls into dependent microservices in a single zone
-package karyon
+// Package staash simulates a data access layer microservice
+// Takes incoming traffic and calls into cassandra  microservices in a single zone
+// Code is a pure clone of Karyon to start with
+package staash
 
 import (
 	"fmt"
@@ -13,7 +14,7 @@ import (
 // Msglog turns on console logging of messages
 var Msglog bool
 
-// Start karyon, all configuration and state is sent via messages
+// Start staash, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
 	dunbar := 30 // starting point for how many nodes to remember
 	// remember the channel to talk to microservices
@@ -43,7 +44,7 @@ func Start(listener chan gotocol.Message) {
 				// remember where to send updates
 				edda = msg.ResponseChan
 				// logger channel is buffered so no need to use GoSend
-				edda <- gotocol.Message{gotocol.Hello, nil, name + " " + "karyon"}
+				edda <- gotocol.Message{gotocol.Hello, nil, name + " " + "staash"}
 			case gotocol.NameDrop:
 				// don't remember too many buddies and don't talk to myself
 				microservice := msg.Intention // message body is buddy name
@@ -76,7 +77,7 @@ func Start(listener chan gotocol.Message) {
 				// set a key value pair
 				var key, value string
 				fmt.Sscanf(msg.Intention, "%s%s", &key, &value)
-				// log.Printf("karyon: %v:%v", key, value)
+				// log.Printf("staash: %v:%v", key, value)
 				store[key] = value
 			case gotocol.Goodbye:
 				if Msglog {
