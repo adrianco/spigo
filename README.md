@@ -3,23 +3,34 @@ spigo
 
 Simulate Protocol Interactions in Go using nanoservice actors
 
-Suitable for fairly large scale simulations, runs well up to 100,000 independent nanoservice actors. Two architectures are implemented. One creates a peer to peer social network (fsm and pirates). The other is being developed and is based on NetflixOSS microservices in a more tree structured model.
+Suitable for fairly large scale simulations, runs well up to 100,000 independent nanoservice actors. Two architectures are implemented. One creates a peer to peer social network (fsm and pirates). The other is based on NetflixOSS microservices in a more tree structured model.
 
 Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,000 messages and wait to shut them all down again takes about 4 seconds. The resulting graph can be visualized via GraphML or rendered by saving to Graph JSON and viewing in a web browser via D3.
 
 [![GoDoc](https://godoc.org/github.com/adrianco/spigo?status.svg)](https://godoc.org/github.com/adrianco/spigo)
 
 ```
-$ spigo -h
-Usage of spigo:
-  -a="fsm": Architecture to create
+$ ./spigo -h
+Usage of ./spigo:
+  -a="fsm": Architecture to create or read, fsm or netflixoss
+  -cpuprofile="": Write cpu profile to file
   -d=10:    Simulation duration in seconds
   -g=false: Enable GraphML logging of nodes and edges
   -j=false: Enable GraphJSON logging of nodes and edges
   -m=false: Enable console logging of every message
-  -p=100:   Pirate population
-  -r=false: Reload spigo.json to setup architecture
+  -p=100:   Pirate population for fsm or scale factor % for netflixoss
+  -r=false: Reload <arch>.json to setup architecture
   
+$ ./spigo -a netflixoss -d 1 -j -p 200
+2015/02/02 15:52:56 netflixoss: scaling to 200%
+2015/02/02 15:52:56 logger: starting
+2015/02/02 15:52:56 netflixoss: elb activity rate  100ms
+2015/02/02 15:52:57 netflixoss: Shutdown
+2015/02/02 15:52:57 netflixoss: Exit
+2015/02/02 15:52:57 spigo: netflixoss complete
+2015/02/02 15:52:57 Logger has 0 messages left to flush
+2015/02/02 15:52:57 logger: closing
+
 $ ./spigo -d 2 -j -p 10
 2015/01/28 00:23:01 fsm: population 10 pirates
 2015/01/28 00:23:01 logger: starting
@@ -57,6 +68,11 @@ $ ./spigo -d 2 -r
 2015/01/28 00:23:22 fsm: Exit
 2015/01/28 00:23:22 spigo: fsm complete
 ```
+
+NetflixOSS Architecture scaled to 200%, with one ELB in the center, three zones with six Zuul and 18 Karyon each zone, rendered using json. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/netflixoss.html)
+-----------
+![200% scale NetflixOSS](netflixoss-200-json.png)
+
 100 Pirates after seeding with two random friends GraphML rendered using yFiles
 -----------
 ![100 pirates seeded with two random friends each](spigo100x2.png)
