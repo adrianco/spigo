@@ -1,6 +1,6 @@
-// Package zuul simulates an API proxy
-// Takes incoming traffic and routes it over microservices in a single zone
-package zuul
+// Package karyon simulates a generic business logic microservice
+// Takes incoming traffic and calls into dependent microservices in a single zone
+package karyon
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 // Msglog turns on console logging of messages
 var Msglog bool
 
-// Start zuul, all configuration and state is sent via messages
+// Start karyon, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
 	dunbar := 30 // starting point for how many nodes to remember
 	// remember the channel to talk to microservices
@@ -66,20 +66,7 @@ func Start(listener chan gotocol.Message) {
 				// route the request on to microservices
 				requestor = msg.ResponseChan
 				// Intention body indicates which service to route to or which key to get
-				// need to lookup service by type rather than randomly call one day
-				if len(microservices) > 0 {
-					if len(microindex) != len(microservices) {
-						// rebuild index
-						i := 0
-						for _, ch := range microservices {
-							microindex[i] = ch
-							i++
-						}
-					}
-					m := rand.Intn(len(microservices))
-					// start a request to a random member of this zuul proxy
-					gotocol.Message{gotocol.GetRequest, listener, name}.GoSend(microindex[m])
-				}
+				// need to lookup service by type rather than name
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up
 				if requestor != nil {
@@ -100,8 +87,16 @@ func Start(listener chan gotocol.Message) {
 			}
 		case <-chatTicker.C:
 			if len(microservices) > 0 {
+				if len(microservices) != len(microindex) {
+					// rebuild index
+					i := 0
+					for _, ch := range microservices {
+						microindex[i] = ch
+						i++
+					}
+				}
 				m := rand.Intn(len(microservices))
-				// start a request to a random member of this zuul proxy
+				// start a request to a random member of this elb
 				gotocol.Message{gotocol.GetRequest, listener, name}.GoSend(microindex[m])
 			}
 			//default:

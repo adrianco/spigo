@@ -5,10 +5,11 @@ package netflixoss
 
 import (
 	"fmt"
-	"github.com/adrianco/spigo/edda"
-	"github.com/adrianco/spigo/elb" // elastic load balancer
+	"github.com/adrianco/spigo/edda" // configuration logger
+	"github.com/adrianco/spigo/elb"  // elastic load balancer
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
+	"github.com/adrianco/spigo/karyon" // business logic microservice
 	"github.com/adrianco/spigo/pirate" // random end user network
 	"github.com/adrianco/spigo/zuul"   // API proxy microservice router
 	"log"
@@ -35,6 +36,7 @@ func Reload(arch string) {
 	pirate.Msglog = Msglog // pass on console message log flag if set
 	elb.Msglog = Msglog
 	zuul.Msglog = Msglog
+	karyon.Msglog = Msglog
 	listener = make(chan gotocol.Message) // listener for netflixoss
 	log.Println("netflixoss reloading from " + arch + ".json")
 	g := graphjson.ReadArch(arch)
@@ -60,6 +62,8 @@ func Reload(arch string) {
 				go elb.Start(noodles[name])
 			case "zuul":
 				go zuul.Start(noodles[name])
+			case "karyon":
+				go karyon.Start(noodles[name])
 			default:
 				log.Fatal("netflixoss: unknown service: " + element.Service)
 			}
@@ -77,46 +81,47 @@ func Reload(arch string) {
 			log.Println("Link " + element.Source + " > " + element.Target)
 		}
 	}
-	// send money and start the pirates chatting
-	for _, noodle := range noodles {
-		// tell each elb to start calling microservices every 0.1 to 10 secs
-		delay := fmt.Sprintf("%dms", 100+rand.Intn(9900))
-		noodle <- gotocol.Message{gotocol.Chat, nil, delay}
+	// start the simulation chatting
+	for name, noodle := range noodles {
+		if name == "elb" {
+			// tell each elb to start calling microservices every 0.1 to 1 secs
+			delay := fmt.Sprintf("%dms", 100+rand.Intn(900))
+			noodle <- gotocol.Message{gotocol.Chat, nil, delay}
+		}
 	}
 	shutdown()
 }
 
-// Start netflixoss and create new pirates
+// Start netflixoss and create new microservices
 func Start() {
 	pirate.Msglog = Msglog // pass on console message log flag if set
 	elb.Msglog = Msglog
 	zuul.Msglog = Msglog
+	karyon.Msglog = Msglog
 	listener = make(chan gotocol.Message) // listener for netflixoss
 	if Population < 1 {
 		log.Fatal("netflixoss: can't create less than 1 microservice")
+	} else {
+		log.Printf("netflixoss: scaling to %v%%", Population)
 	}
 	// create map of channels and a name index to select randoml nodes from
 	noodles = make(map[string]chan gotocol.Message, Population)
-	names = make([]string, Population) // indexable name list
-	log.Println("netflixoss: population", Population, "microservices")
+	names = make([]string, Population) // approximate size for indexable name list
 	// we need an elb as a front end to spread request traffic around each endpoint
 	// elb for api endpoint
 	elbname := "elb-api"
 	noodles[elbname] = make(chan gotocol.Message)
 	go elb.Start(noodles[elbname])
-	// setup the elb's name, logging and chat rate
+	// setup the elb's name and logging, set chat rate after everything else is started
 	noodles[elbname] <- gotocol.Message{gotocol.Hello, listener, elbname}
 	if edda.Logchan != nil {
 		// tell the pirate to report itself and new edges to the logger
 		noodles[elbname] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
 	}
-	// tell this elb to start chatting with microservices every 0.1 secs
-	delay := fmt.Sprintf("%dms", 100)
-	log.Println("netflixoss: elb activity rate ", delay)
-	noodles[elbname] <- gotocol.Message{gotocol.Chat, nil, delay}
-	// connect elb to it's intitial dependencies
+	// connect elb to it's initial dependencies
 	// start zuul api proxies next
-	for i := 0; i < 9; i++ {
+	zuulcount := 9 * Population / 100
+	for i := 0; i < zuulcount; i++ {
 		zuulname := fmt.Sprintf("zuul%v", i)
 		noodles[zuulname] = make(chan gotocol.Message)
 		go zuul.Start(noodles[zuulname])
@@ -127,8 +132,32 @@ func Start() {
 			// tell the microservice to report itself and new edges to the logger
 			noodles[zuulname] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
 		}
+		// hook all the zuul proxies up to the elb
 		noodles[elbname] <- gotocol.Message{gotocol.NameDrop, noodles[zuulname], zuulname}
 	}
+	// start karyon business logic
+	karyoncount := 27 * Population / 100
+	for i := 0; i < karyoncount; i++ {
+		karyonname := fmt.Sprintf("karyon%v", i)
+		noodles[karyonname] = make(chan gotocol.Message)
+		go karyon.Start(noodles[karyonname])
+		noodles[karyonname] <- gotocol.Message{gotocol.Hello, listener, karyonname}
+		zone := fmt.Sprintf("zone zone%v", i%3)
+		noodles[karyonname] <- gotocol.Message{gotocol.Put, nil, zone}
+		if edda.Logchan != nil {
+			// tell the microservice to report itself and new edges to the logger
+			noodles[karyonname] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
+		}
+		// connect all the karyon in a zone to all zuul in that zone only
+		for j := i % 3; j < zuulcount; j = j + 3 {
+			zuul := fmt.Sprintf("zuul%v", j)
+			noodles[zuul] <- gotocol.Message{gotocol.NameDrop, noodles[karyonname], karyonname}
+		}
+	}
+	// tell this elb to start chatting with microservices every 0.1 secs
+	delay := fmt.Sprintf("%dms", 100)
+	log.Println("netflixoss: elb activity rate ", delay)
+	noodles[elbname] <- gotocol.Message{gotocol.Chat, nil, delay}
 	shutdown()
 }
 

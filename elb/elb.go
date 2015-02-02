@@ -52,11 +52,6 @@ func Start(listener chan gotocol.Message) {
 						// if it's setup, tell the logger I have a new buddy to talk to
 						edda <- gotocol.Message{gotocol.Inform, listener, name + " " + microservice}
 					}
-					i := 0
-					for _, ch := range microservices {
-						microindex[i] = ch
-						i++
-					}
 				}
 			case gotocol.Chat:
 				// setup the ticker to run at the specified rate
@@ -77,11 +72,19 @@ func Start(listener chan gotocol.Message) {
 			}
 		case <-chatTicker.C:
 			if len(microservices) > 0 {
+				// build index if needed
+				if len(microindex) != len(microservices) {
+					i := 0
+					for _, ch := range microservices {
+						microindex[i] = ch
+						i++
+					}
+				}
 				m := rand.Intn(len(microservices))
 				// start a request to a random member of this elb
 				gotocol.Message{gotocol.GetRequest, listener, name}.GoSend(microindex[m])
 			}
-		default:
+			//default:
 		}
 	}
 }

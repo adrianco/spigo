@@ -8,6 +8,8 @@ import (
 	"github.com/adrianco/spigo/fsm"
 	"github.com/adrianco/spigo/netflixoss"
 	"log"
+	"os"
+	"runtime/pprof"
 	"time"
 )
 
@@ -18,13 +20,22 @@ var duration int
 // main handles command line flags and starts up an architecture
 func main() {
 	flag.StringVar(&arch, "a", "fsm", "Architecture to create or read, fsm or netflixoss")
-	flag.IntVar(&fsm.Population, "p", 100, "  Pirate population")
+	flag.IntVar(&fsm.Population, "p", 100, "  Pirate population for fsm or scale factor % for netflixoss")
 	flag.IntVar(&duration, "d", 10, "   Simulation duration in seconds")
 	flag.BoolVar(&edda.GraphmlEnabled, "g", false, "Enable GraphML logging of nodes and edges")
 	flag.BoolVar(&edda.GraphjsonEnabled, "j", false, "Enable GraphJSON logging of nodes and edges")
 	flag.BoolVar(&msglog, "m", false, "Enable console logging of every message")
 	flag.BoolVar(&reload, "r", false, "Reload <arch>.json to setup architecture")
+	var cpuprofile = flag.String("cpuprofile", "", "Write cpu profile to file")
 	flag.Parse()
+	if *cpuprofile != "" {
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
 	if msglog { // pass on the verbose logging option to all message listeners
 		edda.Msglog = true
 		fsm.Msglog = true
