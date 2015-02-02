@@ -3,7 +3,9 @@ spigo
 
 Simulate Protocol Interactions in Go using nanoservice actors
 
-Suitable for fairly large scale simulations, runs well up to 100,000 independent nanoservice actors (pirates). Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,000 messages and wait to shut them all down again takes about 4 seconds. The resulting graph can be visualized via GraphML or rendered by saving to Graph JSON and viewing in a web browser via D3.
+Suitable for fairly large scale simulations, runs well up to 100,000 independent nanoservice actors. Two architectures are implemented. One creates a peer to peer social network (fsm and pirates). The other is being developed and is based on NetflixOSS microservices in a more tree structured model.
+
+Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,000 messages and wait to shut them all down again takes about 4 seconds. The resulting graph can be visualized via GraphML or rendered by saving to Graph JSON and viewing in a web browser via D3.
 
 [![GoDoc](https://godoc.org/github.com/adrianco/spigo?status.svg)](https://godoc.org/github.com/adrianco/spigo)
 
