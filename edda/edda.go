@@ -1,5 +1,5 @@
-// Package logger Logs the architecture (nodes and links) as it evolves
-package logger
+// Package edda Logs the architecture configuration (nodes and links) as it evolves
+package edda
 
 import (
 	"github.com/adrianco/spigo/gotocol"

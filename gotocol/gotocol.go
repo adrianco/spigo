@@ -17,10 +17,12 @@ const (
 	GoldCoin
 	// Inform loggerChan text message
 	Inform
-	// GetRequest FromChan body // simulate http inbound request
+	// GetRequest FromChan key // simulate http inbound request
 	GetRequest
-	// GetResponse FromChan body // simulate http outbound response
+	// GetResponse FromChan value // simulate http outbound response
 	GetResponse
+	// Put - "key value" // save the key and value
+	Put
 	// Goodbye - - // tell FSM and exit
 	Goodbye // test assumes this is the last and exits
 	numOfImpositions
@@ -43,6 +45,8 @@ func (imps Impositions) String() string {
 		return "GetRequest"
 	case GetResponse:
 		return "GetResponse"
+	case Put:
+		return "Put"
 	case Goodbye:
 		return "Goodbye"
 	}

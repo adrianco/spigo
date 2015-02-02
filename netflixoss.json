@@ -1,0 +1,26 @@
+{
+  "arch":"netflixoss",
+  "version":"spigo-0.3",
+  "args":"[./spigo -a netflixoss -d 2 -j]",
+  "graph":[
+    {"node":"elb-api","service":"elb"},
+    {"node":"zuul0","service":"zuul"},
+    {"edge":"e1","source":"elb-api","target":"zuul0"},
+    {"node":"zuul1","service":"zuul"},
+    {"edge":"e2","source":"elb-api","target":"zuul1"},
+    {"node":"zuul2","service":"zuul"},
+    {"edge":"e3","source":"elb-api","target":"zuul2"},
+    {"node":"zuul3","service":"zuul"},
+    {"edge":"e4","source":"elb-api","target":"zuul3"},
+    {"node":"zuul4","service":"zuul"},
+    {"edge":"e5","source":"elb-api","target":"zuul4"},
+    {"node":"zuul5","service":"zuul"},
+    {"edge":"e6","source":"elb-api","target":"zuul5"},
+    {"node":"zuul6","service":"zuul"},
+    {"edge":"e7","source":"elb-api","target":"zuul6"},
+    {"node":"zuul7","service":"zuul"},
+    {"edge":"e8","source":"elb-api","target":"zuul7"},
+    {"node":"zuul8","service":"zuul"},
+    {"edge":"e9","source":"elb-api","target":"zuul8"}
+  ]
+}

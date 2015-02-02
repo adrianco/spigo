@@ -5,9 +5,9 @@ package fsm
 
 import (
 	"fmt"
+	"github.com/adrianco/spigo/edda"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
-	"github.com/adrianco/spigo/logger"
 	"github.com/adrianco/spigo/pirate"
 	"log"
 	"math/rand"
@@ -53,9 +53,9 @@ func Reload(arch string) {
 			case "pirate":
 				go pirate.Start(noodles[name])
 				noodles[name] <- gotocol.Message{gotocol.Hello, listener, name}
-				if logger.Logchan != nil {
+				if edda.Logchan != nil {
 					// tell the pirate to report itself and new edges to the logger
-					noodles[name] <- gotocol.Message{gotocol.Inform, logger.Logchan, ""}
+					noodles[name] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
 				}
 			default:
 				log.Println("fsm: unknown service: " + element.Service)
@@ -107,9 +107,9 @@ func Start() {
 		// tell the pirate it's name and how to talk back to it's fsm
 		// this must be the first message the pirate sees
 		noodle <- gotocol.Message{gotocol.Hello, listener, name}
-		if logger.Logchan != nil {
+		if edda.Logchan != nil {
 			// tell the pirate to report itself and new edges to the logger
-			noodle <- gotocol.Message{gotocol.Inform, logger.Logchan, ""}
+			noodle <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
 			msgcount = 2
 		}
 	}
@@ -161,8 +161,8 @@ func shutdown() {
 			}
 		}
 	}
-	if logger.Logchan != nil {
-		close(logger.Logchan)
+	if edda.Logchan != nil {
+		close(edda.Logchan)
 	}
 	log.Println("fsm: Exit")
 }
