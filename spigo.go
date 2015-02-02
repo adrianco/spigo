@@ -17,7 +17,7 @@ var duration int
 
 // main handles command line flags and starts up an architecture
 func main() {
-	flag.StringVar(&arch, "a", "fsm", "Architecture to create or read")
+	flag.StringVar(&arch, "a", "fsm", "Architecture to create or read, fsm or netflixoss")
 	flag.IntVar(&fsm.Population, "p", 100, "  Pirate population")
 	flag.IntVar(&duration, "d", 10, "   Simulation duration in seconds")
 	flag.BoolVar(&edda.GraphmlEnabled, "g", false, "Enable GraphML logging of nodes and edges")
