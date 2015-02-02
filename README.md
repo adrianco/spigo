@@ -69,16 +69,18 @@ $ ./spigo -d 2 -r
 2015/01/28 00:23:22 spigo: fsm complete
 ```
 
-NetflixOSS Architecture scaled to 200%, with one ELB in the center, three zones with six Zuul and 18 Karyon each zone, rendered using json. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/netflixoss.html)
+NetflixOSS Architecture scaled to 200%.
 -----------
+With one ELB in the center, three zones with six Zuul and 18 Karyon each zone, rendered using GraphJSON and D3. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/netflixoss.html)
+
 ![200% scale NetflixOSS](netflixoss-200-json.png)
 
-100 Pirates after seeding with two random friends GraphML rendered using yFiles
+100 Pirates 
 -----------
+After seeding with two random friends GraphML rendered using yFiles
 ![100 pirates seeded with two random friends each](spigo100x2.png)
 
-100 Pirates after chatting and making new friends rendered using graphJSON and D3
------------
+After chatting and making new friends rendered using graphJSON and D3
 ![100 pirates after chatting](spigo-100-json.png)
 
 [Run spigo.html in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html)
