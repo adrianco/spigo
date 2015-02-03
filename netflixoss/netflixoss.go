@@ -11,6 +11,7 @@ import (
 	"github.com/adrianco/spigo/graphjson"
 	"github.com/adrianco/spigo/karyon" // business logic microservice
 	"github.com/adrianco/spigo/pirate" // random end user network
+	"github.com/adrianco/spigo/staash" // storage tier as a service http - data access layer
 	"github.com/adrianco/spigo/zuul"   // API proxy microservice router
 	"log"
 	"math/rand"
@@ -64,6 +65,8 @@ func Reload(arch string) {
 				go zuul.Start(noodles[name])
 			case "karyon":
 				go karyon.Start(noodles[name])
+			case "staash":
+				go staash.Start(noodles[name])
 			default:
 				log.Fatal("netflixoss: unknown service: " + element.Service)
 			}
@@ -152,6 +155,25 @@ func Start() {
 		for j := i % 3; j < zuulcount; j = j + 3 {
 			zuul := fmt.Sprintf("zuul%v", j)
 			noodles[zuul] <- gotocol.Message{gotocol.NameDrop, noodles[karyonname], karyonname}
+		}
+	}
+	// start staash data access layer
+	staashcount := 6 * Population / 100
+	for i := 0; i < staashcount; i++ {
+		staashname := fmt.Sprintf("staash%v", i)
+		noodles[staashname] = make(chan gotocol.Message)
+		go staash.Start(noodles[staashname])
+		noodles[staashname] <- gotocol.Message{gotocol.Hello, listener, staashname}
+		zone := fmt.Sprintf("zone zone%v", i%3)
+		noodles[staashname] <- gotocol.Message{gotocol.Put, nil, zone}
+		if edda.Logchan != nil {
+			// tell the microservice to report itself and new edges to the logger
+			noodles[staashname] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
+		}
+		// connect all the staash in a zone to all karyon in that zone only
+		for j := i % 3; j < karyoncount; j = j + 3 {
+			karyon := fmt.Sprintf("karyon%v", j)
+			noodles[karyon] <- gotocol.Message{gotocol.NameDrop, noodles[staashname], staashname}
 		}
 	}
 	// tell this elb to start chatting with microservices every 0.1 secs
