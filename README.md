@@ -81,7 +81,7 @@ Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon an
 
 Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon, two Staash and four Priam-Cassandra in each zone, rendered using GraphJSON and D3. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/netflixoss.html)
 
-![100% scale NetflixOSS](netflixoss-priamCassasndra-100.png)
+![100% scale NetflixOSS](netflixoss-priamCassandra-100.png)
 
 100 Pirates 
 -----------
