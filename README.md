@@ -75,9 +75,13 @@ Scaled to 200% with one ELB in the center, three zones with six Zuul and 18 Kary
 
 ![200% scale NetflixOSS](netflixoss-200-json.png)
 
-Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon and two staash in each zone, rendered using GraphJSON and D3. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/netflixoss.html)
+Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon and two staash in each zone, rendered using GraphJSON and D3.
 
-![200% scale NetflixOSS](netflixoss-staash-100.png)
+![100% scale NetflixOSS](netflixoss-staash-100.png)
+
+Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon, two Staash and four Priam-Cassandra in each zone, rendered using GraphJSON and D3. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/netflixoss.html)
+
+![100% scale NetflixOSS](netflixoss-priamCassasndra-100.png)
 
 100 Pirates 
 -----------
