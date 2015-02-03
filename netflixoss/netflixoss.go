@@ -9,10 +9,11 @@ import (
 	"github.com/adrianco/spigo/elb"  // elastic load balancer
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
-	"github.com/adrianco/spigo/karyon" // business logic microservice
-	"github.com/adrianco/spigo/pirate" // random end user network
-	"github.com/adrianco/spigo/staash" // storage tier as a service http - data access layer
-	"github.com/adrianco/spigo/zuul"   // API proxy microservice router
+	"github.com/adrianco/spigo/karyon"         // business logic microservice
+	"github.com/adrianco/spigo/pirate"         // random end user network
+	"github.com/adrianco/spigo/priamCassandra" // Priam managed Cassandra cluster
+	"github.com/adrianco/spigo/staash"         // storage tier as a service http - data access layer
+	"github.com/adrianco/spigo/zuul"           // API proxy microservice router
 	"log"
 	"math/rand"
 	"time"
@@ -67,6 +68,8 @@ func Reload(arch string) {
 				go karyon.Start(noodles[name])
 			case "staash":
 				go staash.Start(noodles[name])
+			case "priamCassandra":
+				go priamCassandra.Start(noodles[name])
 			default:
 				log.Fatal("netflixoss: unknown service: " + element.Service)
 			}
@@ -175,6 +178,33 @@ func Start() {
 			karyon := fmt.Sprintf("karyon%v", j)
 			noodles[karyon] <- gotocol.Message{gotocol.NameDrop, noodles[staashname], staashname}
 		}
+	}
+	// start priam managed Cassandra cluster
+	priamCassandracount := 12 * Population / 100
+	for i := 0; i < priamCassandracount; i++ {
+		priamCassandraname := fmt.Sprintf("priamCassandra%v", i)
+		noodles[priamCassandraname] = make(chan gotocol.Message)
+		go priamCassandra.Start(noodles[priamCassandraname])
+		noodles[priamCassandraname] <- gotocol.Message{gotocol.Hello, listener, priamCassandraname}
+		zone := fmt.Sprintf("zone zone%v", i%3)
+		noodles[priamCassandraname] <- gotocol.Message{gotocol.Put, nil, zone}
+		if edda.Logchan != nil {
+			// tell the microservice to report itself and new edges to the logger
+			noodles[priamCassandraname] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
+		}
+		// connect all the priamCassandra in a zone to all staash in that zone only
+		for j := i % 3; j < staashcount; j = j + 3 {
+			staash := fmt.Sprintf("staash%v", j)
+			noodles[staash] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraname], priamCassandraname}
+		}
+	}
+	// make the cross zone priamCassandra connections, assumes staash/astayanax ring aware client routing
+	for i := 0; i < priamCassandracount; i++ {
+		priamCassandraZ0 := fmt.Sprintf("priamCassandra%v", i)
+		priamCassandraZ1 := fmt.Sprintf("priamCassandra%v", (i+1)%priamCassandracount)
+		noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ1], priamCassandraZ1}
+		priamCassandraZ2 := fmt.Sprintf("priamCassandra%v", (i+2)%priamCassandracount)
+		noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ2], priamCassandraZ2}
 	}
 	// tell this elb to start chatting with microservices every 0.1 secs
 	delay := fmt.Sprintf("%dms", 100)
