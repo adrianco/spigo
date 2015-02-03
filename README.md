@@ -69,11 +69,15 @@ $ ./spigo -d 2 -r
 2015/01/28 00:23:22 spigo: fsm complete
 ```
 
-NetflixOSS Architecture scaled to 200%.
+NetflixOSS Architecture
 -----------
-With one ELB in the center, three zones with six Zuul and 18 Karyon each zone, rendered using GraphJSON and D3. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/netflixoss.html)
+Scaled to 200% with one ELB in the center, three zones with six Zuul and 18 Karyon each zone, rendered using GraphJSON and D3.
 
 ![200% scale NetflixOSS](netflixoss-200-json.png)
+
+Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon and two staash in each zone, rendered using GraphJSON and D3. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/netflixoss.html)
+
+![200% scale NetflixOSS](netflixoss-staash-100.png)
 
 100 Pirates 
 -----------
