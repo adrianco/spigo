@@ -87,6 +87,23 @@ Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon, t
 
 ![100% scale NetflixOSS](netflixoss-priamCassandra-100.png)
 
+```
+2015/02/12 16:53:51 netflixoss: elb activity rate  100ms
+2015/02/12 16:53:51 elb-api: gotocol: 2.669us Chat 100ms
+2015/02/12 16:53:51 zuul5: gotocol: 33.179us GetRequest elb-api
+2015/02/12 16:53:51 karyon26: gotocol: 7.713us GetRequest zuul5
+2015/02/12 16:53:51 zuul1: gotocol: 31.485us GetRequest elb-api
+2015/02/12 16:53:51 karyon19: gotocol: 14.44us GetRequest zuul1
+2015/02/12 16:53:51 zuul2: gotocol: 32.46us GetRequest elb-api
+2015/02/12 16:53:51 karyon26: gotocol: 12.26us GetRequest zuul2
+2015/02/12 16:53:52 zuul7: gotocol: 40.12us GetRequest elb-api
+2015/02/12 16:53:52 karyon19: gotocol: 29.22us GetRequest zuul7
+2015/02/12 16:53:52 zuul2: gotocol: 17.6us GetRequest elb-api
+2015/02/12 16:53:52 karyon23: gotocol: 6.176us GetRequest zuul2
+2015/02/12 16:53:52 zuul5: gotocol: 40.11us GetRequest elb-api
+2015/02/12 16:53:52 karyon8: gotocol: 8.434us GetRequest zuul5
+```
+
 100 Pirates 
 -----------
 After seeding with two random friends GraphML rendered using yFiles
