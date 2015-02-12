@@ -71,6 +71,10 @@ $ ./spigo -d 2 -r
 
 NetflixOSS Architecture
 -----------
+Simple simulations of the following AWS and NetflixOSS services are implemented. Edda collects the configuration and writes it to Json or Graphml. Eureka implements a service registry. Archaius contains global configuration data. ELB generates traffic that is split across three availability zones. Zuul takes requests and routes it to the Karyon business logic layer. Karyon calls into the Staash data access layer, which calls PriamCassandra, which provides cross zone connections.
+
+Each microservice is based on Karyon as the prototype to copy when creating a new microservice. The simulation just passes requests down the tree at present.
+
 Scaled to 200% with one ELB in the center, three zones with six Zuul and 18 Karyon each zone, rendered using GraphJSON and D3.
 
 ![200% scale NetflixOSS](netflixoss-200-json.png)
