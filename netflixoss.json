@@ -1,7 +1,7 @@
 {
   "arch":"netflixoss",
   "version":"spigo-0.3",
-  "args":"[./spigo -p 100 -j -a netflixoss]",
+  "args":"[./spigo -a netflixoss -d 2 -j]",
   "graph":[
     {"node":"elb-api","service":"elb"},
     {"node":"zuul0","service":"zuul"},

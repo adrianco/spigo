@@ -6,8 +6,9 @@ package netflixoss
 import (
 	"fmt"
 	"github.com/adrianco/spigo/archaius"
-	"github.com/adrianco/spigo/edda" // configuration logger
-	"github.com/adrianco/spigo/elb"  // elastic load balancer
+	"github.com/adrianco/spigo/edda"   // configuration logger
+	"github.com/adrianco/spigo/elb"    // elastic load balancer
+	"github.com/adrianco/spigo/eureka" // service and attribute registry
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
 	"github.com/adrianco/spigo/karyon"         // business logic microservice
@@ -23,11 +24,12 @@ import (
 // noodles channels mapped by microservice name connects netflixoss to everyone
 var noodles map[string]chan gotocol.Message
 var names []string
-var listener chan gotocol.Message
+var listener, eurekachan chan gotocol.Message
 
 // Reload the network from a file
 func Reload(arch string) {
-	listener = make(chan gotocol.Message) // listener for netflixoss
+	listener = make(chan gotocol.Message)                             // listener for netflixoss
+	eurekachan = make(chan gotocol.Message, archaius.Conf.Population) // listener for eureka
 	log.Println("netflixoss reloading from " + arch + ".json")
 	g := graphjson.ReadArch(arch)
 	archaius.Conf.Population = 0 // just to make sure
@@ -40,6 +42,7 @@ func Reload(arch string) {
 	// create the map of channels
 	noodles = make(map[string]chan gotocol.Message, archaius.Conf.Population)
 	// Start all the services
+	go eureka.Start(eurekachan)
 	for _, element := range g.Graph {
 		if element.Node != "" && element.Service != "" {
 			name := element.Node
@@ -62,10 +65,8 @@ func Reload(arch string) {
 				log.Fatal("netflixoss: unknown service: " + element.Service)
 			}
 			noodles[name] <- gotocol.Message{gotocol.Hello, listener, name}
-			if edda.Logchan != nil {
-				// tell the service to report itself and new edges to the logger
-				noodles[name] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
-			}
+			// tell the service to report itself and new edges to the logger
+			noodles[name] <- gotocol.Message{gotocol.Inform, eurekachan, ""}
 		}
 	}
 	// Make all the connections
@@ -88,7 +89,8 @@ func Reload(arch string) {
 
 // Start netflixoss and create new microservices
 func Start() {
-	listener = make(chan gotocol.Message) // listener for netflixoss
+	listener = make(chan gotocol.Message)                             // listener for netflixoss
+	eurekachan = make(chan gotocol.Message, archaius.Conf.Population) // listener for netflixoss
 	if archaius.Conf.Population < 1 {
 		log.Fatal("netflixoss: can't create less than 1 microservice")
 	} else {
@@ -97,6 +99,8 @@ func Start() {
 	// create map of channels and a name index to select randoml nodes from
 	noodles = make(map[string]chan gotocol.Message, archaius.Conf.Population)
 	names = make([]string, archaius.Conf.Population) // approximate size for indexable name list
+	// start the service registry first
+	go eureka.Start(eurekachan)
 	// we need an elb as a front end to spread request traffic around each endpoint
 	// elb for api endpoint
 	elbname := "elb-api"
@@ -104,10 +108,7 @@ func Start() {
 	go elb.Start(noodles[elbname])
 	// setup the elb's name and logging, set chat rate after everything else is started
 	noodles[elbname] <- gotocol.Message{gotocol.Hello, listener, elbname}
-	if edda.Logchan != nil {
-		// tell the pirate to report itself and new edges to the logger
-		noodles[elbname] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
-	}
+	noodles[elbname] <- gotocol.Message{gotocol.Inform, eurekachan, ""}
 	// connect elb to it's initial dependencies
 	// start zuul api proxies next
 	zuulcount := 9 * archaius.Conf.Population / 100
@@ -118,10 +119,7 @@ func Start() {
 		noodles[zuulname] <- gotocol.Message{gotocol.Hello, listener, zuulname}
 		zone := fmt.Sprintf("zone zone%v", i%3)
 		noodles[zuulname] <- gotocol.Message{gotocol.Put, nil, zone}
-		if edda.Logchan != nil {
-			// tell the microservice to report itself and new edges to the logger
-			noodles[zuulname] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
-		}
+		noodles[zuulname] <- gotocol.Message{gotocol.Inform, eurekachan, ""}
 		// hook all the zuul proxies up to the elb
 		noodles[elbname] <- gotocol.Message{gotocol.NameDrop, noodles[zuulname], zuulname}
 	}
@@ -134,10 +132,7 @@ func Start() {
 		noodles[karyonname] <- gotocol.Message{gotocol.Hello, listener, karyonname}
 		zone := fmt.Sprintf("zone zone%v", i%3)
 		noodles[karyonname] <- gotocol.Message{gotocol.Put, nil, zone}
-		if edda.Logchan != nil {
-			// tell the microservice to report itself and new edges to the logger
-			noodles[karyonname] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
-		}
+		noodles[karyonname] <- gotocol.Message{gotocol.Inform, eurekachan, ""}
 		// connect all the karyon in a zone to all zuul in that zone only
 		for j := i % 3; j < zuulcount; j = j + 3 {
 			zuul := fmt.Sprintf("zuul%v", j)
@@ -153,10 +148,7 @@ func Start() {
 		noodles[staashname] <- gotocol.Message{gotocol.Hello, listener, staashname}
 		zone := fmt.Sprintf("zone zone%v", i%3)
 		noodles[staashname] <- gotocol.Message{gotocol.Put, nil, zone}
-		if edda.Logchan != nil {
-			// tell the microservice to report itself and new edges to the logger
-			noodles[staashname] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
-		}
+		noodles[staashname] <- gotocol.Message{gotocol.Inform, eurekachan, ""}
 		// connect all the staash in a zone to all karyon in that zone only
 		for j := i % 3; j < karyoncount; j = j + 3 {
 			karyon := fmt.Sprintf("karyon%v", j)
@@ -172,10 +164,7 @@ func Start() {
 		noodles[priamCassandraname] <- gotocol.Message{gotocol.Hello, listener, priamCassandraname}
 		zone := fmt.Sprintf("zone zone%v", i%3)
 		noodles[priamCassandraname] <- gotocol.Message{gotocol.Put, nil, zone}
-		if edda.Logchan != nil {
-			// tell the microservice to report itself and new edges to the logger
-			noodles[priamCassandraname] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
-		}
+		noodles[priamCassandraname] <- gotocol.Message{gotocol.Inform, eurekachan, ""}
 		// connect all the priamCassandra in a zone to all staash in that zone only
 		for j := i % 3; j < staashcount; j = j + 3 {
 			staash := fmt.Sprintf("staash%v", j)
