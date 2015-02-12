@@ -2,41 +2,42 @@
 package edda
 
 import (
+	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
 	"github.com/adrianco/spigo/graphml"
 	"log"
+	"sync"
 )
 
 // Logchan is a buffered channel for sending logging messages to, or nil if logging is off
+// Created before edda starts so that messages can be buffered without depending on edda schedule
 var Logchan chan gotocol.Message
+var Wg sync.WaitGroup
 
-// Msglog if true, log each message received on the console
-var Msglog bool
-
-// GraphmlEnabled is set from flags to turn on GraphML logging
-var GraphmlEnabled bool
-
-// GraphmlEnabled is set from flags to turn on Graph JSON logging
-var GraphjsonEnabled bool
-
-// Start the logger, to listen for logging data from pirates
-func Start(arch string) {
+// Start edda, to listen for logging data from services
+func Start() {
+	// use a waitgroup so whoever starts edda can tell the logs have been flushed
+	Wg.Add(1)
+	defer Wg.Done()
 	var msg gotocol.Message
 	var ok bool
-	Logchan = make(chan gotocol.Message, 100) // buffered channel
-	log.Println("logger: starting")
-	graphml.Enabled = GraphmlEnabled
-	graphjson.Enabled = GraphjsonEnabled
-	graphml.Setup()
-	graphjson.Setup(arch)
+	log.Println("edda: starting")
+	if archaius.Conf.GraphmlFile != "" {
+		graphml.Enabled = true
+	}
+	if archaius.Conf.GraphjsonFile != "" {
+		graphjson.Enabled = true
+	}
+	graphml.Setup(archaius.Conf.GraphmlFile)
+	graphjson.Setup(archaius.Conf.GraphjsonFile)
 	for {
 		msg, ok = <-Logchan
 		if !ok {
 			break // channel was closed
 		}
-		if Msglog {
-			log.Printf("logger(backlog %v): %v\n", len(Logchan), msg)
+		if archaius.Conf.Msglog {
+			log.Printf("edda(backlog %v): %v\n", len(Logchan), msg)
 		}
 		if msg.Imposition == gotocol.Inform {
 			graphml.WriteEdge(msg.Intention)
@@ -48,7 +49,7 @@ func Start(arch string) {
 			}
 		}
 	}
-	log.Println("logger: closing")
+	log.Println("edda: closing")
 	graphml.Close()
 	graphjson.Close()
 }

@@ -5,6 +5,7 @@ package fsm
 
 import (
 	"fmt"
+	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/edda"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
@@ -14,15 +15,6 @@ import (
 	"time"
 )
 
-// Population count of pirates to create
-var Population int
-
-// ChatSleep duration is set via command line flag to tell fsm how long to let pirates chat
-var ChatSleep time.Duration
-
-// Msglog toggles whether to log every message received to the console
-var Msglog bool
-
 // noodles channels mapped by pirate name connects fsm to everyone
 var noodles map[string]chan gotocol.Message
 var names []string
@@ -30,19 +22,19 @@ var listener chan gotocol.Message
 
 // Reload the network from a file
 func Reload(arch string) {
-	pirate.Msglog = Msglog                // pass on console message log flag if set
 	listener = make(chan gotocol.Message) // listener for fsm
 	log.Println("fsm reloading from " + arch + ".json")
 	g := graphjson.ReadArch(arch)
-	Population = 0 // just to make sure
+	pop := 0
 	// count how many nodes there are
 	for _, element := range g.Graph {
 		if element.Node != "" {
-			Population++
+			pop++
 		}
 	}
+	archaius.Conf.Population = pop
 	// create the map of channels
-	noodles = make(map[string]chan gotocol.Message, Population)
+	noodles = make(map[string]chan gotocol.Message, archaius.Conf.Population)
 	// Start all the services
 	for _, element := range g.Graph {
 		if element.Node != "" && element.Service != "" {
@@ -84,16 +76,15 @@ func Reload(arch string) {
 
 // Start fsm and create new pirates
 func Start() {
-	pirate.Msglog = Msglog                // pass on console message log flag if set
 	listener = make(chan gotocol.Message) // listener for fsm
-	if Population < 2 {
+	if archaius.Conf.Population < 2 {
 		log.Fatal("fsm: can't create less than 2 pirates")
 	}
 	// create map of channels and a name index to select randoml nodes from
-	noodles = make(map[string]chan gotocol.Message, Population)
-	names = make([]string, Population) // indexable name list
-	log.Println("fsm: population", Population, "pirates")
-	for i := 1; i <= Population; i++ {
+	noodles = make(map[string]chan gotocol.Message, archaius.Conf.Population)
+	names = make([]string, archaius.Conf.Population) // indexable name list
+	log.Println("fsm: population", archaius.Conf.Population, "pirates")
+	for i := 1; i <= archaius.Conf.Population; i++ {
 		name := fmt.Sprintf("Pirate%d", i)
 		noodles[name] = make(chan gotocol.Message)
 		go pirate.Start(noodles[name])
@@ -113,7 +104,7 @@ func Start() {
 			msgcount = 2
 		}
 	}
-	log.Println("fsm: Talk amongst yourselves for", ChatSleep)
+	log.Println("fsm: Talk amongst yourselves for", archaius.Conf.RunDuration)
 	rand.Seed(int64(len(noodles)))
 	for _, name := range names {
 		// for each pirate tell them about two other random pirates
@@ -141,8 +132,8 @@ func Start() {
 func shutdown() {
 	var msg gotocol.Message
 	// wait until the delay has finished
-	if ChatSleep >= time.Millisecond {
-		time.Sleep(ChatSleep)
+	if archaius.Conf.RunDuration >= time.Millisecond {
+		time.Sleep(archaius.Conf.RunDuration)
 	}
 	log.Println("fsm: Shutdown")
 	for _, noodle := range noodles {
@@ -150,13 +141,13 @@ func shutdown() {
 	}
 	for len(noodles) > 0 {
 		msg = <-listener
-		if Msglog {
+		if archaius.Conf.Msglog {
 			log.Printf("fsm: %v\n", msg)
 		}
 		switch msg.Imposition {
 		case gotocol.Goodbye:
 			delete(noodles, msg.Intention)
-			if Msglog {
+			if archaius.Conf.Msglog {
 				log.Printf("fsm: Pirate population: %v    \n", len(noodles))
 			}
 		}

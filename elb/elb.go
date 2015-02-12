@@ -3,14 +3,12 @@
 package elb
 
 import (
+	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/gotocol"
 	"log"
 	"math/rand"
 	"time"
 )
-
-// Msglog turns on console logging of messages
-var Msglog bool
 
 // Start the elb, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
@@ -27,7 +25,7 @@ func Start(listener chan gotocol.Message) {
 	for {
 		select {
 		case msg := <-listener:
-			if Msglog {
+			if archaius.Conf.Msglog {
 				log.Printf("%v: %v\n", name, msg)
 			}
 			switch msg.Imposition {
@@ -64,7 +62,7 @@ func Start(listener chan gotocol.Message) {
 				// return path from a request
 				// nothing to do at this level
 			case gotocol.Goodbye:
-				if Msglog {
+				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away, chatting every %v\n", name, chatrate)
 				}
 				gotocol.Message{gotocol.Goodbye, nil, name}.GoSend(netflixoss)

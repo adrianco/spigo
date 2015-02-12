@@ -5,6 +5,7 @@ package netflixoss
 
 import (
 	"fmt"
+	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/edda" // configuration logger
 	"github.com/adrianco/spigo/elb"  // elastic load balancer
 	"github.com/adrianco/spigo/gotocol"
@@ -19,15 +20,6 @@ import (
 	"time"
 )
 
-// Population count of netflixoss microservices to create
-var Population int
-
-// Run duration is set via command line flag to tell how long to let netflixoss run for
-var RunSleep time.Duration
-
-// Msglog toggles whether to log every message received to the console
-var Msglog bool
-
 // noodles channels mapped by microservice name connects netflixoss to everyone
 var noodles map[string]chan gotocol.Message
 var names []string
@@ -35,22 +27,18 @@ var listener chan gotocol.Message
 
 // Reload the network from a file
 func Reload(arch string) {
-	pirate.Msglog = Msglog // pass on console message log flag if set
-	elb.Msglog = Msglog
-	zuul.Msglog = Msglog
-	karyon.Msglog = Msglog
 	listener = make(chan gotocol.Message) // listener for netflixoss
 	log.Println("netflixoss reloading from " + arch + ".json")
 	g := graphjson.ReadArch(arch)
-	Population = 0 // just to make sure
+	archaius.Conf.Population = 0 // just to make sure
 	// count how many nodes there are
 	for _, element := range g.Graph {
 		if element.Node != "" {
-			Population++
+			archaius.Conf.Population++
 		}
 	}
 	// create the map of channels
-	noodles = make(map[string]chan gotocol.Message, Population)
+	noodles = make(map[string]chan gotocol.Message, archaius.Conf.Population)
 	// Start all the services
 	for _, element := range g.Graph {
 		if element.Node != "" && element.Service != "" {
@@ -100,19 +88,15 @@ func Reload(arch string) {
 
 // Start netflixoss and create new microservices
 func Start() {
-	pirate.Msglog = Msglog // pass on console message log flag if set
-	elb.Msglog = Msglog
-	zuul.Msglog = Msglog
-	karyon.Msglog = Msglog
 	listener = make(chan gotocol.Message) // listener for netflixoss
-	if Population < 1 {
+	if archaius.Conf.Population < 1 {
 		log.Fatal("netflixoss: can't create less than 1 microservice")
 	} else {
-		log.Printf("netflixoss: scaling to %v%%", Population)
+		log.Printf("netflixoss: scaling to %v%%", archaius.Conf.Population)
 	}
 	// create map of channels and a name index to select randoml nodes from
-	noodles = make(map[string]chan gotocol.Message, Population)
-	names = make([]string, Population) // approximate size for indexable name list
+	noodles = make(map[string]chan gotocol.Message, archaius.Conf.Population)
+	names = make([]string, archaius.Conf.Population) // approximate size for indexable name list
 	// we need an elb as a front end to spread request traffic around each endpoint
 	// elb for api endpoint
 	elbname := "elb-api"
@@ -126,7 +110,7 @@ func Start() {
 	}
 	// connect elb to it's initial dependencies
 	// start zuul api proxies next
-	zuulcount := 9 * Population / 100
+	zuulcount := 9 * archaius.Conf.Population / 100
 	for i := 0; i < zuulcount; i++ {
 		zuulname := fmt.Sprintf("zuul%v", i)
 		noodles[zuulname] = make(chan gotocol.Message)
@@ -142,7 +126,7 @@ func Start() {
 		noodles[elbname] <- gotocol.Message{gotocol.NameDrop, noodles[zuulname], zuulname}
 	}
 	// start karyon business logic
-	karyoncount := 27 * Population / 100
+	karyoncount := 27 * archaius.Conf.Population / 100
 	for i := 0; i < karyoncount; i++ {
 		karyonname := fmt.Sprintf("karyon%v", i)
 		noodles[karyonname] = make(chan gotocol.Message)
@@ -161,7 +145,7 @@ func Start() {
 		}
 	}
 	// start staash data access layer
-	staashcount := 6 * Population / 100
+	staashcount := 6 * archaius.Conf.Population / 100
 	for i := 0; i < staashcount; i++ {
 		staashname := fmt.Sprintf("staash%v", i)
 		noodles[staashname] = make(chan gotocol.Message)
@@ -180,7 +164,7 @@ func Start() {
 		}
 	}
 	// start priam managed Cassandra cluster
-	priamCassandracount := 12 * Population / 100
+	priamCassandracount := 12 * archaius.Conf.Population / 100
 	for i := 0; i < priamCassandracount; i++ {
 		priamCassandraname := fmt.Sprintf("priamCassandra%v", i)
 		noodles[priamCassandraname] = make(chan gotocol.Message)
@@ -217,8 +201,8 @@ func Start() {
 func shutdown() {
 	var msg gotocol.Message
 	// wait until the delay has finished
-	if RunSleep >= time.Millisecond {
-		time.Sleep(RunSleep)
+	if archaius.Conf.RunDuration >= time.Millisecond {
+		time.Sleep(archaius.Conf.RunDuration)
 	}
 	log.Println("netflixoss: Shutdown")
 	for _, noodle := range noodles {
@@ -226,13 +210,13 @@ func shutdown() {
 	}
 	for len(noodles) > 0 {
 		msg = <-listener
-		if Msglog {
+		if archaius.Conf.Msglog {
 			log.Printf("netflixoss: %v\n", msg)
 		}
 		switch msg.Imposition {
 		case gotocol.Goodbye:
 			delete(noodles, msg.Intention)
-			if Msglog {
+			if archaius.Conf.Msglog {
 				log.Printf("netflixoss: netflixoss %v shutdown, population: %v    \n", msg.Intention, len(noodles))
 			}
 		}

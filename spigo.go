@@ -4,27 +4,28 @@ package main
 
 import (
 	"flag"
-	"github.com/adrianco/spigo/edda"
-	"github.com/adrianco/spigo/fsm"
-	"github.com/adrianco/spigo/netflixoss"
+	"github.com/adrianco/spigo/archaius"   // store the config for global lookup
+	"github.com/adrianco/spigo/edda"       // log configuration state
+	"github.com/adrianco/spigo/fsm"        // fsm and pirates
+	"github.com/adrianco/spigo/gotocol"    // message protocol spec
+	"github.com/adrianco/spigo/netflixoss" // start the netflix opensource microservices
 	"log"
 	"os"
 	"runtime/pprof"
 	"time"
 )
 
-var arch string
-var reload, msglog bool
+var reload, graphmlEnabled, graphjsonEnabled bool
 var duration int
 
 // main handles command line flags and starts up an architecture
 func main() {
-	flag.StringVar(&arch, "a", "fsm", "Architecture to create or read, fsm or netflixoss")
-	flag.IntVar(&fsm.Population, "p", 100, "  Pirate population for fsm or scale factor % for netflixoss")
+	flag.StringVar(&archaius.Conf.Arch, "a", "fsm", "Architecture to create or read, fsm or netflixoss")
+	flag.IntVar(&archaius.Conf.Population, "p", 100, "  Pirate population for fsm or scale factor % for netflixoss")
 	flag.IntVar(&duration, "d", 10, "   Simulation duration in seconds")
-	flag.BoolVar(&edda.GraphmlEnabled, "g", false, "Enable GraphML logging of nodes and edges")
-	flag.BoolVar(&edda.GraphjsonEnabled, "j", false, "Enable GraphJSON logging of nodes and edges")
-	flag.BoolVar(&msglog, "m", false, "Enable console logging of every message")
+	flag.BoolVar(&graphmlEnabled, "g", false, "Enable GraphML logging of nodes and edges")
+	flag.BoolVar(&graphjsonEnabled, "j", false, "Enable GraphJSON logging of nodes and edges")
+	flag.BoolVar(&archaius.Conf.Msglog, "m", false, "Enable console logging of every message")
 	flag.BoolVar(&reload, "r", false, "Reload <arch>.json to setup architecture")
 	var cpuprofile = flag.String("cpuprofile", "", "Write cpu profile to file")
 	flag.Parse()
@@ -36,55 +37,37 @@ func main() {
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()
 	}
-	if msglog { // pass on the verbose logging option to all message listeners
-		edda.Msglog = true
-		fsm.Msglog = true
-		netflixoss.Msglog = true
-	}
-	// start up the selected architecture
-	switch arch {
-	case "fsm":
-		if edda.GraphjsonEnabled || edda.GraphmlEnabled {
-			go edda.Start(arch) // start edda first
+	if graphjsonEnabled || graphmlEnabled {
+		if graphjsonEnabled {
+			archaius.Conf.GraphjsonFile = archaius.Conf.Arch
 		}
-		fsm.ChatSleep = time.Duration(duration) * time.Second
+		if graphmlEnabled {
+			archaius.Conf.GraphmlFile = archaius.Conf.Arch
+		}
+		// make a buffered channel so logging can start before edda is scheduled
+		edda.Logchan = make(chan gotocol.Message, 100)
+		go edda.Start() // start edda first
+	}
+	archaius.Conf.RunDuration = time.Duration(duration) * time.Second
+	// start up the selected architecture
+	switch archaius.Conf.Arch {
+	case "fsm":
 		if reload {
-			fsm.Reload(arch)
+			fsm.Reload(archaius.Conf.Arch)
 		} else {
 			fsm.Start()
 		}
 		log.Println("spigo: fsm complete")
-		if edda.Logchan != nil {
-			for {
-				log.Printf("Logger has %v messages left to flush\n", len(edda.Logchan))
-				time.Sleep(time.Second)
-				if len(edda.Logchan) == 0 {
-					break
-				}
-			}
-		}
 	case "netflixoss":
-		if edda.GraphjsonEnabled || edda.GraphmlEnabled {
-			go edda.Start(arch) // start edda first
-		}
-		netflixoss.RunSleep = time.Duration(duration) * time.Second
-		netflixoss.Population = fsm.Population
 		if reload {
-			netflixoss.Reload(arch)
+			netflixoss.Reload(archaius.Conf.Arch)
 		} else {
 			netflixoss.Start()
 		}
 		log.Println("spigo: netflixoss complete")
-		if edda.Logchan != nil {
-			for {
-				log.Printf("Logger has %v messages left to flush\n", len(edda.Logchan))
-				time.Sleep(time.Second)
-				if len(edda.Logchan) == 0 {
-					break
-				}
-			}
-		}
 	default:
-		log.Fatal("Architecture " + arch + " isn't recognized")
+		log.Fatal("Architecture " + archaius.Conf.Arch + " isn't recognized")
 	}
+	// wait for edda to flush it's messages
+	edda.Wg.Wait()
 }

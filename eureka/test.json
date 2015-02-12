@@ -1,0 +1,10 @@
+{
+  "arch":"test",
+  "version":"spigo-0.3",
+  "args":"[/var/folders/vy/jc5bpnm10xb3cdwmf9skr2rjgt5hnf/T/go-build545402690/github.com/adrianco/spigo/eureka/_test/eureka.test]",
+  "graph":[
+    {"node":"test0","service":"test"},
+    {"node":"test1","service":"test"},
+    {"node":"thing0","service":"thing"}
+  ]
+}

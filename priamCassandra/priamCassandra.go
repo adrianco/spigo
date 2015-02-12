@@ -4,14 +4,12 @@ package priamCassandra
 
 import (
 	"fmt"
+	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/gotocol"
 	"log"
 	"math/rand"
 	"time"
 )
-
-// Msglog turns on console logging of messages
-var Msglog bool
 
 // Start priamCassandra, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
@@ -29,7 +27,7 @@ func Start(listener chan gotocol.Message) {
 	for {
 		select {
 		case msg := <-listener:
-			if Msglog {
+			if archaius.Conf.Msglog {
 				log.Printf("%v: %v\n", name, msg)
 			}
 			switch msg.Imposition {
@@ -79,7 +77,7 @@ func Start(listener chan gotocol.Message) {
 				// log.Printf("priamCassandra: %v:%v", key, value)
 				store[key] = value
 			case gotocol.Goodbye:
-				if Msglog {
+				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away, zone: %v\n", name, store["zone"])
 				}
 				gotocol.Message{gotocol.Goodbye, nil, name}.GoSend(netflixoss)
