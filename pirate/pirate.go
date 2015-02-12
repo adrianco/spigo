@@ -42,7 +42,7 @@ func Start(listener chan gotocol.Message) {
 				// remember where to send updates
 				logger = msg.ResponseChan
 				// logger channel is buffered so no need to use GoSend
-				logger <- gotocol.Message{gotocol.Hello, nil, name + " " + "pirate"}
+				logger <- gotocol.Message{gotocol.Hello, nil, time.Now(), name + " " + "pirate"}
 			case gotocol.NameDrop:
 				// don't remember too many buddies and don't talk to myself
 				buddy := msg.Intention // message body is buddy name
@@ -51,7 +51,7 @@ func Start(listener chan gotocol.Message) {
 					buddies[buddy] = msg.ResponseChan // message channel is buddy's listener
 					if logger != nil {
 						// if it's setup, tell the logger I have a new buddy to talk to
-						logger <- gotocol.Message{gotocol.Inform, listener, name + " " + buddy}
+						logger <- gotocol.Message{gotocol.Inform, listener, time.Now(), name + " " + buddy}
 					}
 				}
 			case gotocol.Chat:
@@ -78,7 +78,7 @@ func Start(listener chan gotocol.Message) {
 				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away with %v gold coins, chatting every %v\n", name, booty, chatrate)
 				}
-				gotocol.Message{gotocol.Goodbye, nil, name}.GoSend(fsm)
+				gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(fsm)
 				return
 			}
 		case <-chatTicker.C:
@@ -94,7 +94,7 @@ func Start(listener chan gotocol.Message) {
 						} else {
 							lastBuddyChan = ch
 						}
-						gotocol.Message{gotocol.NameDrop, firstBuddyChan, firstBuddyName}.GoSend(lastBuddyChan)
+						gotocol.Message{gotocol.NameDrop, firstBuddyChan, time.Now(), firstBuddyName}.GoSend(lastBuddyChan)
 					}
 				}
 			} else {
@@ -105,7 +105,7 @@ func Start(listener chan gotocol.Message) {
 					if donation > 0 {
 						for _, ch := range buddies {
 							if luckyNumber == 0 {
-								gotocol.Message{gotocol.GoldCoin, listener, fmt.Sprintf("%d", donation)}.GoSend(ch)
+								gotocol.Message{gotocol.GoldCoin, listener, time.Now(), fmt.Sprintf("%d", donation)}.GoSend(ch)
 								booty -= donation
 								break
 							} else {

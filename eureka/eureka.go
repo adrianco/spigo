@@ -9,6 +9,7 @@ import (
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
 	"log"
+	"time"
 )
 
 // Start eureka discovery service for an architecture with an initial scale
@@ -40,7 +41,7 @@ func Start(listener chan gotocol.Message) {
 			if edda.Logchan != nil {
 				close(edda.Logchan)
 			}
-			gotocol.Message{gotocol.Goodbye, nil, ""}.GoSend(msg.ResponseChan)
+			gotocol.Message{gotocol.Goodbye, nil, time.Now(), ""}.GoSend(msg.ResponseChan)
 			break
 		case gotocol.Inform:
 			// don't store edges in discovery but do log them
@@ -49,7 +50,7 @@ func Start(listener chan gotocol.Message) {
 			}
 		case gotocol.GetRequest:
 			if msg.Intention != "" && microservices[msg.Intention] != nil {
-				gotocol.Message{gotocol.GetResponse, listener, servicetypes[msg.Intention].Service}.GoSend(msg.ResponseChan)
+				gotocol.Message{gotocol.GetResponse, listener, time.Now(), servicetypes[msg.Intention].Service}.GoSend(msg.ResponseChan)
 			}
 		}
 	}

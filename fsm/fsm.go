@@ -44,10 +44,10 @@ func Reload(arch string) {
 			switch element.Service {
 			case "pirate":
 				go pirate.Start(noodles[name])
-				noodles[name] <- gotocol.Message{gotocol.Hello, listener, name}
+				noodles[name] <- gotocol.Message{gotocol.Hello, listener, time.Now(), name}
 				if edda.Logchan != nil {
 					// tell the pirate to report itself and new edges to the logger
-					noodles[name] <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
+					noodles[name] <- gotocol.Message{gotocol.Inform, edda.Logchan, time.Now(), ""}
 				}
 			default:
 				log.Println("fsm: unknown service: " + element.Service)
@@ -57,7 +57,7 @@ func Reload(arch string) {
 	// Make all the connections
 	for _, element := range g.Graph {
 		if element.Edge != "" && element.Source != "" && element.Target != "" {
-			noodles[element.Source] <- gotocol.Message{gotocol.NameDrop, noodles[element.Target], element.Target}
+			noodles[element.Source] <- gotocol.Message{gotocol.NameDrop, noodles[element.Target], time.Now(), element.Target}
 			log.Println("Link " + element.Source + " > " + element.Target)
 		}
 	}
@@ -66,10 +66,10 @@ func Reload(arch string) {
 		// same as below for now, but will save and read back from file later
 		// anonymously send this pirate a random amount of GoldCoin up to 100
 		gold := fmt.Sprintf("%d", rand.Intn(100))
-		noodle <- gotocol.Message{gotocol.GoldCoin, nil, gold}
+		noodle <- gotocol.Message{gotocol.GoldCoin, nil, time.Now(), gold}
 		// tell this pirate to start chatting with friends every 0.1 to 10 secs
 		delay := fmt.Sprintf("%dms", 100+rand.Intn(9900))
-		noodle <- gotocol.Message{gotocol.Chat, nil, delay}
+		noodle <- gotocol.Message{gotocol.Chat, nil, time.Now(), delay}
 	}
 	shutdown()
 }
@@ -97,10 +97,10 @@ func Start() {
 		i++
 		// tell the pirate it's name and how to talk back to it's fsm
 		// this must be the first message the pirate sees
-		noodle <- gotocol.Message{gotocol.Hello, listener, name}
+		noodle <- gotocol.Message{gotocol.Hello, listener, time.Now(), name}
 		if edda.Logchan != nil {
 			// tell the pirate to report itself and new edges to the logger
-			noodle <- gotocol.Message{gotocol.Inform, edda.Logchan, ""}
+			noodle <- gotocol.Message{gotocol.Inform, edda.Logchan, time.Now(), ""}
 			msgcount = 2
 		}
 	}
@@ -111,16 +111,16 @@ func Start() {
 		noodle := noodles[name] // lookup the channel
 		// pick a first random pirate to tell this one about
 		talkto := names[rand.Intn(len(names))]
-		noodle <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto}
+		noodle <- gotocol.Message{gotocol.NameDrop, noodles[talkto], time.Now(), talkto}
 		// pick a second random pirate to tell this one about
 		talkto = names[rand.Intn(len(names))]
-		noodle <- gotocol.Message{gotocol.NameDrop, noodles[talkto], talkto}
+		noodle <- gotocol.Message{gotocol.NameDrop, noodles[talkto], time.Now(), talkto}
 		// anonymously send this pirate a random amount of GoldCoin up to 100
 		gold := fmt.Sprintf("%d", rand.Intn(100))
-		noodle <- gotocol.Message{gotocol.GoldCoin, nil, gold}
+		noodle <- gotocol.Message{gotocol.GoldCoin, nil, time.Now(), gold}
 		// tell this pirate to start chatting with friends every 0.1 to 10 secs
 		delay := fmt.Sprintf("%dms", 100+rand.Intn(9900))
-		noodle <- gotocol.Message{gotocol.Chat, nil, delay}
+		noodle <- gotocol.Message{gotocol.Chat, nil, time.Now(), delay}
 	}
 	msgcount += 4
 	d := time.Since(start)
@@ -137,7 +137,7 @@ func shutdown() {
 	}
 	log.Println("fsm: Shutdown")
 	for _, noodle := range noodles {
-		gotocol.Message{gotocol.Goodbye, nil, "beer volcano"}.GoSend(noodle)
+		gotocol.Message{gotocol.Goodbye, nil, time.Now(), "beer volcano"}.GoSend(noodle)
 	}
 	for len(noodles) > 0 {
 		msg = <-listener

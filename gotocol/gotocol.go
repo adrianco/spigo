@@ -2,6 +2,11 @@
 // listener channels and types over a single channel type
 package gotocol
 
+import (
+	"fmt"
+	"time"
+)
+
 // Impositions is the promise theory term for requests made to a service
 type Impositions int
 
@@ -57,7 +62,12 @@ func (imps Impositions) String() string {
 type Message struct {
 	Imposition   Impositions  // request type
 	ResponseChan chan Message // place to send response messages
+	Sent         time.Time    // time at which message was sent
 	Intention    string       // payload
+}
+
+func (msg Message) String() string {
+	return fmt.Sprintf("gotocol: %v %v %v", time.Since(msg.Sent), msg.Imposition, msg.Intention)
 }
 
 // Send a synchronous message

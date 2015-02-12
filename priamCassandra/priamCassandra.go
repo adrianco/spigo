@@ -41,7 +41,7 @@ func Start(listener chan gotocol.Message) {
 				// remember where to send updates
 				edda = msg.ResponseChan
 				// logger channel is buffered so no need to use GoSend
-				edda <- gotocol.Message{gotocol.Hello, nil, name + " " + "priamCassandra"}
+				edda <- gotocol.Message{gotocol.Hello, nil, time.Now(), name + " " + "priamCassandra"}
 			case gotocol.NameDrop:
 				// don't remember too many buddies and don't talk to myself
 				microservice := msg.Intention // message body is buddy name
@@ -50,7 +50,7 @@ func Start(listener chan gotocol.Message) {
 					microservices[microservice] = msg.ResponseChan // message channel is buddy's listener
 					if edda != nil {
 						// if it's setup, tell the logger I have a new buddy to talk to
-						edda <- gotocol.Message{gotocol.Inform, listener, name + " " + microservice}
+						edda <- gotocol.Message{gotocol.Inform, listener, time.Now(), name + " " + microservice}
 					}
 				}
 			case gotocol.Chat:
@@ -68,7 +68,7 @@ func Start(listener chan gotocol.Message) {
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up
 				if requestor != nil {
-					gotocol.Message{gotocol.GetResponse, listener, msg.Intention}.GoSend(requestor)
+					gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Intention}.GoSend(requestor)
 				}
 			case gotocol.Put:
 				// set a key value pair
@@ -80,7 +80,7 @@ func Start(listener chan gotocol.Message) {
 				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away, zone: %v\n", name, store["zone"])
 				}
-				gotocol.Message{gotocol.Goodbye, nil, name}.GoSend(netflixoss)
+				gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(netflixoss)
 				return
 			}
 		case <-chatTicker.C:
@@ -95,7 +95,7 @@ func Start(listener chan gotocol.Message) {
 				}
 				m := rand.Intn(len(microservices))
 				// start a request to a random member of this elb
-				gotocol.Message{gotocol.GetRequest, listener, name}.GoSend(microindex[m])
+				gotocol.Message{gotocol.GetRequest, listener, time.Now(), name}.GoSend(microindex[m])
 			}
 			//default:
 		}
