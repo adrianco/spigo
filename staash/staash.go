@@ -65,7 +65,20 @@ func Start(listener chan gotocol.Message) {
 				// route the request on to microservices
 				requestor = msg.ResponseChan
 				// Intention body indicates which service to route to or which key to get
-				// need to lookup service by type rather than name
+				// need to lookup service by type rather than randomly call one day
+				if len(microservices) > 0 {
+					if len(microindex) != len(microservices) {
+						// rebuild index
+						i := 0
+						for _, ch := range microservices {
+							microindex[i] = ch
+							i++
+						}
+					}
+					m := rand.Intn(len(microservices))
+					// start a request to a random microservice
+					gotocol.Message{gotocol.GetRequest, listener, time.Now(), name}.GoSend(microindex[m])
+				}
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up
 				if requestor != nil {
