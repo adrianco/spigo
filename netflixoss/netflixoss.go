@@ -6,9 +6,10 @@ package netflixoss
 import (
 	"fmt"
 	"github.com/adrianco/spigo/archaius"
-	"github.com/adrianco/spigo/edda"   // configuration logger
-	"github.com/adrianco/spigo/elb"    // elastic load balancer
-	"github.com/adrianco/spigo/eureka" // service and attribute registry
+	"github.com/adrianco/spigo/denominator" // DNS service
+	"github.com/adrianco/spigo/edda"        // configuration logger
+	"github.com/adrianco/spigo/elb"         // elastic load balancer
+	"github.com/adrianco/spigo/eureka"      // service and attribute registry
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
 	"github.com/adrianco/spigo/karyon"         // business logic microservice
@@ -53,6 +54,8 @@ func Reload(arch string) {
 				go pirate.Start(noodles[name])
 			case "elb":
 				go elb.Start(noodles[name])
+			case "denominator":
+				go denominator.Start(noodles[name])
 			case "zuul":
 				go zuul.Start(noodles[name])
 			case "karyon":
@@ -101,6 +104,13 @@ func Start() {
 	names = make([]string, archaius.Conf.Population) // approximate size for indexable name list
 	// start the service registry first
 	go eureka.Start(eurekachan)
+	// we need a DNS service to create a global multi-region architecture
+	dnsname := "global-api"
+	noodles[dnsname] = make(chan gotocol.Message)
+	go denominator.Start(noodles[dnsname])
+	// setup the dns name and logging, set chat rate after everything else is started
+	noodles[dnsname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), dnsname}
+	noodles[dnsname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
 	// we need an elb as a front end to spread request traffic around each endpoint
 	// elb for api endpoint
 	elbname := "elb-api"
@@ -109,6 +119,8 @@ func Start() {
 	// setup the elb's name and logging, set chat rate after everything else is started
 	noodles[elbname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), elbname}
 	noodles[elbname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+	// tell denominator how to talk to the elb
+	noodles[dnsname] <- gotocol.Message{gotocol.NameDrop, noodles[elbname], time.Now(), elbname}
 	// connect elb to it's initial dependencies
 	// start zuul api proxies next
 	zuulcount := 9 * archaius.Conf.Population / 100
@@ -179,10 +191,10 @@ func Start() {
 		priamCassandraZ2 := fmt.Sprintf("priamCassandra%v", (i+2)%priamCassandracount)
 		noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ2], time.Now(), priamCassandraZ2}
 	}
-	// tell this elb to start chatting with microservices every 0.1 secs
+	// tell denominator to start chatting with microservices every 0.1 secs
 	delay := fmt.Sprintf("%dms", 100)
 	log.Println("netflixoss: elb activity rate ", delay)
-	noodles[elbname] <- gotocol.Message{gotocol.Chat, nil, time.Now(), delay}
+	noodles[dnsname] <- gotocol.Message{gotocol.Chat, nil, time.Now(), delay}
 	shutdown()
 }
 
