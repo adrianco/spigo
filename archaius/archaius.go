@@ -28,6 +28,9 @@ type Configuration struct {
 
 	// Msglog if true, log each message received on the console
 	Msglog bool `json:"msglog",omitempty"`
+
+	// Regions is the number of regions to create
+	Regions int `json:"regions,omitempty"`
 }
 
 var Conf Configuration
@@ -44,5 +47,5 @@ func FromJson(confJSON []byte) {
 
 // return formatted as string
 func (Configuration) String() string {
-	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog)
+	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\nRegions:    %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog, Conf.Regions)
 }

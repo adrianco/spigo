@@ -23,6 +23,7 @@ func main() {
 	flag.StringVar(&archaius.Conf.Arch, "a", "fsm", "Architecture to create or read, fsm or netflixoss")
 	flag.IntVar(&archaius.Conf.Population, "p", 100, "  Pirate population for fsm or scale factor % for netflixoss")
 	flag.IntVar(&duration, "d", 10, "   Simulation duration in seconds")
+	flag.IntVar(&archaius.Conf.Regions, "w", 1, "    Wide area regions")
 	flag.BoolVar(&graphmlEnabled, "g", false, "Enable GraphML logging of nodes and edges")
 	flag.BoolVar(&graphjsonEnabled, "j", false, "Enable GraphJSON logging of nodes and edges")
 	flag.BoolVar(&archaius.Conf.Msglog, "m", false, "Enable console logging of every message")

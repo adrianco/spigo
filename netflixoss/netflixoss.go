@@ -102,8 +102,10 @@ func Start() {
 	// create map of channels and a name index to select randoml nodes from
 	noodles = make(map[string]chan gotocol.Message, archaius.Conf.Population)
 	names = make([]string, archaius.Conf.Population) // approximate size for indexable name list
+
 	// start the service registry first
 	go eureka.Start(eurekachan)
+
 	// we need a DNS service to create a global multi-region architecture
 	dnsname := "global-api"
 	noodles[dnsname] = make(chan gotocol.Message)
@@ -111,89 +113,93 @@ func Start() {
 	// setup the dns name and logging, set chat rate after everything else is started
 	noodles[dnsname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), dnsname}
 	noodles[dnsname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-	// we need an elb as a front end to spread request traffic around each endpoint
+
+	// we need elb as a front end in each region to spread request traffic around each endpoint
 	// elb for api endpoint
-	elbname := "elb-api"
-	noodles[elbname] = make(chan gotocol.Message)
-	go elb.Start(noodles[elbname])
-	// setup the elb's name and logging, set chat rate after everything else is started
-	noodles[elbname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), elbname}
-	noodles[elbname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-	// tell denominator how to talk to the elb
-	noodles[dnsname] <- gotocol.Message{gotocol.NameDrop, noodles[elbname], time.Now(), elbname}
-	// connect elb to it's initial dependencies
-	// start zuul api proxies next
-	zuulcount := 9 * archaius.Conf.Population / 100
-	for i := 0; i < zuulcount; i++ {
-		zuulname := fmt.Sprintf("zuul%v", i)
-		noodles[zuulname] = make(chan gotocol.Message)
-		go zuul.Start(noodles[zuulname])
-		noodles[zuulname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), zuulname}
-		zone := fmt.Sprintf("zone zone%v", i%3)
-		noodles[zuulname] <- gotocol.Message{gotocol.Put, nil, time.Now(), zone}
-		noodles[zuulname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-		// hook all the zuul proxies up to the elb
-		noodles[elbname] <- gotocol.Message{gotocol.NameDrop, noodles[zuulname], time.Now(), zuulname}
-	}
-	// start karyon business logic
-	karyoncount := 27 * archaius.Conf.Population / 100
-	for i := 0; i < karyoncount; i++ {
-		karyonname := fmt.Sprintf("karyon%v", i)
-		noodles[karyonname] = make(chan gotocol.Message)
-		go karyon.Start(noodles[karyonname])
-		noodles[karyonname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), karyonname}
-		zone := fmt.Sprintf("zone zone%v", i%3)
-		noodles[karyonname] <- gotocol.Message{gotocol.Put, nil, time.Now(), zone}
-		noodles[karyonname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-		// connect all the karyon in a zone to all zuul in that zone only
-		for j := i % 3; j < zuulcount; j = j + 3 {
-			zuul := fmt.Sprintf("zuul%v", j)
-			noodles[zuul] <- gotocol.Message{gotocol.NameDrop, noodles[karyonname], time.Now(), karyonname}
+	for r := 0; r < archaius.Conf.Regions; r++ {
+		elbname := fmt.Sprintf("elb%v", r)
+		noodles[elbname] = make(chan gotocol.Message)
+		go elb.Start(noodles[elbname])
+		// setup the elb's name and logging, set chat rate after everything else is started
+		noodles[elbname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), elbname}
+		noodles[elbname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+		// tell denominator how to talk to the elb
+		noodles[dnsname] <- gotocol.Message{gotocol.NameDrop, noodles[elbname], time.Now(), elbname}
+
+		// start zuul api proxies next
+		zuulcount := 9 * archaius.Conf.Population / 100
+		for i := r * zuulcount; i < (r+1)*zuulcount; i++ {
+			zuulname := fmt.Sprintf("zuul%v", i)
+			noodles[zuulname] = make(chan gotocol.Message)
+			go zuul.Start(noodles[zuulname])
+			noodles[zuulname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), zuulname}
+			zone := fmt.Sprintf("zone zone%v", i%3)
+			noodles[zuulname] <- gotocol.Message{gotocol.Put, nil, time.Now(), zone}
+			noodles[zuulname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+			// hook all the zuul proxies up to the elb
+			noodles[elbname] <- gotocol.Message{gotocol.NameDrop, noodles[zuulname], time.Now(), zuulname}
 		}
-	}
-	// start staash data access layer
-	staashcount := 6 * archaius.Conf.Population / 100
-	for i := 0; i < staashcount; i++ {
-		staashname := fmt.Sprintf("staash%v", i)
-		noodles[staashname] = make(chan gotocol.Message)
-		go staash.Start(noodles[staashname])
-		noodles[staashname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), staashname}
-		zone := fmt.Sprintf("zone zone%v", i%3)
-		noodles[staashname] <- gotocol.Message{gotocol.Put, nil, time.Now(), zone}
-		noodles[staashname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-		// connect all the staash in a zone to all karyon in that zone only
-		for j := i % 3; j < karyoncount; j = j + 3 {
-			karyon := fmt.Sprintf("karyon%v", j)
-			noodles[karyon] <- gotocol.Message{gotocol.NameDrop, noodles[staashname], time.Now(), staashname}
+
+		// start karyon business logic
+		karyoncount := 27 * archaius.Conf.Population / 100
+		for i := r * karyoncount; i < (r+1)*karyoncount; i++ {
+			karyonname := fmt.Sprintf("karyon%v", i)
+			noodles[karyonname] = make(chan gotocol.Message)
+			go karyon.Start(noodles[karyonname])
+			noodles[karyonname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), karyonname}
+			zone := fmt.Sprintf("zone zone%v", i%3)
+			noodles[karyonname] <- gotocol.Message{gotocol.Put, nil, time.Now(), zone}
+			noodles[karyonname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+			// connect all the karyon in a zone to all zuul in that zone only
+			for j := r*zuulcount + i%3; j < (r+1)*zuulcount; j = j + 3 {
+				zuul := fmt.Sprintf("zuul%v", j)
+				noodles[zuul] <- gotocol.Message{gotocol.NameDrop, noodles[karyonname], time.Now(), karyonname}
+			}
 		}
-	}
-	// start priam managed Cassandra cluster
-	priamCassandracount := 12 * archaius.Conf.Population / 100
-	for i := 0; i < priamCassandracount; i++ {
-		priamCassandraname := fmt.Sprintf("priamCassandra%v", i)
-		noodles[priamCassandraname] = make(chan gotocol.Message)
-		go priamCassandra.Start(noodles[priamCassandraname])
-		noodles[priamCassandraname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), priamCassandraname}
-		zone := fmt.Sprintf("zone zone%v", i%3)
-		noodles[priamCassandraname] <- gotocol.Message{gotocol.Put, nil, time.Now(), zone}
-		noodles[priamCassandraname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-		// connect all the priamCassandra in a zone to all staash in that zone only
-		for j := i % 3; j < staashcount; j = j + 3 {
-			staash := fmt.Sprintf("staash%v", j)
-			noodles[staash] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraname], time.Now(), priamCassandraname}
+		// start staash data access layer
+		staashcount := 6 * archaius.Conf.Population / 100
+		for i := r * staashcount; i < (r+1)*staashcount; i++ {
+			staashname := fmt.Sprintf("staash%v", i)
+			noodles[staashname] = make(chan gotocol.Message)
+			go staash.Start(noodles[staashname])
+			noodles[staashname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), staashname}
+			zone := fmt.Sprintf("zone zone%v", i%3)
+			noodles[staashname] <- gotocol.Message{gotocol.Put, nil, time.Now(), zone}
+			noodles[staashname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+			// connect all the staash in a zone to all karyon in that zone only
+			for j := r*staashcount + i%3; j < (r+1)*karyoncount; j = j + 3 {
+				karyon := fmt.Sprintf("karyon%v", j)
+				noodles[karyon] <- gotocol.Message{gotocol.NameDrop, noodles[staashname], time.Now(), staashname}
+			}
 		}
-	}
-	// make the cross zone priamCassandra connections, assumes staash/astayanax ring aware client routing
-	for i := 0; i < priamCassandracount; i++ {
-		priamCassandraZ0 := fmt.Sprintf("priamCassandra%v", i)
-		priamCassandraZ1 := fmt.Sprintf("priamCassandra%v", (i+1)%priamCassandracount)
-		noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ1], time.Now(), priamCassandraZ1}
-		priamCassandraZ2 := fmt.Sprintf("priamCassandra%v", (i+2)%priamCassandracount)
-		noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ2], time.Now(), priamCassandraZ2}
+		// start priam managed Cassandra cluster
+		priamCassandracount := 12 * archaius.Conf.Population / 100
+		for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
+			priamCassandraname := fmt.Sprintf("priamCassandra%v", i)
+			noodles[priamCassandraname] = make(chan gotocol.Message)
+			go priamCassandra.Start(noodles[priamCassandraname])
+			noodles[priamCassandraname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), priamCassandraname}
+			zone := fmt.Sprintf("zone region%vzone%v", r, i%3)
+			noodles[priamCassandraname] <- gotocol.Message{gotocol.Put, nil, time.Now(), zone}
+			noodles[priamCassandraname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+			// connect all the priamCassandra in a zone to all staash in that zone only
+			for j := r*staashcount + i%3; j < (r+1)*staashcount; j = j + 3 {
+				staash := fmt.Sprintf("staash%v", j)
+				noodles[staash] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraname], time.Now(), priamCassandraname}
+			}
+		}
+		// make the cross zone priamCassandra connections, assumes staash/astayanax ring aware client routing
+		for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
+			priamCassandraZ0 := fmt.Sprintf("priamCassandra%v", i)
+			priamCassandraZ1 := fmt.Sprintf("priamCassandra%v", r*priamCassandracount+(i+1)%priamCassandracount)
+			noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ1], time.Now(), priamCassandraZ1}
+			priamCassandraZ2 := fmt.Sprintf("priamCassandra%v", r*priamCassandracount+(i+2)%priamCassandracount)
+			noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ2], time.Now(), priamCassandraZ2}
+		}
 	}
 	// tell denominator to start chatting with microservices every 0.1 secs
 	delay := fmt.Sprintf("%dms", 100)
-	log.Println("netflixoss: elb activity rate ", delay)
+	log.Println("netflixoss: denominator activity rate ", delay)
 	noodles[dnsname] <- gotocol.Message{gotocol.Chat, nil, time.Now(), delay}
 	shutdown()
 }

@@ -15,6 +15,7 @@ func TestConf(t *testing.T) {
 	Conf.Dunbar = 100
 	Conf.Population = 100
 	Conf.Msglog = true
+	Conf.Regions = 2
 	fmt.Println(string(AsJson()))
 	FromJson(AsJson())
 	fmt.Println(Conf)
