@@ -46,7 +46,7 @@
 						.append("svg")
 						.attr("width", w)
 						.attr("height", h);
-			
+
 			//Every time the simulation "ticks", this will be called
 			force.on("tick", function() {
 				svg.selectAll("line").attr("x1", function(d) { return d.source.x; })
@@ -55,6 +55,11 @@
 					 .attr("y2", function(d) { return d.target.y; });
 				svg.selectAll("circle").attr("cx", function(d) { return d.x; })
 					 .attr("cy", function(d) { return d.y; });
+
+				var root = force.nodes()[0];
+				var k = .65;
+				root.y += (h*1/10 - root.y) * k;
+				root.x += (w*1/5 - root.x) * k;
 			});
 
 			// add a node and some edges
