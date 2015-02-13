@@ -22,11 +22,11 @@ func TestDiscovery(t *testing.T) {
 	eureka := make(chan gotocol.Message, 10)
 	go Start(eureka)
 	// stack up a series of requests in the buffered channel
-	eureka <- gotocol.Message{gotocol.Hello, listener, "test0" + " " + "test"}
-	eureka <- gotocol.Message{gotocol.Hello, listener, "test1" + " " + "test"}
-	eureka <- gotocol.Message{gotocol.Hello, listener, "thing0" + " " + "thing"}
-	eureka <- gotocol.Message{gotocol.GetRequest, listener, "test0"}
-	eureka <- gotocol.Message{gotocol.Goodbye, listener, ""}
+	eureka <- gotocol.Message{gotocol.Hello, listener, time.Now(), "test0" + " " + "test"}
+	eureka <- gotocol.Message{gotocol.Hello, listener, time.Now(), "test1" + " " + "test"}
+	eureka <- gotocol.Message{gotocol.Hello, listener, time.Now(), "thing0" + " " + "thing"}
+	eureka <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), "test0"}
+	eureka <- gotocol.Message{gotocol.Goodbye, listener, time.Now(), ""}
 	// pick up responses until we see the Googbye response
 	for {
 		msg := <-listener
