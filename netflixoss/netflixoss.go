@@ -115,7 +115,7 @@ func Start() {
 	noodles[dnsname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
 
 	// we need elb as a front end in each region to spread request traffic around each endpoint
-	rnames := [...]string{"us-east-1", "us-west-2", "eu-west-1"}
+	rnames := [...]string{"us-east-1", "us-west-2", "eu-west-1", "eu-east-1", "ap-south-1", "ap-south-2"}
 	// remember them in the global config
 	for i, s := range rnames {
 		archaius.Conf.RegionNames[i] = s
@@ -124,7 +124,7 @@ func Start() {
 	znames := [...]string{"zoneA", "zoneB", "zoneC"}
 	// elb for api endpoint
 	for r := 0; r < archaius.Conf.Regions; r++ {
-		rname := "netflixoss." + archaius.Conf.RegionNames[r]
+		rname := "netflixoss." + rnames[r]
 		elbname := fmt.Sprintf("%v-elb", rname)
 		noodles[elbname] = make(chan gotocol.Message)
 		go elb.Start(noodles[elbname])
@@ -175,7 +175,7 @@ func Start() {
 			noodles[staashname] <- gotocol.Message{gotocol.Put, nil, time.Now(), zone}
 			noodles[staashname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
 			// connect all the staash in a zone to all karyon in that zone only
-			for j := r*staashcount + i%3; j < (r+1)*karyoncount; j = j + 3 {
+			for j := r*karyoncount + i%3; j < (r+1)*karyoncount; j = j + 3 {
 				karyon := fmt.Sprintf("%v.%v.karyon%v", rname, znames[i%3], j)
 				noodles[karyon] <- gotocol.Message{gotocol.NameDrop, noodles[staashname], time.Now(), staashname}
 			}
@@ -199,14 +199,31 @@ func Start() {
 		// make the cross zone priamCassandra connections, assumes staash/astayanax ring aware client routing
 		for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
 			priamCassandraZ0 := fmt.Sprintf("%v.%v.priamCassandra%v", rname, znames[i%3], i)
-			priamCassandraZ1 := fmt.Sprintf("%v.%v.priamCassandra%v", rname, znames[i%3], r*priamCassandracount+(i+1)%priamCassandracount)
+			priamCassandraZ1 := fmt.Sprintf("%v.%v.priamCassandra%v", rname, znames[(i+1)%3], r*priamCassandracount+(i+1)%priamCassandracount)
 			noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ1], time.Now(), priamCassandraZ1}
-			priamCassandraZ2 := fmt.Sprintf("%v.%v.priamCassandra%v", rname, znames[i%3], r*priamCassandracount+(i+2)%priamCassandracount)
+			priamCassandraZ2 := fmt.Sprintf("%v.%v.priamCassandra%v", rname, znames[(i+2)%3], r*priamCassandracount+(i+2)%priamCassandracount)
 			noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ2], time.Now(), priamCassandraZ2}
 		}
 	}
-	// tell denominator to start chatting with microservices every 0.1 secs
-	delay := fmt.Sprintf("%dms", 100)
+
+	// Connect cross region Cassandra
+	priamCassandracount := 12 * archaius.Conf.Population / 100
+	if archaius.Conf.Regions > 1 {
+		for r := 0; r < archaius.Conf.Regions; r++ {
+			for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
+				for j := 1; j < archaius.Conf.Regions; j++ {
+					pC := fmt.Sprintf("netflixoss.%v.%v.priamCassandra%v", rnames[r], znames[i%3], i)
+					pCindex := (i + priamCassandracount) % (archaius.Conf.Regions * priamCassandracount)
+					pCremote := fmt.Sprintf("netflixoss.%v.%v.priamCassandra%v", rnames[(r+1)%archaius.Conf.Regions], znames[pCindex%3], pCindex)
+					//log.Printf("%v %v\n", pC, pCremote)
+					noodles[pC] <- gotocol.Message{gotocol.NameDrop, noodles[pCremote], time.Now(), pCremote}
+				}
+			}
+		}
+	}
+
+	// tell denominator to start chatting with microservices every 0.01 secs
+	delay := fmt.Sprintf("%dms", 10)
 	log.Println("netflixoss: denominator activity rate ", delay)
 	noodles[dnsname] <- gotocol.Message{gotocol.Chat, nil, time.Now(), delay}
 	shutdown()
