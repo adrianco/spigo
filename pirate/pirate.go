@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/gotocol"
+	"github.com/codahale/metrics"
 	"log"
 	"math/rand"
 	"time"
@@ -23,11 +24,16 @@ func Start(listener chan gotocol.Message) {
 	var name string                 // remember my name
 	var logger chan gotocol.Message // if set, send updates
 	var chatrate time.Duration
+	var hist *metrics.Histogram
 	chatTicker := time.NewTicker(time.Hour)
 	chatTicker.Stop()
 	for {
 		select {
 		case msg := <-listener:
+			if hist != nil && archaius.Conf.Collect {
+				metrics.Counter(name + ".messages").Add()
+				hist.RecordValue(int64(time.Since(msg.Sent)))
+			}
 			if archaius.Conf.Msglog {
 				log.Printf("%v: %v\n", name, msg)
 			}
@@ -37,6 +43,9 @@ func Start(listener chan gotocol.Message) {
 					// if I don't have a name yet remember what I've been named
 					fsm = msg.ResponseChan // remember how to talk to my namer
 					name = msg.Intention   // message body is my name
+					if archaius.Conf.Collect {
+						hist = metrics.NewHistogram(name+".msglatency", 1000, 100000000, 5)
+					}
 				}
 			case gotocol.Inform:
 				// remember where to send updates

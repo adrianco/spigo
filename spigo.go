@@ -24,10 +24,11 @@ func main() {
 	flag.IntVar(&archaius.Conf.Population, "p", 100, "  Pirate population for fsm or scale factor % for netflixoss")
 	flag.IntVar(&duration, "d", 10, "   Simulation duration in seconds")
 	flag.IntVar(&archaius.Conf.Regions, "w", 1, "    Wide area regions")
-	flag.BoolVar(&graphmlEnabled, "g", false, "Enable GraphML logging of nodes and edges")
-	flag.BoolVar(&graphjsonEnabled, "j", false, "Enable GraphJSON logging of nodes and edges")
+	flag.BoolVar(&graphmlEnabled, "g", false, "Enable GraphML logging of nodes and edges to <arch>.graphml")
+	flag.BoolVar(&graphjsonEnabled, "j", false, "Enable GraphJSON logging of nodes and edges to <arch>.json")
 	flag.BoolVar(&archaius.Conf.Msglog, "m", false, "Enable console logging of every message")
 	flag.BoolVar(&reload, "r", false, "Reload <arch>.json to setup architecture")
+	flag.BoolVar(&archaius.Conf.Collect, "c", false, "Collect metrics to <arch>_metrics.json")
 	var cpuprofile = flag.String("cpuprofile", "", "Write cpu profile to file")
 	flag.Parse()
 	if *cpuprofile != "" {
@@ -47,12 +48,12 @@ func main() {
 		}
 		// make a buffered channel so logging can start before edda is scheduled
 		edda.Logchan = make(chan gotocol.Message, 100)
-		go edda.Start() // start edda first
 	}
 	archaius.Conf.RunDuration = time.Duration(duration) * time.Second
 	// start up the selected architecture
 	switch archaius.Conf.Arch {
 	case "fsm":
+		go edda.Start("fsm.edda") // start edda first
 		if reload {
 			fsm.Reload(archaius.Conf.Arch)
 		} else {
@@ -60,6 +61,7 @@ func main() {
 		}
 		log.Println("spigo: fsm complete")
 	case "netflixoss":
+		go edda.Start("netflixoss.edda") // start edda first
 		if reload {
 			netflixoss.Reload(archaius.Conf.Arch)
 		} else {
@@ -69,6 +71,9 @@ func main() {
 	default:
 		log.Fatal("Architecture " + archaius.Conf.Arch + " isn't recognized")
 	}
-	// wait for edda to flush it's messages
+	// stop edda if it's running and wait for edda to flush messages
+	if edda.Logchan != nil {
+		close(edda.Logchan)
+	}
 	edda.Wg.Wait()
 }

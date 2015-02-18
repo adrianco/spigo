@@ -52,7 +52,8 @@ func TestDiscovery(t *testing.T) {
 			time.Sleep(time.Second)
 		}
 	}
-	//wait until edda has finished flushing and closed it's files
+	//wait until edda and eureak finish flushing and close files
+	Wg.Wait()
 	edda.Wg.Wait()
 	fmt.Println("eureka_test end")
 }

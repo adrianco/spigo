@@ -4,6 +4,7 @@ package denominator
 
 import (
 	"github.com/adrianco/spigo/archaius"
+	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/gotocol"
 	"log"
 	"math/rand"
@@ -18,6 +19,7 @@ func Start(listener chan gotocol.Message) {
 	microindex := make([]chan gotocol.Message, dunbar)
 	var netflixoss chan gotocol.Message // remember how to talk back to creator
 	var name string                     // remember my name
+	hist := collect.NewHist("")         // don't know name yet
 	var edda chan gotocol.Message       // if set, send updates
 	var chatrate time.Duration
 	chatTicker := time.NewTicker(time.Hour)
@@ -25,6 +27,7 @@ func Start(listener chan gotocol.Message) {
 	for {
 		select {
 		case msg := <-listener:
+			collect.Measure(hist, time.Since(msg.Sent))
 			if archaius.Conf.Msglog {
 				log.Printf("%v: %v\n", name, msg)
 			}
@@ -34,6 +37,7 @@ func Start(listener chan gotocol.Message) {
 					// if I don't have a name yet remember what I've been named
 					netflixoss = msg.ResponseChan // remember how to talk to my namer
 					name = msg.Intention          // message body is my name
+					hist = collect.NewHist(name)
 				}
 			case gotocol.Inform:
 				// remember where to send updates
@@ -63,7 +67,7 @@ func Start(listener chan gotocol.Message) {
 				// nothing to do at this level
 			case gotocol.Goodbye:
 				if archaius.Conf.Msglog {
-					log.Printf("%v: Going away, chatting every %v\n", name, chatrate)
+					log.Printf("%v: Going away, was chatting every %v\n", name, chatrate)
 				}
 				gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(netflixoss)
 				return

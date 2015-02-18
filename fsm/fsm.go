@@ -6,6 +6,7 @@ package fsm
 import (
 	"fmt"
 	"github.com/adrianco/spigo/archaius"
+	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/edda"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
@@ -131,6 +132,7 @@ func Start() {
 // Shutdown fsm and pirates
 func shutdown() {
 	var msg gotocol.Message
+	hist := collect.NewHist("fsm")
 	// wait until the delay has finished
 	if archaius.Conf.RunDuration >= time.Millisecond {
 		time.Sleep(archaius.Conf.RunDuration)
@@ -141,6 +143,7 @@ func shutdown() {
 	}
 	for len(noodles) > 0 {
 		msg = <-listener
+		collect.Measure(hist, time.Since(msg.Sent))
 		if archaius.Conf.Msglog {
 			log.Printf("fsm: %v\n", msg)
 		}
@@ -152,8 +155,6 @@ func shutdown() {
 			}
 		}
 	}
-	if edda.Logchan != nil {
-		close(edda.Logchan)
-	}
+	collect.Save()
 	log.Println("fsm: Exit")
 }

@@ -5,27 +5,36 @@ package eureka
 import (
 	"fmt"
 	"github.com/adrianco/spigo/archaius"
+	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/edda"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
 	"log"
+	"sync"
 	"time"
 )
 
-// Start eureka discovery service for an architecture with an initial scale
-func Start(listener chan gotocol.Message) {
+var Wg sync.WaitGroup
+
+// Start eureka discovery service and set name directly
+func Start(listener chan gotocol.Message, name string) {
+	// use a waitgroup so whoever starts eureka can tell the logs have been flushed
+	Wg.Add(1)
+	defer Wg.Done()
 	var msg gotocol.Message
 	var ok bool
+	hist := collect.NewHist(name)
 	microservices := make(map[string]chan gotocol.Message, archaius.Conf.Dunbar)
 	servicetypes := make(map[string]graphjson.NodeV0r3, archaius.Conf.Dunbar) // service type for each microservice
-	log.Println("eureka: starting")
+	log.Println(name + ": starting")
 	for {
 		msg, ok = <-listener
+		collect.Measure(hist, time.Since(msg.Sent))
 		if !ok {
 			break // channel was closed
 		}
 		if archaius.Conf.Msglog {
-			log.Printf("eureka(backlog %v): %v\n", len(listener), msg)
+			log.Printf("%v(backlog %v): %v\n", name, len(listener), msg)
 		}
 		switch msg.Imposition {
 		// for new nodes and edges record the data and maybe pass on to be logged
@@ -38,11 +47,8 @@ func Start(listener chan gotocol.Message) {
 				edda.Logchan <- msg
 			}
 		case gotocol.Goodbye:
-			if edda.Logchan != nil {
-				close(edda.Logchan)
-			}
-			gotocol.Message{gotocol.Goodbye, nil, time.Now(), ""}.GoSend(msg.ResponseChan)
-			break
+			close(listener)
+			gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(msg.ResponseChan)
 		case gotocol.Inform:
 			// don't store edges in discovery but do log them
 			if edda.Logchan != nil {
@@ -54,5 +60,5 @@ func Start(listener chan gotocol.Message) {
 			}
 		}
 	}
-	log.Println("eureka: closing")
+	log.Println(name + ": closing")
 }

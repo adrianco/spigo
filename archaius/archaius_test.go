@@ -16,6 +16,11 @@ func TestConf(t *testing.T) {
 	Conf.Population = 100
 	Conf.Msglog = true
 	Conf.Regions = 2
+	Names := [...]string{"us-east-1", "us-west-2"}
+	for i, s := range Names {
+		Conf.RegionNames[i] = s
+	}
+	Conf.Collect = true
 	fmt.Println(string(AsJson()))
 	FromJson(AsJson())
 	fmt.Println(Conf)

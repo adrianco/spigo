@@ -31,6 +31,12 @@ type Configuration struct {
 
 	// Regions is the number of regions to create
 	Regions int `json:"regions,omitempty"`
+
+	// RegionNames is the default names of the regions
+	RegionNames [10]string `json:"regionnames,omitempty"`
+
+	// Collect turns on Metrics collection
+	Collect bool `json:"collect,omitempty"`
 }
 
 var Conf Configuration
@@ -47,5 +53,5 @@ func FromJson(confJSON []byte) {
 
 // return formatted as string
 func (Configuration) String() string {
-	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\nRegions:    %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog, Conf.Regions)
+	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\nRegions:    %v\nRegionNames:%v\nCollect:    %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog, Conf.Regions, Conf.RegionNames, Conf.Collect)
 }
