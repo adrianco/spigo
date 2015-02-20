@@ -96,21 +96,28 @@ Scaled 100% with Denominator connected to an ELB in two different regions, and c
 
 ![Two Region NetflixOSS](netflixoss-cass2region.png)
 
+With the -m option all messages are logged as they are recieved. The time taken to deliver the message is shown
 ```
-2015/02/12 16:53:51 netflixoss: elb activity rate  100ms
-2015/02/12 16:53:51 elb-api: gotocol: 2.669us Chat 100ms
-2015/02/12 16:53:51 zuul5: gotocol: 33.179us GetRequest elb-api
-2015/02/12 16:53:51 karyon26: gotocol: 7.713us GetRequest zuul5
-2015/02/12 16:53:51 zuul1: gotocol: 31.485us GetRequest elb-api
-2015/02/12 16:53:51 karyon19: gotocol: 14.44us GetRequest zuul1
-2015/02/12 16:53:51 zuul2: gotocol: 32.46us GetRequest elb-api
-2015/02/12 16:53:51 karyon26: gotocol: 12.26us GetRequest zuul2
-2015/02/12 16:53:52 zuul7: gotocol: 40.12us GetRequest elb-api
-2015/02/12 16:53:52 karyon19: gotocol: 29.22us GetRequest zuul7
-2015/02/12 16:53:52 zuul2: gotocol: 17.6us GetRequest elb-api
-2015/02/12 16:53:52 karyon23: gotocol: 6.176us GetRequest zuul2
-2015/02/12 16:53:52 zuul5: gotocol: 40.11us GetRequest elb-api
-2015/02/12 16:53:52 karyon8: gotocol: 8.434us GetRequest zuul5
+2015/02/20 10:01:13 netflixoss.us-west-2-elb: gotocol: 20.488us GetRequest why?
+2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.zuul12: gotocol: 7.926us GetRequest why?
+2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.karyon39: gotocol: 6.953us GetRequest why?
+2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.staash9: gotocol: 6.698us GetRequest why?
+2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.priamCassandra21: gotocol: 8.428us GetRequest why?
+2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.staash9: gotocol: 4.571us GetResponse because...
+2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.karyon39: gotocol: 4.06us GetResponse because...
+2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.zuul12: gotocol: 3.89us GetResponse because...
+2015/02/20 10:01:13 netflixoss.us-west-2-elb: gotocol: 4.769us GetResponse because...
+2015/02/20 10:01:13 netflixoss.global-api-dns: gotocol: 4.233us GetResponse because...
+2015/02/20 10:01:13 netflixoss.us-east-1-elb: gotocol: 18.578us Put remember me
+2015/02/20 10:01:13 netflixoss.us-east-1.zoneB.zuul7: gotocol: 6.258us Put remember me
+2015/02/20 10:01:13 netflixoss.us-east-1.zoneB.karyon16: gotocol: 4.36us Put remember me
+2015/02/20 10:01:13 netflixoss.us-east-1.zoneB.staash4: gotocol: 5.529us Put remember me
+2015/02/20 10:01:13 netflixoss.us-east-1.zoneB.priamCassandra1: gotocol: 4.536us Put remember me
+2015/02/20 10:01:13 netflixoss.us-east-1.zoneA.priamCassandra3: gotocol: 6.029us Replicate remember me
+2015/02/20 10:01:13 netflixoss.us-west-2.zoneB.priamCassandra13: gotocol: 37.218us Replicate remember me
+2015/02/20 10:01:13 netflixoss.us-east-1.zoneC.priamCassandra2: gotocol: 60.563us Replicate remember me
+2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.priamCassandra15: gotocol: 30.02us Replicate remember me
+2015/02/20 10:01:13 netflixoss.us-west-2.zoneC.priamCassandra14: gotocol: 48.947us Replicate remember me
 ```
 
 100 Pirates 
