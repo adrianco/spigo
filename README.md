@@ -10,70 +10,74 @@ Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,00
 [![GoDoc](https://godoc.org/github.com/adrianco/spigo?status.svg)](https://godoc.org/github.com/adrianco/spigo)
 
 ```
-$ ./spigo -h
+$ spigo -h
 Usage of ./spigo:
   -a="fsm": Architecture to create or read, fsm or netflixoss
+  -c=false: Collect metrics to <arch>_metrics.json and via http:
   -cpuprofile="": Write cpu profile to file
   -d=10:    Simulation duration in seconds
-  -g=false: Enable GraphML logging of nodes and edges
-  -j=false: Enable GraphJSON logging of nodes and edges
+  -g=false: Enable GraphML logging of nodes and edges to <arch>.graphml
+  -j=false: Enable GraphJSON logging of nodes and edges to <arch>.json
   -m=false: Enable console logging of every message
   -p=100:   Pirate population for fsm or scale factor % for netflixoss
   -r=false: Reload <arch>.json to setup architecture
+  -w=1:     Wide area regions
   
-$ ./spigo -a netflixoss -d 1 -j -p 200
-2015/02/02 15:52:56 netflixoss: scaling to 200%
-2015/02/02 15:52:56 logger: starting
-2015/02/02 15:52:56 netflixoss: elb activity rate  100ms
-2015/02/02 15:52:57 netflixoss: Shutdown
-2015/02/02 15:52:57 netflixoss: Exit
-2015/02/02 15:52:57 spigo: netflixoss complete
-2015/02/02 15:52:57 Logger has 0 messages left to flush
-2015/02/02 15:52:57 logger: closing
+$ ./spigo -a netflixoss -d 1 -j -c
+2015/02/20 09:44:25 netflixoss: scaling to 100%
+2015/02/20 09:44:25 HTTP metrics now available at localhost:8123/debug/vars
+2015/02/20 09:44:25 netflixoss.edda: starting
+2015/02/20 09:44:25 netflixoss.eureka: starting
+2015/02/20 09:44:25 netflixoss: denominator activity rate  10ms
+2015/02/20 09:44:26 netflixoss: Shutdown
+2015/02/20 09:44:26 netflixoss.eureka: closing
+2015/02/20 09:44:27 netflixoss: Exit
+2015/02/20 09:44:27 spigo: netflixoss complete
+2015/02/20 09:44:27 netflixoss.edda: closing
 
-$ ./spigo -d 2 -j -p 10
-2015/01/28 00:23:01 fsm: population 10 pirates
-2015/01/28 00:23:01 logger: starting
-2015/01/28 00:23:01 fsm: Talk amongst yourselves for 2s
-2015/01/28 00:23:01 fsm: Delivered 60 messages in 968.09us
-2015/01/28 00:23:03 fsm: Shutdown
-2015/01/28 00:23:03 fsm: Exit
-2015/01/28 00:23:03 spigo: fsm complete
-2015/01/28 00:23:03 Logger has 0 messages left to flush
-2015/01/28 00:23:03 logger: closing
+$ ./spigo -d 1 -j -c
+2015/02/20 09:45:25 fsm: population 100 pirates
+2015/02/20 09:45:25 HTTP metrics now available at localhost:8123/debug/vars
+2015/02/20 09:45:25 fsm.edda: starting
+2015/02/20 09:45:25 fsm: Talk amongst yourselves for 1s
+2015/02/20 09:45:25 fsm: Delivered 600 messages in 125.328265ms
+2015/02/20 09:45:26 fsm: Shutdown
+2015/02/20 09:45:26 fsm: Exit
+2015/02/20 09:45:26 spigo: fsm complete
+2015/02/20 09:45:26 fsm.edda: closing
 
-$ ./spigo -d 2 -r
-2015/01/28 00:23:20 fsm reloading from fsm.json
-2015/01/28 00:23:20 Version:  spigo-0.3
-2015/01/28 00:23:20 Architecture:  fsm
-2015/01/28 00:23:20 Link Pirate7 > Pirate8
-2015/01/28 00:23:20 Link Pirate7 > Pirate5
-2015/01/28 00:23:20 Link Pirate1 > Pirate8
-2015/01/28 00:23:20 Link Pirate1 > Pirate3
-2015/01/28 00:23:20 Link Pirate2 > Pirate7
-2015/01/28 00:23:20 Link Pirate4 > Pirate10
-2015/01/28 00:23:20 Link Pirate4 > Pirate5
-2015/01/28 00:23:20 Link Pirate8 > Pirate4
-2015/01/28 00:23:20 Link Pirate8 > Pirate10
-2015/01/28 00:23:20 Link Pirate9 > Pirate1
-2015/01/28 00:23:20 Link Pirate9 > Pirate8
-2015/01/28 00:23:20 Link Pirate10 > Pirate3
-2015/01/28 00:23:20 Link Pirate10 > Pirate7
-2015/01/28 00:23:20 Link Pirate3 > Pirate8
-2015/01/28 00:23:20 Link Pirate5 > Pirate7
-2015/01/28 00:23:20 Link Pirate5 > Pirate2
-2015/01/28 00:23:20 Link Pirate6 > Pirate10
-2015/01/28 00:23:20 Link Pirate6 > Pirate5
-2015/01/28 00:23:22 fsm: Shutdown
-2015/01/28 00:23:22 fsm: Exit
-2015/01/28 00:23:22 spigo: fsm complete
+$ ./spigo -a netflixoss -d 2 -r
+2015/02/20 09:48:22 netflixoss reloading from netflixoss.json
+2015/02/20 09:48:22 Version:  spigo-0.3
+2015/02/20 09:48:22 Architecture:  netflixoss
+2015/02/20 09:48:22 netflixoss.eureka: starting
+2015/02/20 09:48:22 Link netflixoss.global-api-dns > netflixoss.us-east-1-elb
+2015/02/20 09:48:22 Link netflixoss.us-east-1-elb > netflixoss.us-east-1.zoneA.zuul0
+...
+2015/02/20 09:48:22 Link netflixoss.us-east-1-elb > netflixoss.us-east-1.zoneC.zuul8
+2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneA.zuul0 > netflixoss.us-east-1.zoneA.karyon0
+...
+2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneC.zuul8 > netflixoss.us-east-1.zoneC.karyon26
+2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneA.karyon0 > netflixoss.us-east-1.zoneA.staash0
+...
+2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneC.karyon26 > netflixoss.us-east-1.zoneC.staash5
+2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneA.staash0 > netflixoss.us-east-1.zoneA.priamCassandra0
+...
+2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneC.staash5 > netflixoss.us-east-1.zoneC.priamCassandra11
+2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneA.priamCassandra0 > netflixoss.us-east-1.zoneB.priamCassandra1
+...
+2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneC.priamCassandra11 > netflixoss.us-east-1.zoneB.priamCassandra1
+2015/02/20 09:48:24 netflixoss: Shutdown
+2015/02/20 09:48:24 netflixoss.eureka: closing
+2015/02/20 09:48:24 netflixoss: Exit
+2015/02/20 09:48:24 spigo: netflixoss complete
 ```
 
 NetflixOSS Architecture
 -----------
-Simple simulations of the following AWS and NetflixOSS services are implemented. Edda collects the configuration and writes it to Json or Graphml. Eureka implements a service registry. Archaius contains global configuration data. ELB generates traffic that is split across three availability zones. Zuul takes requests and routes it to the Karyon business logic layer. Karyon calls into the Staash data access layer, which calls PriamCassandra, which provides cross zone connections.
+Simple simulations of the following AWS and NetflixOSS services are implemented. Edda collects the configuration and writes it to Json or Graphml. Eureka implements a service registry. Archaius contains global configuration data. Denominator simulates a global DNS engpoint. ELB generates traffic that is split across three availability zones. Zuul takes requests and routes it to the Karyon business logic layer. Karyon calls into the Staash data access layer, which calls PriamCassandra, which provides cross zone and cross region connections.
 
-Each microservice is based on Karyon as the prototype to copy when creating a new microservice. The simulation just passes requests down the tree at present.
+Each microservice is based on Karyon as the prototype to copy when creating a new microservice. The simulation passes get and put requests down the tree one at a time from Denominator. Get requests lookup the key in PriamCassandra and respond back up the tree. Put requests go down the tree only, and PriamCassandra replicates the put across all zones and regions.
 
 Scaled to 200% with one ELB in the center, three zones with six Zuul and 18 Karyon each zone, rendered using GraphJSON and D3.
 
@@ -83,9 +87,14 @@ Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon an
 
 ![100% scale NetflixOSS](netflixoss-staash-100.png)
 
-Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon, two Staash and four Priam-Cassandra in each zone, rendered using GraphJSON and D3. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/netflixoss.html)
+Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon, two Staash and four Priam-Cassandra in each zone, rendered using GraphJSON and D3.
 
 ![100% scale NetflixOSS](netflixoss-priamCassandra-100.png)
+
+Scaled 100% with Denominator connected to an ELB in two different regions, and cross region Priam-Cassandra connections
+[Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/netflixoss.html)
+
+![Two Region NetflixOSS](netflixoss-cass2region.png)
 
 ```
 2015/02/12 16:53:51 netflixoss: elb activity rate  100ms
