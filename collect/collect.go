@@ -4,8 +4,8 @@ package collect
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/adrianco/metrics" // modified to add h.Name()
 	"github.com/adrianco/spigo/archaius"
-	"github.com/codahale/metrics"
 	"os"
 	"time"
 )
