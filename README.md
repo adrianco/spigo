@@ -75,7 +75,7 @@ $ ./spigo -a netflixoss -d 2 -r
 
 NetflixOSS Architecture
 -----------
-Simple simulations of the following AWS and NetflixOSS services are implemented. Edda collects the configuration and writes it to Json or Graphml. Eureka implements a service registry. Archaius contains global configuration data. Denominator simulates a global DNS engpoint. ELB generates traffic that is split across three availability zones. Zuul takes requests and routes it to the Karyon business logic layer. Karyon calls into the Staash data access layer, which calls PriamCassandra, which provides cross zone and cross region connections.
+Simple simulations of the following AWS and NetflixOSS services are implemented. Edda collects the configuration and writes it to Json or Graphml. Eureka implements a service registry. Archaius contains global configuration data. Denominator simulates a global DNS endpoint. ELB generates traffic that is split across three availability zones. Zuul takes requests and routes it to the Karyon business logic layer. Karyon calls into the Staash data access layer, which calls PriamCassandra, which provides cross zone and cross region connections.
 
 Each microservice is based on Karyon as the prototype to copy when creating a new microservice. The simulation passes get and put requests down the tree one at a time from Denominator. Get requests lookup the key in PriamCassandra and respond back up the tree. Put requests go down the tree only, and PriamCassandra replicates the put across all zones and regions.
 
@@ -96,7 +96,7 @@ Scaled 100% with Denominator connected to an ELB in two different regions, and c
 
 ![Two Region NetflixOSS](netflixoss-cass2region.png)
 
-With the -m option all messages are logged as they are recieved. The time taken to deliver the message is shown
+With the -m option all messages are logged as they are received. The time taken to deliver the message is shown
 ```
 2015/02/20 10:01:13 netflixoss.us-west-2-elb: gotocol: 20.488us GetRequest why?
 2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.zuul12: gotocol: 7.926us GetRequest why?
