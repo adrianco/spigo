@@ -20,7 +20,7 @@ func NewHist(name string) *metrics.Histogram {
 func Measure(h *metrics.Histogram, d time.Duration) {
 	if h != nil && archaius.Conf.Collect {
 		h.RecordValue(int64(d))
-		metrics.Counter(h.Name).Add()
+		metrics.Counter(h.Name()).Add()
 	}
 }
 
