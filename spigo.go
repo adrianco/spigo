@@ -5,6 +5,7 @@ package main
 import (
 	"flag"
 	"github.com/adrianco/spigo/archaius"   // store the config for global lookup
+	"github.com/adrianco/spigo/collect"    // metrics to extvar
 	"github.com/adrianco/spigo/edda"       // log configuration state
 	"github.com/adrianco/spigo/fsm"        // fsm and pirates
 	"github.com/adrianco/spigo/gotocol"    // message protocol spec
@@ -38,6 +39,9 @@ func main() {
 		}
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()
+	}
+	if archaius.Conf.Collect {
+		collect.Serve(8123) // start web server at port
 	}
 	if graphjsonEnabled || graphmlEnabled {
 		if graphjsonEnabled {

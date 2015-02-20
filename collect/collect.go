@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"github.com/adrianco/metrics" // modified to add h.Name()
 	"github.com/adrianco/spigo/archaius"
+	"log"
+	"net"
+	"net/http"
 	"os"
 	"time"
 )
@@ -33,4 +36,15 @@ func Save() {
 		file.WriteString(fmt.Sprintf("{\n\"counters\":%v\n\"gauges\":%v\n}\n", string(cj), string(gj)))
 		file.Close()
 	}
+}
+
+func Serve(port int) {
+	sock, err := net.Listen("tcp", fmt.Sprintf("localhost:%v", port))
+	if err != nil {
+		log.Fatal(err)
+	}
+	go func() {
+		log.Printf("HTTP metrics now available at localhost:%v/debug/vars", port)
+		http.Serve(sock, nil)
+	}()
 }
