@@ -8,7 +8,7 @@ import (
 	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/gotocol"
 	"log"
-	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -17,8 +17,8 @@ func Start(listener chan gotocol.Message) {
 	dunbar := 30 // starting point for how many nodes to remember
 	// remember the channel to talk to microservices
 	microservices := make(map[string]chan gotocol.Message, dunbar)
-	microindex := make([]chan gotocol.Message, dunbar)
-	store := make(map[string]string, 4)            // key value store
+	store := make(map[string]string, 4) // key value store
+	store["why?"] = "because..."
 	var netflixoss, requestor chan gotocol.Message // remember creator and how to talk back to incoming requests
 	var name string                                // remember my name
 	var edda chan gotocol.Message                  // if set, send updates
@@ -39,7 +39,7 @@ func Start(listener chan gotocol.Message) {
 					// if I don't have a name yet remember what I've been named
 					netflixoss = msg.ResponseChan // remember how to talk to my namer
 					name = msg.Intention          // message body is my name
-					collect.NewHist(name)
+					hist = collect.NewHist(name)
 				}
 			case gotocol.Inform:
 				// remember where to send updates
@@ -65,34 +65,55 @@ func Start(listener chan gotocol.Message) {
 					chatTicker = time.NewTicker(chatrate)
 				}
 			case gotocol.GetRequest:
-				// route the request on to microservices
-				requestor = msg.ResponseChan
-				// Intention body indicates which service to route to or which key to get
-				// need to lookup service by type rather than randomly call one day
-				if len(microservices) > 0 {
-					if len(microindex) != len(microservices) {
-						// rebuild index
-						i := 0
-						for _, ch := range microservices {
-							microindex[i] = ch
-							i++
-						}
-					}
-					//m := rand.Intn(len(microservices))
-					// needs to go to the other two zones with a different Imposition
-					//gotocol.Message{gotocol. , listener, time.Now(), name}.GoSend(microindex[m])
-				}
+				// return any stored value for this key (Cassandra READ.ONE behavior)
+				gotocol.Message{gotocol.GetResponse, listener, time.Now(), store[msg.Intention]}.GoSend(msg.ResponseChan)
 			case gotocol.GetResponse:
-				// return path from a request, send payload back up
+				// return path from a request, send payload back up (not currently used)
 				if requestor != nil {
 					gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Intention}.GoSend(requestor)
 				}
 			case gotocol.Put:
-				// set a key value pair
+				requestor = msg.ResponseChan
+				// set a key value pair and replicate globally
+				var key, value string
+				fmt.Sscanf(msg.Intention, "%s%s", &key, &value)
+				if key != "" && value != "" {
+					store[key] = value
+					// duplicate the request on to all connected priamCassandra nodes
+					if len(microservices) > 0 {
+						// replicate request
+						for _, c := range microservices {
+							gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Intention}.GoSend(c)
+						}
+					}
+				}
+			case gotocol.Replicate:
+				// Replicate is only used between priamCassandra nodes
+				// end point for a request
 				var key, value string
 				fmt.Sscanf(msg.Intention, "%s%s", &key, &value)
 				// log.Printf("priamCassandra: %v:%v", key, value)
-				store[key] = value
+				if key != "" && value != "" {
+					store[key] = value
+				}
+				// name looks like: netflixoss.us-east-1.zoneC.priamCassandra11
+				myregion := strings.Split(name, ".")[1]
+				//log.Printf("%v: %v\n", name, myregion)
+				// find if this was a cross region Replicate
+				for n, c := range microservices {
+					// find the name matching incoming request channel
+					if c == msg.ResponseChan {
+						if myregion != strings.Split(n, ".")[1] {
+							// Replicate from out of region needs to be Replicated only to other zones in this Region
+							for nz, cz := range microservices {
+								if myregion == strings.Split(nz, ".")[1] {
+									//log.Printf("%v rep to: %v\n", name, nz)
+									gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Intention}.GoSend(cz)
+								}
+							}
+						}
+					}
+				}
 			case gotocol.Goodbye:
 				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away, zone: %v\n", name, store["zone"])
@@ -101,20 +122,7 @@ func Start(listener chan gotocol.Message) {
 				return
 			}
 		case <-chatTicker.C:
-			if len(microservices) > 0 {
-				if len(microservices) != len(microindex) {
-					// rebuild index
-					i := 0
-					for _, ch := range microservices {
-						microindex[i] = ch
-						i++
-					}
-				}
-				m := rand.Intn(len(microservices))
-				// start a request to a random member of this elb
-				gotocol.Message{gotocol.GetRequest, listener, time.Now(), name}.GoSend(microindex[m])
-			}
-			//default:
+			// nothing to do here at the moment
 		}
 	}
 }

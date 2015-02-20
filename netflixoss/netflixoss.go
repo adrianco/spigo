@@ -209,13 +209,15 @@ func Start() {
 	// Connect cross region Cassandra
 	priamCassandracount := 12 * archaius.Conf.Population / 100
 	if archaius.Conf.Regions > 1 {
+		// for each region
 		for r := 0; r < archaius.Conf.Regions; r++ {
+			// for each priamCassandrian in that region
 			for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
+				pC := fmt.Sprintf("netflixoss.%v.%v.priamCassandra%v", rnames[r], znames[i%3], i)
+				// for each of the other regions connect to one node
 				for j := 1; j < archaius.Conf.Regions; j++ {
-					pC := fmt.Sprintf("netflixoss.%v.%v.priamCassandra%v", rnames[r], znames[i%3], i)
-					pCindex := (i + priamCassandracount) % (archaius.Conf.Regions * priamCassandracount)
+					pCindex := (i + j*priamCassandracount) % (archaius.Conf.Regions * priamCassandracount)
 					pCremote := fmt.Sprintf("netflixoss.%v.%v.priamCassandra%v", rnames[(r+1)%archaius.Conf.Regions], znames[pCindex%3], pCindex)
-					//log.Printf("%v %v\n", pC, pCremote)
 					noodles[pC] <- gotocol.Message{gotocol.NameDrop, noodles[pCremote], time.Now(), pCremote}
 				}
 			}

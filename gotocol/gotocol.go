@@ -12,22 +12,24 @@ type Impositions int
 
 // Constant definitions for message types to be imposed on the receiver
 const (
-	// Hello ChanToParent NameForPirate // initial noodly touch
+	// Hello ChanToParent Name Initial noodly touch to set identity
 	Hello Impositions = iota
-	// NameDrop ChanToBuddy NameOfBuddy // here's someone to talk to
+	// NameDrop ChanToBuddy NameOfBuddy Here's someone to talk to
 	NameDrop
-	// Chat - ThisOften // chat to buddies time interval
+	// Chat - ThisOften Chat to buddies time interval
 	Chat
 	// GoldCoin FromChan HowMuch
 	GoldCoin
 	// Inform loggerChan text message
 	Inform
-	// GetRequest FromChan key // simulate http inbound request
+	// GetRequest FromChan key Simulate http inbound request
 	GetRequest
-	// GetResponse FromChan value // simulate http outbound response
+	// GetResponse FromChan value Simulate http outbound response
 	GetResponse
-	// Put - "key value" // save the key and value
+	// Put - "key value" Save the key and value
 	Put
+	// Replicate - "key value" Save a replicated copy
+	Replicate
 	// Goodbye - - // tell FSM and exit
 	Goodbye // test assumes this is the last and exits
 	numOfImpositions
@@ -52,6 +54,8 @@ func (imps Impositions) String() string {
 		return "GetResponse"
 	case Put:
 		return "Put"
+	case Replicate:
+		return "Replicate"
 	case Goodbye:
 		return "Goodbye"
 	}

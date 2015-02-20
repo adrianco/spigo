@@ -17,9 +17,9 @@ func Start(listener chan gotocol.Message) {
 	// remember the channel to talk to microservices
 	microservices := make(map[string]chan gotocol.Message, dunbar)
 	microindex := make([]chan gotocol.Message, dunbar)
-	var netflixoss chan gotocol.Message // remember how to talk back to creator
-	var name string                     // remember my name
-	var edda chan gotocol.Message       // if set, send updates
+	var netflixoss, requestor chan gotocol.Message // remember how to talk back to creator
+	var name string                                // remember my name
+	var edda chan gotocol.Message                  // if set, send updates
 	var chatrate time.Duration
 	hist := collect.NewHist("")
 	chatTicker := time.NewTicker(time.Hour)
@@ -62,9 +62,44 @@ func Start(listener chan gotocol.Message) {
 					chatrate = d
 					chatTicker = time.NewTicker(chatrate)
 				}
+			case gotocol.GetRequest:
+				// route the request on to microservices
+				requestor = msg.ResponseChan
+				// Intention body indicates which service to route to or which key to get
+				// need to lookup service by type rather than randomly call one day
+				if len(microservices) > 0 {
+					if len(microindex) != len(microservices) {
+						// rebuild index
+						i := 0
+						for _, ch := range microservices {
+							microindex[i] = ch
+							i++
+						}
+					}
+					m := rand.Intn(len(microservices))
+					// pass on request to a random service
+					gotocol.Message{gotocol.GetRequest, listener, time.Now(), msg.Intention}.GoSend(microindex[m])
+				}
 			case gotocol.GetResponse:
-				// return path from a request
-				// nothing to do at this level
+				// return path from a request, send payload back up
+				if requestor != nil {
+					gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Intention}.GoSend(requestor)
+				}
+			case gotocol.Put:
+				// route the request on to a random dependency
+				if len(microservices) > 0 {
+					if len(microindex) != len(microservices) {
+						// rebuild index
+						i := 0
+						for _, ch := range microservices {
+							microindex[i] = ch
+							i++
+						}
+					}
+					m := rand.Intn(len(microservices))
+					// pass on request to a random service
+					gotocol.Message{gotocol.Put, listener, time.Now(), msg.Intention}.GoSend(microindex[m])
+				}
 			case gotocol.Goodbye:
 				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away, chatting every %v\n", name, chatrate)

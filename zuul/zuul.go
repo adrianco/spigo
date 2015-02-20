@@ -3,7 +3,6 @@
 package zuul
 
 import (
-	"fmt"
 	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/gotocol"
@@ -80,7 +79,7 @@ func Start(listener chan gotocol.Message) {
 					}
 					m := rand.Intn(len(microservices))
 					// start a request to a random member of this zuul proxy
-					gotocol.Message{gotocol.GetRequest, listener, time.Now(), name}.GoSend(microindex[m])
+					gotocol.Message{gotocol.GetRequest, listener, time.Now(), msg.Intention}.GoSend(microindex[m])
 				}
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up
@@ -88,11 +87,20 @@ func Start(listener chan gotocol.Message) {
 					gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Intention}.GoSend(requestor)
 				}
 			case gotocol.Put:
-				// set a key value pair
-				var key, value string
-				fmt.Sscanf(msg.Intention, "%s%s", &key, &value)
-				// log.Printf("zuul: %v:%v", key, value)
-				store[key] = value
+				// route the request on to a random dependency
+				if len(microservices) > 0 {
+					if len(microindex) != len(microservices) {
+						// rebuild index
+						i := 0
+						for _, ch := range microservices {
+							microindex[i] = ch
+							i++
+						}
+					}
+					m := rand.Intn(len(microservices))
+					// pass on request to a random service
+					gotocol.Message{gotocol.Put, listener, time.Now(), msg.Intention}.GoSend(microindex[m])
+				}
 			case gotocol.Goodbye:
 				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away, zone: %v\n", name, store["zone"])
