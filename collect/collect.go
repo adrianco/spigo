@@ -1,4 +1,4 @@
-// Collect throughput and response times using Metrics
+// Collect throughput and response times using Coda Hale's Metrics
 package collect
 
 import (

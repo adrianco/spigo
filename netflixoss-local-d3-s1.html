@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Force layout</title>
+		<script type="text/javascript" src="../d3-book/d3/d3.v3.js"></script>
+		<style type="text/css">
+			/* No style rules here yet */
+		</style>
+	</head>
+	<body>
+		<p>netflixoss</p>
+
+		<script type="text/javascript">
+			//Dynamically grow a graph, adding nodes and edges
+			//By Adrian Cockcroft @adrianco github.com/adrianco/d3grow
+
+			//Width and height
+			var w = 1000;
+			var h = 600;
+
+			//Graph data
+			var dataset = {
+				nodes: [],
+				edges: []
+			};
+
+			var nodecount = 0;
+
+			//Initialize a default force layout, using the nodes and edges in dataset
+			var force = d3.layout.force()
+					.nodes(dataset.nodes)
+					.links(dataset.edges)
+					.size([w, h])
+					.charge([-50]);
+
+			force.linkDistance(function(d) {
+                               return 10 + 5 * (d.source.size + d.target.size);
+			});
+
+
+			var colors = d3.scale.category10();
+
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			//Every time the simulation "ticks", this will be called
+			force.on("tick", function() {
+				svg.selectAll("line").attr("x1", function(d) { return d.source.x; })
+					 .attr("y1", function(d) { return d.source.y; })
+					 .attr("x2", function(d) { return d.target.x; })
+					 .attr("y2", function(d) { return d.target.y; });
+				svg.selectAll("circle").attr("cx", function(d) { return d.x; })
+					 .attr("cy", function(d) { return d.y; });
+
+				var root = force.nodes()[0];
+				var k = .65;
+				root.y += (h*1/10 - root.y) * k;
+				root.x += (w*1/5 - root.x) * k;
+			});
+
+			// add a node and some edges
+			var addnode = function(name) {
+					//console.log(name);
+					dataset.nodes.push([name]);
+					dataset.nodes[nodecount].size = 0;
+					nodecount++;
+			};
+
+			var update = function() {
+					console.log("update");
+                        		svg.selectAll("line")
+                                		.data(dataset.edges)
+                                		.enter()
+                                		.append("line")
+                                		.style("stroke", "#ccc")
+                                		.style("stroke-width", 2);
+					svg.selectAll("circle")
+                                		.data(dataset.nodes)
+                                		.enter()
+                              	 		.append("circle")
+                                		.attr("r", function(d, i) {
+							return Math.sqrt(d.size) * 2;
+						})
+                                		.style("fill", function(d, i) {
+                                	       		return colors(i);
+                                		})
+                                		.call(force.drag);
+					force.start();
+			};
+
+                        var findnode = function(nodename) {
+                                for (n = 0; n < dataset.nodes.length; n++)
+                                        if (dataset.nodes[n][0] == nodename) {
+						dataset.nodes[n].size++;
+                                                break;
+					}
+                                return dataset.nodes[n];
+                        }
+
+			var addedge = function(s, t) {
+				//console.log("edge between " + s  " and " + t);
+				sn = findnode(s);
+				tn = findnode(t);
+				dataset.edges.push({ source: sn, target: tn });
+			};
+
+			//for (i = 0; i < 20; i++)
+			//	addnode();
+
+			// click for more
+			//d3.select("p").on("click", addnode);
+
+			d3.json("netflixoss1.json", function(error, json) {
+  				console.log(json.version);
+				for (i = 0; i < json.graph.length; i++) {
+					element = json.graph[i];
+					if (element.node) {
+						addnode(element.node);
+					}
+					if (element.edge) {
+						addedge(element.source, element.target);
+					}
+				}
+				update();
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "arch":"netflixoss2",
+  "version":"spigo-0.3",
+  "args":"[./spigo -a netflixoss -d 1 -j -s 2]",
+  "graph":[
+    {"node":"netflixoss.global-api-dns","service":"denominator"},
+    {"node":"netflixoss.us-east-1-elb","service":"elb"},
+    {"edge":"e1","source":"netflixoss.global-api-dns","target":"netflixoss.us-east-1-elb"}
+  ]
+}

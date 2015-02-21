@@ -2,6 +2,7 @@
 package edda
 
 import (
+	"fmt"
 	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/gotocol"
@@ -35,8 +36,12 @@ func Start(name string) {
 	if archaius.Conf.GraphjsonFile != "" {
 		graphjson.Enabled = true
 	}
-	graphml.Setup(archaius.Conf.GraphmlFile)
-	graphjson.Setup(archaius.Conf.GraphjsonFile)
+	ss := ""
+	if archaius.Conf.StopStep > 0 {
+		ss = fmt.Sprintf("%v", archaius.Conf.StopStep)
+	}
+	graphml.Setup(archaius.Conf.GraphmlFile + ss)
+	graphjson.Setup(archaius.Conf.GraphjsonFile + ss)
 	for {
 		msg, ok = <-Logchan
 		collect.Measure(hist, time.Since(msg.Sent))

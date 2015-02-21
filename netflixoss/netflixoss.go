@@ -18,7 +18,6 @@ import (
 	"github.com/adrianco/spigo/staash"         // storage tier as a service http - data access layer
 	"github.com/adrianco/spigo/zuul"           // API proxy microservice router
 	"log"
-	"math/rand"
 	"time"
 )
 
@@ -29,6 +28,7 @@ var listener, eurekachan chan gotocol.Message
 
 // Reload the network from a file
 func Reload(arch string) {
+	var root string                                                   // root name to run
 	listener = make(chan gotocol.Message)                             // listener for netflixoss
 	eurekachan = make(chan gotocol.Message, archaius.Conf.Population) // listener for eureka
 	log.Println("netflixoss reloading from " + arch + ".json")
@@ -56,6 +56,7 @@ func Reload(arch string) {
 				go elb.Start(noodles[name])
 			case "denominator":
 				go denominator.Start(noodles[name])
+				root = name
 			case "zuul":
 				go zuul.Start(noodles[name])
 			case "karyon":
@@ -79,15 +80,11 @@ func Reload(arch string) {
 			log.Println("Link " + element.Source + " > " + element.Target)
 		}
 	}
-	// start the simulation chatting
-	for name, noodle := range noodles {
-		if name == "elb" {
-			// tell each elb to start calling microservices every 0.1 to 1 secs
-			delay := fmt.Sprintf("%dms", 100+rand.Intn(900))
-			noodle <- gotocol.Message{gotocol.Chat, nil, time.Now(), delay}
-		}
+	// run for a while
+	if root == "" {
+		log.Fatal("No denominator microservice specified")
 	}
-	shutdown()
+	run(root)
 }
 
 // Start netflixoss and create new microservices
@@ -113,6 +110,10 @@ func Start() {
 	// setup the dns name and logging, set chat rate after everything else is started
 	noodles[dnsname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), dnsname}
 	noodles[dnsname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+	if archaius.Conf.StopStep == 1 {
+		run(dnsname)
+		return
+	}
 
 	// we need elb as a front end in each region to spread request traffic around each endpoint
 	rnames := [...]string{"us-east-1", "us-west-2", "eu-west-1", "eu-east-1", "ap-south-1", "ap-south-2"}
@@ -133,6 +134,10 @@ func Start() {
 		noodles[elbname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
 		// tell denominator how to talk to the elb
 		noodles[dnsname] <- gotocol.Message{gotocol.NameDrop, noodles[elbname], time.Now(), elbname}
+		if archaius.Conf.StopStep == 2 {
+			run(dnsname)
+			return
+		}
 
 		// start zuul api proxies next
 		zuulcount := 9 * archaius.Conf.Population / 100
@@ -146,6 +151,10 @@ func Start() {
 			noodles[zuulname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
 			// hook all the zuul proxies up to the elb
 			noodles[elbname] <- gotocol.Message{gotocol.NameDrop, noodles[zuulname], time.Now(), zuulname}
+		}
+		if archaius.Conf.StopStep == 3 {
+			run(dnsname)
+			return
 		}
 
 		// start karyon business logic
@@ -164,6 +173,11 @@ func Start() {
 				noodles[zuul] <- gotocol.Message{gotocol.NameDrop, noodles[karyonname], time.Now(), karyonname}
 			}
 		}
+		if archaius.Conf.StopStep == 4 {
+			run(dnsname)
+			return
+		}
+
 		// start staash data access layer
 		staashcount := 6 * archaius.Conf.Population / 100
 		for i := r * staashcount; i < (r+1)*staashcount; i++ {
@@ -180,6 +194,11 @@ func Start() {
 				noodles[karyon] <- gotocol.Message{gotocol.NameDrop, noodles[staashname], time.Now(), staashname}
 			}
 		}
+		if archaius.Conf.StopStep == 5 {
+			run(dnsname)
+			return
+		}
+
 		// start priam managed Cassandra cluster
 		priamCassandracount := 12 * archaius.Conf.Population / 100
 		for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
@@ -196,6 +215,11 @@ func Start() {
 				noodles[staash] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraname], time.Now(), priamCassandraname}
 			}
 		}
+		if archaius.Conf.StopStep == 6 {
+			run(dnsname)
+			return
+		}
+
 		// make the cross zone priamCassandra connections, assumes staash/astayanax ring aware client routing
 		for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
 			priamCassandraZ0 := fmt.Sprintf("%v.%v.priamCassandra%v", rname, znames[i%3], i)
@@ -206,6 +230,11 @@ func Start() {
 		}
 	}
 
+	// stop here for 7 for single region, then add second region for step 8, then join them for 9
+	if archaius.Conf.StopStep == 7 || archaius.Conf.StopStep == 8 {
+		run(dnsname)
+		return
+	}
 	// Connect cross region Cassandra
 	priamCassandracount := 12 * archaius.Conf.Population / 100
 	if archaius.Conf.Regions > 1 {
@@ -223,17 +252,17 @@ func Start() {
 			}
 		}
 	}
+	run(dnsname)
+}
 
+// Run netflixoss for a while then shut down
+func run(root string) {
+	var msg gotocol.Message
 	// tell denominator to start chatting with microservices every 0.01 secs
 	delay := fmt.Sprintf("%dms", 10)
 	log.Println("netflixoss: denominator activity rate ", delay)
-	noodles[dnsname] <- gotocol.Message{gotocol.Chat, nil, time.Now(), delay}
-	shutdown()
-}
+	noodles[root] <- gotocol.Message{gotocol.Chat, nil, time.Now(), delay}
 
-// Shutdown netflixoss and elb
-func shutdown() {
-	var msg gotocol.Message
 	// wait until the delay has finished
 	if archaius.Conf.RunDuration >= time.Millisecond {
 		time.Sleep(archaius.Conf.RunDuration)

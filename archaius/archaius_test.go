@@ -21,6 +21,7 @@ func TestConf(t *testing.T) {
 		Conf.RegionNames[i] = s
 	}
 	Conf.Collect = true
+	Conf.StopStep = 2
 	fmt.Println(string(AsJson()))
 	FromJson(AsJson())
 	fmt.Println(Conf)

@@ -37,6 +37,9 @@ type Configuration struct {
 
 	// Collect turns on Metrics collection
 	Collect bool `json:"collect,omitempty"`
+
+	// StopStep stops building new microservices at this step, 0 means don't stop
+	StopStep int `json:"stopstep,omitempty"`
 }
 
 var Conf Configuration
@@ -53,5 +56,5 @@ func FromJson(confJSON []byte) {
 
 // return formatted as string
 func (Configuration) String() string {
-	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\nRegions:    %v\nRegionNames:%v\nCollect:    %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog, Conf.Regions, Conf.RegionNames, Conf.Collect)
+	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\nRegions:    %v\nRegionNames:%v\nCollect:    %v\nStopStep:   %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog, Conf.Regions, Conf.RegionNames, Conf.Collect, Conf.StopStep)
 }
