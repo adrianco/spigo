@@ -7,8 +7,8 @@ import (
 	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/gotocol"
+	"github.com/adrianco/spigo/names"
 	"log"
-	"strings"
 	"time"
 )
 
@@ -96,17 +96,17 @@ func Start(listener chan gotocol.Message) {
 				if key != "" && value != "" {
 					store[key] = value
 				}
-				// name looks like: netflixoss.us-east-1.zoneC.priamCassandra11
-				myregion := strings.Split(name, ".")[1]
+				// name looks like: netflixoss.us-east-1.zoneC.cassTurtle.priamCassandra.cassTurtle11
+				myregion := names.Region(name)
 				//log.Printf("%v: %v\n", name, myregion)
 				// find if this was a cross region Replicate
 				for n, c := range microservices {
 					// find the name matching incoming request channel
 					if c == msg.ResponseChan {
-						if myregion != strings.Split(n, ".")[1] {
+						if myregion != names.Region(n) {
 							// Replicate from out of region needs to be Replicated only to other zones in this Region
 							for nz, cz := range microservices {
-								if myregion == strings.Split(nz, ".")[1] {
+								if myregion == names.Region(nz) {
 									//log.Printf("%v rep to: %v\n", name, nz)
 									gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Intention}.GoSend(cz)
 								}

@@ -18,7 +18,6 @@ func Start(listener chan gotocol.Message) {
 	// remember the channel to talk to microservices
 	microservices := make(map[string]chan gotocol.Message, dunbar)
 	microindex := make([]chan gotocol.Message, dunbar)
-	store := make(map[string]string, 4)            // key value store
 	var netflixoss, requestor chan gotocol.Message // remember creator and how to talk back to incoming requests
 	var name string                                // remember my name
 	var edda chan gotocol.Message                  // if set, send updates
@@ -104,7 +103,7 @@ func Start(listener chan gotocol.Message) {
 				}
 			case gotocol.Goodbye:
 				if archaius.Conf.Msglog {
-					log.Printf("%v: Going away, zone: %v\n", name, store["zone"])
+					log.Printf("%v: Going away\n", name)
 				}
 				gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(netflixoss)
 				return

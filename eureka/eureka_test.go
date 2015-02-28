@@ -15,19 +15,19 @@ func TestDiscovery(t *testing.T) {
 	fmt.Println("eureka_test start")
 	listener := make(chan gotocol.Message)
 	edda.Logchan = make(chan gotocol.Message, 10) // buffered channel
-	go edda.Start()
+	go edda.Start("test.edda")
 	archaius.Conf.Msglog = true
 	archaius.Conf.GraphjsonFile = "test"
 	archaius.Conf.GraphmlFile = "test"
 	eureka := make(chan gotocol.Message, 10)
-	go Start(eureka)
+	go Start(eureka, "test.eureka")
 	// stack up a series of requests in the buffered channel
 	eureka <- gotocol.Message{gotocol.Hello, listener, time.Now(), "test0" + " " + "test"}
 	eureka <- gotocol.Message{gotocol.Hello, listener, time.Now(), "test1" + " " + "test"}
 	eureka <- gotocol.Message{gotocol.Hello, listener, time.Now(), "thing0" + " " + "thing"}
 	eureka <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), "test0"}
 	eureka <- gotocol.Message{gotocol.Goodbye, listener, time.Now(), ""}
-	// pick up responses until we see the Googbye response
+	// pick up responses until we see the Goodbye response
 	for {
 		msg := <-listener
 		if archaius.Conf.Msglog {
@@ -44,15 +44,9 @@ func TestDiscovery(t *testing.T) {
 		}
 	}
 	if edda.Logchan != nil {
-		for {
-			//fmt.Printf("Logger has %v messages left to flush\n", len(edda.Logchan))
-			if len(edda.Logchan) == 0 {
-				break
-			}
-			time.Sleep(time.Second)
-		}
+		close(edda.Logchan)
 	}
-	//wait until edda and eureak finish flushing and close files
+	//wait until edda and eureka finish flushing and close files
 	Wg.Wait()
 	edda.Wg.Wait()
 	fmt.Println("eureka_test end")
