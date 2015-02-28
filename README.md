@@ -91,10 +91,10 @@ Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon, t
 
 ![100% scale NetflixOSS](netflixoss-priamCassandra-100.png)
 
-Scaled 100% with Denominator connected to an ELB in two different regions, and cross region Priam-Cassandra connections
+Scaled 100% with Denominator connected to an ELB in two different regions, and cross region Priam-Cassandra connections, showing a tooltip and the charge increase option.
 [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/netflixoss.html)
 
-![Two Region NetflixOSS](netflixoss-cass2region.png)
+![Two Region NetflixOSS](netflixoss-w2-tooltip.png)
 
 With the -m option all messages are logged as they are received. The time taken to deliver the message is shown
 ```
