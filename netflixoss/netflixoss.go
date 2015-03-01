@@ -108,7 +108,7 @@ func Start() {
 	go eureka.Start(eurekachan, "netflixoss.eureka")
 
 	// we need a DNS service to create a global multi-region architecture
-	dnsname := "netflixoss.global-api-dns"
+	dnsname := names.Make(arch, "*", "*", "global-api-dns", "denominator", 0)
 	noodles[dnsname] = make(chan gotocol.Message)
 	go denominator.Start(noodles[dnsname])
 	// setup the dns name and logging, set chat rate after everything else is started

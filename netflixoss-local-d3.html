@@ -126,16 +126,16 @@
 							return Math.sqrt(d.size) * 2;
 						})
                                 		.style("fill", function(d, i) {
-                                	       		return colors(i);
+                                	       		return colors(d[0].split(".")[3].length);
                                 		})
 			  			.on("mouseover", function(d) {
 						//Get this node's x/y values, then augment for the tooltip
-						var xPosition = parseFloat(d3.select(this).attr("x"));
-						var yPosition = parseFloat(d3.select(this).attr("y"));
+						//var xPosition = parseFloat(d3.select(this).attr("x"));
+						//var yPosition = parseFloat(d3.select(this).attr("y"));
 						//Update the tooltip position and value
 						d3.select("#tooltip")
-							.style("left", xPosition + "px")
-							.style("top", yPosition + "px")						
+						//	.style("left", xPosition + "px")
+						//	.style("top", yPosition + "px")						
 							.select("#value")
 							.text(d);
 						//Show the tooltip

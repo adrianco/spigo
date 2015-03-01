@@ -1,11 +1,11 @@
 {
   "arch":"netflixoss9",
   "version":"spigo-0.3",
-  "args":"[./spigo -d 2 -m -s 9 -j -w 2]",
+  "args":"[./spigo -d 1 -s 9 -j -w 2]",
   "graph":[
-    {"node":"netflixoss.global-api-dns","service":"denominator"},
+    {"node":"netflixoss.*.*.global-api-dns.denominator.global-api-dns0","service":"denominator"},
     {"node":"netflixoss.us-east-1.ABC.api-elb.elb.api-elb0","service":"elb"},
-    {"edge":"e1","source":"netflixoss.global-api-dns","target":"netflixoss.us-east-1.ABC.api-elb.elb.api-elb0"},
+    {"edge":"e1","source":"netflixoss.*.*.global-api-dns.denominator.global-api-dns0","target":"netflixoss.us-east-1.ABC.api-elb.elb.api-elb0"},
     {"node":"netflixoss.us-east-1.zoneA.cassTurtle.priamCassandra.cassTurtle0","service":"priamCassandra"},
     {"node":"netflixoss.us-east-1.zoneB.cassTurtle.priamCassandra.cassTurtle1","service":"priamCassandra"},
     {"node":"netflixoss.us-east-1.zoneC.cassTurtle.priamCassandra.cassTurtle2","service":"priamCassandra"},
@@ -253,7 +253,7 @@
     {"edge":"e192","source":"netflixoss.us-east-1.zoneC.apiproxy.zuul.apiproxy8","target":"netflixoss.us-east-1.zoneC.api.karyon.api26"},
     {"edge":"e193","source":"netflixoss.us-east-1.ABC.api-elb.elb.api-elb0","target":"netflixoss.us-east-1.zoneC.apiproxy.zuul.apiproxy8"},
     {"node":"netflixoss.us-west-2.ABC.api-elb.elb.api-elb1","service":"elb"},
-    {"edge":"e194","source":"netflixoss.global-api-dns","target":"netflixoss.us-west-2.ABC.api-elb.elb.api-elb1"},
+    {"edge":"e194","source":"netflixoss.*.*.global-api-dns.denominator.global-api-dns0","target":"netflixoss.us-west-2.ABC.api-elb.elb.api-elb1"},
     {"node":"netflixoss.us-west-2.zoneA.cassTurtle.priamCassandra.cassTurtle12","service":"priamCassandra"},
     {"node":"netflixoss.us-west-2.zoneB.cassTurtle.priamCassandra.cassTurtle13","service":"priamCassandra"},
     {"node":"netflixoss.us-west-2.zoneC.cassTurtle.priamCassandra.cassTurtle14","service":"priamCassandra"},
