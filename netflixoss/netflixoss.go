@@ -120,6 +120,8 @@ func Start() {
 		return
 	}
 
+	// Build the configuration bottom up
+
 	// we need elb as a front end in each region to spread request traffic around each endpoint
 	rnames := [...]string{"us-east-1", "us-west-2", "eu-west-1", "eu-east-1", "ap-south-1", "ap-south-2"}
 	// remember them in the global config
@@ -149,40 +151,30 @@ func Start() {
 			return
 		}
 
-		// start zuul api proxies next
-		zuulcount := 9 * archaius.Conf.Population / 100
-		zuname := "apiproxy"
-		zupkg := "zuul"
-		for i := r * zuulcount; i < (r+1)*zuulcount; i++ {
-			zuulname := names.Make(arch, rname, znames[i%3], zuname, zupkg, i)
-			noodles[zuulname] = make(chan gotocol.Message)
-			go zuul.Start(noodles[zuulname])
-			noodles[zuulname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), zuulname}
-			noodles[zuulname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-			// hook all the zuul proxies up to the elb in this region
-			noodles[elbname] <- gotocol.Message{gotocol.NameDrop, noodles[zuulname], time.Now(), zuulname}
+		// start first priam managed Cassandra cluster, turtle because it's used to configure other clusters
+		priamCassandracount := 12 * archaius.Conf.Population / 100
+		for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
+			priamCassandraname := names.Make(arch, rname, znames[i%3], cname, cpkg, i)
+			noodles[priamCassandraname] = make(chan gotocol.Message)
+			go priamCassandra.Start(noodles[priamCassandraname])
+			noodles[priamCassandraname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), priamCassandraname}
+			noodles[priamCassandraname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
 		}
+
 		if archaius.Conf.StopStep == 3 {
 			run(dnsname)
 			return
 		}
 
-		// start api business logic, we can create a network of simple services from the karyon package
-		apicount := 27 * archaius.Conf.Population / 100
-		aname := "api"
-		apkg := "karyon"
-		for i := r * apicount; i < (r+1)*apicount; i++ {
-			apiname := names.Make(arch, rname, znames[i%3], aname, apkg, i)
-			noodles[apiname] = make(chan gotocol.Message)
-			go karyon.Start(noodles[apiname])
-			noodles[apiname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), apiname}
-			noodles[apiname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-			// connect all the api in a zone to all zuul in that zone only
-			for j := r*zuulcount + i%3; j < (r+1)*zuulcount; j = j + 3 {
-				zuul := names.Make(arch, rname, znames[i%3], zuname, zupkg, j)
-				noodles[zuul] <- gotocol.Message{gotocol.NameDrop, noodles[apiname], time.Now(), apiname}
-			}
+		// make the cross zone priamCassandra connections, assumes staash/astayanax ring aware client routing
+		for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
+			priamCassandraZ0 := names.Make(arch, rname, znames[i%3], cname, cpkg, i)
+			priamCassandraZ1 := names.Make(arch, rname, znames[(i+1)%3], cname, cpkg, r*priamCassandracount+(i+1)%priamCassandracount)
+			noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ1], time.Now(), priamCassandraZ1}
+			priamCassandraZ2 := names.Make(arch, rname, znames[(i+2)%3], cname, cpkg, r*priamCassandracount+(i+2)%priamCassandracount)
+			noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ2], time.Now(), priamCassandraZ2}
 		}
+
 		if archaius.Conf.StopStep == 4 {
 			run(dnsname)
 			return
@@ -198,10 +190,10 @@ func Start() {
 			go staash.Start(noodles[staashname])
 			noodles[staashname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), staashname}
 			noodles[staashname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-			// connect all the staash in a zone to all api in that zone only
-			for j := r*apicount + i%3; j < (r+1)*apicount; j = j + 3 {
-				api := names.Make(arch, rname, znames[i%3], aname, apkg, j)
-				noodles[api] <- gotocol.Message{gotocol.NameDrop, noodles[staashname], time.Now(), staashname}
+			// connect all the staash in a zone to all priamCassandra in that zone only
+			for j := r*priamCassandracount + i%3; j < (r+1)*priamCassandracount; j = j + 3 {
+				pc := names.Make(arch, rname, znames[i%3], cname, cpkg, j)
+				noodles[staashname] <- gotocol.Message{gotocol.NameDrop, noodles[pc], time.Now(), pc}
 			}
 		}
 		if archaius.Conf.StopStep == 5 {
@@ -209,32 +201,45 @@ func Start() {
 			return
 		}
 
-		// start first priam managed Cassandra cluster, turtle because it's used to configure other clusters
-		priamCassandracount := 12 * archaius.Conf.Population / 100
-		for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
-			priamCassandraname := names.Make(arch, rname, znames[i%3], cname, cpkg, i)
-			noodles[priamCassandraname] = make(chan gotocol.Message)
-			go priamCassandra.Start(noodles[priamCassandraname])
-			noodles[priamCassandraname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), priamCassandraname}
-			noodles[priamCassandraname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-			// connect all the priamCassandra in a zone to all staash in that zone only
+		// start api business logic, we can create a network of simple services from the karyon package
+		apicount := 27 * archaius.Conf.Population / 100
+		aname := "api"
+		apkg := "karyon"
+		for i := r * apicount; i < (r+1)*apicount; i++ {
+			apiname := names.Make(arch, rname, znames[i%3], aname, apkg, i)
+			noodles[apiname] = make(chan gotocol.Message)
+			go karyon.Start(noodles[apiname])
+			noodles[apiname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), apiname}
+			noodles[apiname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+			// connect all the api in a zone to all staash in that zone only
 			for j := r*staashcount + i%3; j < (r+1)*staashcount; j = j + 3 {
-				staash := names.Make(arch, rname, znames[i%3], sname, spkg, j)
-				noodles[staash] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraname], time.Now(), priamCassandraname}
+				s := names.Make(arch, rname, znames[i%3], sname, spkg, j)
+				noodles[apiname] <- gotocol.Message{gotocol.NameDrop, noodles[s], time.Now(), s}
 			}
 		}
+
 		if archaius.Conf.StopStep == 6 {
 			run(dnsname)
 			return
 		}
 
-		// make the cross zone priamCassandra connections, assumes staash/astayanax ring aware client routing
-		for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
-			priamCassandraZ0 := names.Make(arch, rname, znames[i%3], cname, cpkg, i)
-			priamCassandraZ1 := names.Make(arch, rname, znames[(i+1)%3], cname, cpkg, r*priamCassandracount+(i+1)%priamCassandracount)
-			noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ1], time.Now(), priamCassandraZ1}
-			priamCassandraZ2 := names.Make(arch, rname, znames[(i+2)%3], cname, cpkg, r*priamCassandracount+(i+2)%priamCassandracount)
-			noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ2], time.Now(), priamCassandraZ2}
+		// start zuul api proxies
+		zuulcount := 9 * archaius.Conf.Population / 100
+		zuname := "apiproxy"
+		zupkg := "zuul"
+		for i := r * zuulcount; i < (r+1)*zuulcount; i++ {
+			zuulname := names.Make(arch, rname, znames[i%3], zuname, zupkg, i)
+			noodles[zuulname] = make(chan gotocol.Message)
+			go zuul.Start(noodles[zuulname])
+			noodles[zuulname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), zuulname}
+			noodles[zuulname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+			// connect all the zuul in a zone to all api in that zone only
+			for j := r*apicount + i%3; j < (r+1)*apicount; j = j + 3 {
+				a := names.Make(arch, rname, znames[i%3], aname, apkg, j)
+				noodles[zuulname] <- gotocol.Message{gotocol.NameDrop, noodles[a], time.Now(), a}
+			}
+			// hook all the zuul proxies up to the elb in this region
+			noodles[elbname] <- gotocol.Message{gotocol.NameDrop, noodles[zuulname], time.Now(), zuulname}
 		}
 	}
 

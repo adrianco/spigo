@@ -37,16 +37,19 @@
 		</style>
 	</head>
 	<body>
-		<div id=arch>
-			<p><span id="step">click for next step</span></p>
-		</div>
-		<div id=charge>
-                        <p>click for more charge</p>
-                </div>
+		<input id="next" type="button" value="Next Step" onclick="return btntest_onclick()" />
+
+		<input id="chargebutton" type="button" value="More Charge" onclick="charge_button()" />
+
 		<div id="tooltip" class="hidden">
 			<p><span id="value">node</span></p>
 		</div>
 		<script type="text/javascript">
+			function btntest_onclick() {
+				step++;
+    				window.location.href = "?" + step;
+			}
+
 			//Dynamically grow a graph, adding nodes and edges
 			//By Adrian Cockcroft @adrianco github.com/adrianco/d3grow
 
@@ -61,7 +64,7 @@
 			};
 
 			var nodecount = 0;
-			var step = 4;
+			var step = 2;
 			var charge = -50;
 
 			//Initialize a default force layout, using the nodes and edges in dataset
@@ -184,14 +187,14 @@
 				});
 			});
 
-                        d3.select("#charge").on("click", function(d) {
-                                charge = charge - 10;;
-                                d3.select("#charge").text("charge "+charge);
-				force.charge([charge]);
+			function charge_button() {
+				charge = charge - 10;
+                                force.charge([charge]);
                                 update();
-                        });
+                        }
 
-			d3.json("netflixoss.json", function(error, json) {
+                        var step = window.location.search.substring(1);
+			d3.json("netflixoss" + step + ".json", function(error, json) {
   				console.log(json.version);
 				for (i = 0; i < json.graph.length; i++) {
 					element = json.graph[i];
