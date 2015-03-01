@@ -126,7 +126,13 @@
 							return Math.sqrt(d.size) * 2;
 						})
                                 		.style("fill", function(d, i) {
-                                	       		return colors(d[0].split(".")[3].length);
+							var names = d[0].split(".")
+							if (names.length < 4) {
+								console.log(names)
+								return colors(0)
+							} else {
+                                	       			return colors(names[3].length);
+							}
                                 		})
 			  			.on("mouseover", function(d) {
 						//Get this node's x/y values, then augment for the tooltip
