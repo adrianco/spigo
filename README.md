@@ -12,7 +12,7 @@ Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,00
 ```
 $ spigo -h
 Usage of ./spigo:
-  -a="fsm": Architecture to create or read, fsm or netflixoss
+  -a="netflixoss": Architecture to create or read, fsm or netflixoss
   -c=false: Collect metrics to <arch>_metrics.json and via http:
   -cpuprofile="": Write cpu profile to file
   -d=10:    Simulation duration in seconds
@@ -98,26 +98,23 @@ Scaled 100% with Denominator connected to an ELB in two different regions, and c
 
 With the -m option all messages are logged as they are received. The time taken to deliver the message is shown
 ```
-2015/02/20 10:01:13 netflixoss.us-west-2-elb: gotocol: 20.488us GetRequest why?
-2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.zuul12: gotocol: 7.926us GetRequest why?
-2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.karyon39: gotocol: 6.953us GetRequest why?
-2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.staash9: gotocol: 6.698us GetRequest why?
-2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.priamCassandra21: gotocol: 8.428us GetRequest why?
-2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.staash9: gotocol: 4.571us GetResponse because...
-2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.karyon39: gotocol: 4.06us GetResponse because...
-2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.zuul12: gotocol: 3.89us GetResponse because...
-2015/02/20 10:01:13 netflixoss.us-west-2-elb: gotocol: 4.769us GetResponse because...
-2015/02/20 10:01:13 netflixoss.global-api-dns: gotocol: 4.233us GetResponse because...
-2015/02/20 10:01:13 netflixoss.us-east-1-elb: gotocol: 18.578us Put remember me
-2015/02/20 10:01:13 netflixoss.us-east-1.zoneB.zuul7: gotocol: 6.258us Put remember me
-2015/02/20 10:01:13 netflixoss.us-east-1.zoneB.karyon16: gotocol: 4.36us Put remember me
-2015/02/20 10:01:13 netflixoss.us-east-1.zoneB.staash4: gotocol: 5.529us Put remember me
-2015/02/20 10:01:13 netflixoss.us-east-1.zoneB.priamCassandra1: gotocol: 4.536us Put remember me
-2015/02/20 10:01:13 netflixoss.us-east-1.zoneA.priamCassandra3: gotocol: 6.029us Replicate remember me
-2015/02/20 10:01:13 netflixoss.us-west-2.zoneB.priamCassandra13: gotocol: 37.218us Replicate remember me
-2015/02/20 10:01:13 netflixoss.us-east-1.zoneC.priamCassandra2: gotocol: 60.563us Replicate remember me
-2015/02/20 10:01:13 netflixoss.us-west-2.zoneA.priamCassandra15: gotocol: 30.02us Replicate remember me
-2015/02/20 10:01:13 netflixoss.us-west-2.zoneC.priamCassandra14: gotocol: 48.947us Replicate remember me
+2015/03/01 13:16:09 netflixoss.us-east-1.ABC.api-elb.elb.api-elb0: gotocol: 18.9us Put remember me
+2015/03/01 13:16:09 netflixoss.us-east-1.zoneC.apiproxy.zuul.apiproxy2: gotocol: 6.726us Put remember me
+2015/03/01 13:16:09 netflixoss.us-east-1.zoneC.api.karyon.api23: gotocol: 6.002us Put remember me
+2015/03/01 13:16:09 netflixoss.us-east-1.zoneC.turtle.staash.turtle2: gotocol: 5.891us Put remember me
+2015/03/01 13:16:09 netflixoss.us-east-1.zoneC.cassTurtle.priamCassandra.cassTurtle11: gotocol: 5.798us Put remember me
+2015/03/01 13:16:09 netflixoss.us-east-1.zoneA.cassTurtle.priamCassandra.cassTurtle0: gotocol: 8.393us Replicate remember me
+2015/03/01 13:16:09 netflixoss.us-east-1.zoneB.cassTurtle.priamCassandra.cassTurtle1: gotocol: 30.158us Replicate remember me
+2015/03/01 13:16:09 netflixoss.us-east-1.ABC.api-elb.elb.api-elb0: gotocol: 48.584us GetRequest why?
+2015/03/01 13:16:09 netflixoss.us-east-1.zoneA.apiproxy.zuul.apiproxy3: gotocol: 13.474us GetRequest why?
+2015/03/01 13:16:09 netflixoss.us-east-1.zoneA.api.karyon.api9: gotocol: 6.496us GetRequest why?
+2015/03/01 13:16:09 netflixoss.us-east-1.zoneA.turtle.staash.turtle3: gotocol: 3.897us GetRequest why?
+2015/03/01 13:16:09 netflixoss.us-east-1.zoneA.cassTurtle.priamCassandra.cassTurtle9: gotocol: 6.129us GetRequest why?
+2015/03/01 13:16:09 netflixoss.us-east-1.zoneA.turtle.staash.turtle3: gotocol: 2.869us GetResponse because...
+2015/03/01 13:16:09 netflixoss.us-east-1.zoneA.api.karyon.api9: gotocol: 2.169us GetResponse because...
+2015/03/01 13:16:09 netflixoss.us-east-1.zoneA.apiproxy.zuul.apiproxy3: gotocol: 3.806us GetResponse because...
+2015/03/01 13:16:09 netflixoss.us-east-1.ABC.api-elb.elb.api-elb0: gotocol: 2.272us GetResponse because...
+2015/03/01 13:16:09 netflixoss.*.*.global-api-dns.denominator.global-api-dns0: gotocol: 2.422us GetResponse because...
 ```
 
 100 Pirates 
