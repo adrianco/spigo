@@ -9,6 +9,7 @@ import (
 	"github.com/adrianco/spigo/edda"       // log configuration state
 	"github.com/adrianco/spigo/fsm"        // fsm and pirates
 	"github.com/adrianco/spigo/gotocol"    // message protocol spec
+	"github.com/adrianco/spigo/lamp"       // typical LAMP stack
 	"github.com/adrianco/spigo/netflixoss" // start the netflix opensource microservices
 	"log"
 	"os"
@@ -21,7 +22,7 @@ var duration int
 
 // main handles command line flags and starts up an architecture
 func main() {
-	flag.StringVar(&archaius.Conf.Arch, "a", "netflixoss", "Architecture to create or read, fsm or netflixoss")
+	flag.StringVar(&archaius.Conf.Arch, "a", "netflixoss", "Architecture to create or read, netflixoss, fsm or lamp")
 	flag.IntVar(&archaius.Conf.Population, "p", 100, "  Pirate population for fsm or scale factor % for netflixoss")
 	flag.IntVar(&duration, "d", 10, "   Simulation duration in seconds")
 	flag.IntVar(&archaius.Conf.Regions, "w", 1, "    Wide area regions")
@@ -73,6 +74,14 @@ func main() {
 			netflixoss.Start()
 		}
 		log.Println("spigo: netflixoss complete")
+	case "lamp":
+		go edda.Start("lamp.edda") // start edda first
+		if reload {
+			lamp.Reload(archaius.Conf.Arch)
+		} else {
+			lamp.Start()
+		}
+		log.Println("spigo: lamp complete")
 	default:
 		log.Fatal("Architecture " + archaius.Conf.Arch + " isn't recognized")
 	}
