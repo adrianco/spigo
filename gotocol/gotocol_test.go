@@ -34,6 +34,9 @@ func pirateListen(listener chan Message) {
 				Message{GetResponse, nil, time.Now(), "Bottle of rum"}.GoSend(msg.ResponseChan)
 			}
 		case GetResponse:
+		case Put:
+		case Forget:
+		case Delete:
 		case Goodbye:
 			return
 		}

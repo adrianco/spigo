@@ -10,6 +10,7 @@ import (
 	"github.com/adrianco/spigo/fsm"        // fsm and pirates
 	"github.com/adrianco/spigo/gotocol"    // message protocol spec
 	"github.com/adrianco/spigo/lamp"       // typical LAMP stack
+	"github.com/adrianco/spigo/migration"  // migration from LAMP to netflixoss
 	"github.com/adrianco/spigo/netflixoss" // start the netflix opensource microservices
 	"log"
 	"os"
@@ -22,8 +23,8 @@ var duration int
 
 // main handles command line flags and starts up an architecture
 func main() {
-	flag.StringVar(&archaius.Conf.Arch, "a", "netflixoss", "Architecture to create or read, netflixoss, fsm or lamp")
-	flag.IntVar(&archaius.Conf.Population, "p", 100, "  Pirate population for fsm or scale factor % for netflixoss")
+	flag.StringVar(&archaius.Conf.Arch, "a", "netflixoss", "Architecture to create or read, fsm, lamp, migration, or netflixoss")
+	flag.IntVar(&archaius.Conf.Population, "p", 100, "  Pirate population for fsm or scale factor % for netflixoss etc.")
 	flag.IntVar(&duration, "d", 10, "   Simulation duration in seconds")
 	flag.IntVar(&archaius.Conf.Regions, "w", 1, "    Wide area regions")
 	flag.BoolVar(&graphmlEnabled, "g", false, "Enable GraphML logging of nodes and edges to <arch>.graphml")
@@ -82,6 +83,14 @@ func main() {
 			lamp.Start()
 		}
 		log.Println("spigo: lamp complete")
+	case "migration": // from lamp to netflixoss
+		go edda.Start("migration.edda") // start edda first
+		if reload {
+			migration.Reload(archaius.Conf.Arch)
+		} else {
+			migration.Start()
+		}
+		log.Println("spigo: migration complete")
 	default:
 		log.Fatal("Architecture " + archaius.Conf.Arch + " isn't recognized")
 	}

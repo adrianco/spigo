@@ -55,6 +55,9 @@ func Start(listener chan gotocol.Message) {
 						edda <- gotocol.Message{gotocol.Inform, listener, time.Now(), name + " " + microservice}
 					}
 				}
+			case gotocol.Forget:
+				// forget a buddy
+				delete(microservices, msg.Intention)
 			case gotocol.Chat:
 				// setup the ticker to run at the specified rate
 				d, e := time.ParseDuration(msg.Intention)

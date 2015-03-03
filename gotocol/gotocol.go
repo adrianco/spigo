@@ -30,6 +30,10 @@ const (
 	Put
 	// Replicate - "key value" Save a replicated copy
 	Replicate
+	// Forget - NameOfBuddy Forget connection to buddy
+	Forget
+	// Delete - key Remove key and value
+	Delete
 	// Goodbye - - // tell FSM and exit
 	Goodbye // test assumes this is the last and exits
 	numOfImpositions
@@ -56,6 +60,10 @@ func (imps Impositions) String() string {
 		return "Put"
 	case Replicate:
 		return "Replicate"
+	case Forget:
+		return "Forget"
+	case Delete:
+		return "Delete"
 	case Goodbye:
 		return "Goodbye"
 	}
