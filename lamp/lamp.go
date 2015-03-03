@@ -125,7 +125,7 @@ func Start() {
 	elbcnt := 0
 	for r := 0; r < archaius.Conf.Regions; r++ {
 		rname := rnames[r]
-		elbname := names.Make(arch, rname, "AB", "rails-elb", "elb", elbcnt)
+		elbname := names.Make(arch, rname, "AB", "www-elb", "elb", elbcnt)
 		elbcnt++
 		noodles[elbname] = make(chan gotocol.Message)
 		go elb.Start(noodles[elbname])
@@ -174,21 +174,21 @@ func Start() {
 			return
 		}
 
-		// start rails business logic, we can create a network of simple services from the karyon package
-		railscount := 27 * archaius.Conf.Population / 100
-		raname := "rails"
-		rapkg := "karyon"
-		for i := r * railscount; i < (r+1)*railscount; i++ {
-			railsname := names.Make(arch, rname, znames[i%2], raname, rapkg, i)
-			noodles[railsname] = make(chan gotocol.Message)
-			go karyon.Start(noodles[railsname])
-			noodles[railsname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), railsname}
-			noodles[railsname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-			// connect all the rails to mysql and memcached in one zone only
-			noodles[railsname] <- gotocol.Message{gotocol.NameDrop, noodles[master], time.Now(), master}
-			noodles[railsname] <- gotocol.Message{gotocol.NameDrop, noodles[slave], time.Now(), slave}
-			noodles[railsname] <- gotocol.Message{gotocol.NameDrop, noodles[memname], time.Now(), memname}
-			noodles[elbname] <- gotocol.Message{gotocol.NameDrop, noodles[railsname], time.Now(), railsname}
+		// start php business logic, we can create a network of simple services from the karyon package
+		phpcount := 27 * archaius.Conf.Population / 100
+		pname := "php"
+		ppkg := "karyon" // karyon randomly calls its dependencies which isn't really right for master/slave/cache
+		for i := r * phpcount; i < (r+1)*phpcount; i++ {
+			phpname := names.Make(arch, rname, znames[i%2], pname, ppkg, i)
+			noodles[phpname] = make(chan gotocol.Message)
+			go karyon.Start(noodles[phpname])
+			noodles[phpname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), phpname}
+			noodles[phpname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+			// connect all the php to mysql and memcached in one zone only
+			noodles[phpname] <- gotocol.Message{gotocol.NameDrop, noodles[master], time.Now(), master}
+			noodles[phpname] <- gotocol.Message{gotocol.NameDrop, noodles[slave], time.Now(), slave}
+			noodles[phpname] <- gotocol.Message{gotocol.NameDrop, noodles[memname], time.Now(), memname}
+			noodles[elbname] <- gotocol.Message{gotocol.NameDrop, noodles[phpname], time.Now(), phpname}
 		}
 	}
 	// stop here for 5 for single region, then add second region for step 6
