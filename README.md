@@ -3,7 +3,7 @@ spigo
 
 Simulate Protocol Interactions in Go using nanoservice actors
 
-Suitable for fairly large scale simulations, runs well up to 100,000 independent nanoservice actors. Three architectures are implemented. One creates a peer to peer social network (fsm and pirates). The others are based on a LAMP stack or NetflixOSS microservices in a more tree structured model.
+Suitable for fairly large scale simulations, runs well up to 100,000 independent nanoservice actors. Three architectures are implemented. One creates a peer to peer social network (fsm and pirates). The others are based on a LAMP stack or NetflixOSS microservices in a more tree structured model. The migration architecture starts with LAMP and ends with NetflixOSS.
 
 Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,000 messages and wait to shut them all down again takes about 4 seconds. The resulting graph can be visualized via GraphML or rendered by saving to Graph JSON and viewing in a web browser via D3.
 
@@ -73,6 +73,31 @@ $ ./spigo -a netflixoss -d 2 -r
 2015/02/20 09:48:24 netflixoss: Exit
 2015/02/20 09:48:24 spigo: netflixoss complete
 ```
+
+Migration from LAMP to NetflixOSS
+-----------
+The orchestration to create this is a hack that needs to be refactored to clean it up, but the step by step works.
+[Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/migration.html?1)
+
+Start with a LAMP stack
+![Migration ](migration1.png)
+
+Interpose Zuul proxy between load balancer and PHP services
+![Migration ](migration2.png)
+
+Replace single memcached with cross zone EVcache replicated memcached and change PHP to access MySQL via Staash (Storage Tier as a Service HTTP)
+![Migration ](migration3.png)
+
+Add Node based microservices between Zuul and Staash alongside PHP
+![Migration ](migration4.png)
+
+Start a Cassandra cluster
+![Migration ](migration5.png)
+
+Connect Cassandra to Staash as well as MySQL for gradual data migration/duplication
+![Migration ](migration6.png)
+
+More to come...
 
 LAMP Stack Architecture
 -----------
