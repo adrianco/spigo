@@ -76,7 +76,7 @@ $ ./spigo -a netflixoss -d 2 -r
 
 LAMP Stack Architecture
 -----------
-To create a starting point for architecture transitions, an AWS hosted LAMP stack is simulated. It has DNS feeding an ELB, then a horizontally scaled layer of PHP servers backed with a single memcached and a master slave pair of MySQL servers. The configuration is managed using a Eureka name service and logged by Edda.
+To create a starting point for architecture transitions, an AWS hosted LAMP stack is simulated. It has DNS feeding an ELB, then a horizontally scaled layer of PHP servers backed with a single memcached and a master slave pair of MySQL servers. The configuration is managed using a Eureka name service and logged by Edda. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/lamp.html)
 
 ![LAMP stack](lamp.png)
 
