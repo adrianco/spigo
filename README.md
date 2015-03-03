@@ -3,7 +3,7 @@ spigo
 
 Simulate Protocol Interactions in Go using nanoservice actors
 
-Suitable for fairly large scale simulations, runs well up to 100,000 independent nanoservice actors. Two architectures are implemented. One creates a peer to peer social network (fsm and pirates). The other is based on NetflixOSS microservices in a more tree structured model.
+Suitable for fairly large scale simulations, runs well up to 100,000 independent nanoservice actors. Three architectures are implemented. One creates a peer to peer social network (fsm and pirates). The others are based on a LAMP stack or NetflixOSS microservices in a more tree structured model.
 
 Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,000 messages and wait to shut them all down again takes about 4 seconds. The resulting graph can be visualized via GraphML or rendered by saving to Graph JSON and viewing in a web browser via D3.
 
@@ -11,8 +11,8 @@ Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,00
 
 ```
 $ spigo -h
-Usage of ./spigo:
-  -a="netflixoss": Architecture to create or read, fsm or netflixoss
+Usage of spigo:
+  -a="netflixoss": Architecture to create or read, netflixoss, fsm or lamp
   -c=false: Collect metrics to <arch>_metrics.json and via http:
   -cpuprofile="": Write cpu profile to file
   -d=10:    Simulation duration in seconds
@@ -21,6 +21,7 @@ Usage of ./spigo:
   -m=false: Enable console logging of every message
   -p=100:   Pirate population for fsm or scale factor % for netflixoss
   -r=false: Reload <arch>.json to setup architecture
+  -s=0:     Stop creating microservices at this step, 0 = don't stop
   -w=1:     Wide area regions
   
 $ ./spigo -a netflixoss -d 1 -j -c
@@ -72,6 +73,12 @@ $ ./spigo -a netflixoss -d 2 -r
 2015/02/20 09:48:24 netflixoss: Exit
 2015/02/20 09:48:24 spigo: netflixoss complete
 ```
+
+LAMP Stack Architecture
+-----------
+To create a starting point for architecture transitions, an AWS hosted LAMP stack is simulated. It has DNS feeding an ELB, then a horizontally scaled layer of PHP servers backed with a single memcached and a master slave pair of MySQL servers. The configuration is managed using a Eureka name service and logged by Edda.
+
+![LAMP stack](lamp.png)
 
 NetflixOSS Architecture
 -----------
