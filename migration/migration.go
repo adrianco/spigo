@@ -28,10 +28,54 @@ var noodles map[string]chan gotocol.Message
 
 var listener chan gotocol.Message   // netflixoss listener
 var eurekachan chan gotocol.Message // eureka - eventually for each zone and region
+var root string                     // root name to run
+
+// AWS region names
+var rnames = [...]string{"us-east-1", "us-west-2", "eu-west-1", "eu-east-1", "ap-south-1", "ap-south-2"}
+
+// netflixoss always needs three zones
+var znames = [...]string{"zoneA", "zoneB", "zoneC"}
+
+// Create a tier
+func Create(servicename, packagename string, regions, count int, dependencies []string) {
+	for r := 0; r < regions; r++ {
+		for i := r * count; i < (r+1)*count; i++ {
+			name := names.Make(archaius.Conf.Arch, rnames[r], znames[i%3], servicename, packagename, i)
+			StartPackage(name)
+		}
+	}
+}
+
+func StartPackage(name string) {
+	noodles[name] = make(chan gotocol.Message)
+	// start the service and tell it it's name
+	switch names.Package(name) {
+	case "pirate":
+		go pirate.Start(noodles[name])
+	case "elb":
+		go elb.Start(noodles[name])
+	case "denominator":
+		go denominator.Start(noodles[name])
+		root = name
+	case "zuul":
+		go zuul.Start(noodles[name])
+	case "karyon":
+		go karyon.Start(noodles[name])
+	case "staash":
+		go staash.Start(noodles[name])
+	case "priamCassandra":
+		go priamCassandra.Start(noodles[name])
+	case "store":
+		go store.Start(noodles[name])
+	default:
+		log.Fatal("migration: unknown package: " + names.Package(name))
+	}
+	noodles[name] <- gotocol.Message{gotocol.Hello, listener, time.Now(), name}
+	noodles[name] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+}
 
 // Reload the network from a file
 func Reload(arch string) {
-	var root string                                                   // root name to run
 	listener = make(chan gotocol.Message)                             // listener for netflixoss
 	eurekachan = make(chan gotocol.Message, archaius.Conf.Population) // listener for eureka
 	log.Println("migration reloading from " + arch + ".json")
@@ -52,32 +96,7 @@ func Reload(arch string) {
 	for _, element := range g.Graph {
 		if element.Node != "" {
 			name := element.Node
-			noodles[name] = make(chan gotocol.Message)
-			// start the service and tell it it's name
-			switch names.Package(name) {
-			case "pirate":
-				go pirate.Start(noodles[name])
-			case "elb":
-				go elb.Start(noodles[name])
-			case "denominator":
-				go denominator.Start(noodles[name])
-				root = name
-			case "zuul":
-				go zuul.Start(noodles[name])
-			case "karyon":
-				go karyon.Start(noodles[name])
-			case "staash":
-				go staash.Start(noodles[name])
-			case "priamCassandra":
-				go priamCassandra.Start(noodles[name])
-			case "store":
-				go store.Start(noodles[name])
-			default:
-				log.Fatal("migration: unknown package: " + names.Package(name))
-			}
-			noodles[name] <- gotocol.Message{gotocol.Hello, listener, time.Now(), name}
-			// tell the service to report itself and new edges to the logger
-			noodles[name] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+			StartPackage(name)
 		}
 	}
 	// Make all the connections
@@ -121,13 +140,10 @@ func Start() {
 	// Build the configuration step by step
 
 	// we need elb as a front end in each region to spread request traffic around each endpoint
-	rnames := [...]string{"us-east-1", "us-west-2", "eu-west-1", "eu-east-1", "ap-south-1", "ap-south-2"}
-	// remember them in the global config
+	// remember regions in the global config
 	for i, s := range rnames {
 		archaius.Conf.RegionNames[i] = s
 	}
-	// netflixoss always needs three zones
-	znames := [...]string{"zoneA", "zoneB", "zoneC"}
 	// elb for api endpoint
 	elbcnt := 0
 	// cross region cassandra cluster names need to scope outside loop
@@ -369,12 +385,12 @@ func Start() {
 }
 
 // Run migration for a while then shut down
-func run(root string) {
+func run(rootservice string) {
 	var msg gotocol.Message
 	// tell denominator to start chatting with microservices every 0.01 secs
 	delay := fmt.Sprintf("%dms", 10)
 	log.Println("migration: denominator activity rate ", delay)
-	noodles[root] <- gotocol.Message{gotocol.Chat, nil, time.Now(), delay}
+	noodles[rootservice] <- gotocol.Message{gotocol.Chat, nil, time.Now(), delay}
 
 	// wait until the delay has finished
 	if archaius.Conf.RunDuration >= time.Millisecond {

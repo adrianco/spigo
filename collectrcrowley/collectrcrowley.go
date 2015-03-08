@@ -1,5 +1,9 @@
 // Collect throughput and response times using rcrowley Metrics
-package collect
+// Adrian - this package is really complex and hard to understand
+// OK for doing exactly what it already does, but I couldn't figure out
+// how to extend it to do what I need for spigo, so it isn't part of the build
+// left here in case anyone else wants to play with it
+package collectrcrowley
 
 import (
 	"fmt"

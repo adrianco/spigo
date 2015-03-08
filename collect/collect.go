@@ -1,4 +1,4 @@
-// Collect throughput and response times using Coda Hale's Metrics
+// Collect throughput and response times using Coda Hale's Metrics, adding monitor and trace option next
 package collect
 
 import (
@@ -6,12 +6,16 @@ import (
 	"fmt"
 	"github.com/adrianco/spigo/archaius"
 	"github.com/codahale/metrics"
+	//	"gopkg.in/spacemonkeygo/monitor.v1"
+	//	"gopkg.in/spacemonkeygo/monitor.v1/trace"
 	"log"
 	"net"
 	"net/http"
 	"os"
 	"time"
 )
+
+//var mon = monitor.GetMonitors()
 
 func NewHist(name string) *metrics.Histogram {
 	if name != "" && archaius.Conf.Collect {
