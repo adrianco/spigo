@@ -79,25 +79,29 @@ Migration from LAMP to NetflixOSS
 The orchestration to create this is a hack that needs to be refactored to clean it up, but the step by step works.
 [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/migration.html?1)
 
-Start with a LAMP stack
+Start with a monolithic LAMP stack
 ![Migration ](migration1.png)
 
-Interpose Zuul proxy between load balancer and PHP services
+Interpose Zuul proxy between load balancer and PHP monolith services
 ![Migration ](migration2.png)
 
 Replace single memcached with cross zone EVcache replicated memcached and change PHP to access MySQL via Staash (Storage Tier as a Service HTTP)
 ![Migration ](migration3.png)
 
-Add Node based microservices between Zuul and Staash alongside PHP
+Add some Node based microservices between Zuul and Staash alongside PHP
 ![Migration ](migration4.png)
 
-Start a Cassandra cluster
+Start a Cassandra cluster and connect to Staash alongside MySQL and evcache for data and access migration
 ![Migration ](migration5.png)
 
-Connect Cassandra to Staash as well as MySQL for gradual data migration/duplication
+Remove MySQL for gradual data migration/duplication
 ![Migration ](migration6.png)
 
-More to come...
+Add a second region without connecting up cassandra
+![Migration ](migration7.png)
+
+Connect regions together using multi-region Cassandra
+![Migration ](migration8.png)
 
 LAMP Stack Architecture
 -----------
