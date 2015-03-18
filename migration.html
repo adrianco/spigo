@@ -82,6 +82,8 @@
 
 			var colors = d3.scale.category10();
 
+			var root;
+
 			//Create SVG element
 			var svg = d3.select("body")
 						.append("svg")
@@ -97,7 +99,6 @@
 				svg.selectAll("circle").attr("cx", function(d) { return d.x; })
 					 .attr("cy", function(d) { return d.y; });
 
-				var root = force.nodes()[0];
 				var k = .65;
 				root.y += (h*1/10 - root.y) * k;
 				root.x += (w*1/5 - root.x) * k;
@@ -105,9 +106,10 @@
 
 			// add a node and some edges
 			var addnode = function(name) {
-					//console.log(name);
+		                        //console.log("add node: " + name);
 					dataset.nodes.push([name]);
-					dataset.nodes[nodecount].size = 0;
+					dataset.nodes[nodecount].size = 1;
+					root = dataset.nodes[nodecount];
 					nodecount++;
 			};
 
@@ -168,7 +170,7 @@
                         }
 
 			var addedge = function(s, t) {
-				//console.log("edge between " + s  " and " + t);
+				//console.log("edge between " + s + " and " + t);
 				sn = findnode(s);
 				tn = findnode(t);
 				dataset.edges.push({ source: sn, target: tn });
@@ -188,7 +190,10 @@
 					if (element.node) {
 						addnode(element.node);
 					}
-					if (element.edge) {
+				}
+				for (i = 0; i < json.graph.length; i++) {
+                                        element = json.graph[i];
+                                        if (element.edge) {
 						addedge(element.source, element.target);
 					}
 				}
