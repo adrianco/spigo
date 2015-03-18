@@ -143,7 +143,7 @@ Add some Node based microservices between Zuul and Staash alongside PHP
 Start a Cassandra cluster and connect to Staash alongside MySQL and evcache for data and access migration
 ![Migration ](migration5.png)
 
-Remove MySQL for gradual data migration/duplication
+Remove MySQL to be ready to go multi-region
 ![Migration ](migration6.png)
 
 Add a second region without connecting up cassandra
@@ -151,6 +151,9 @@ Add a second region without connecting up cassandra
 
 Connect regions together using multi-region Cassandra
 ![Migration ](migration8.png)
+
+Extend to six regions, an interesting visualization challenge
+![Migration ](migration9.png)
 
 LAMP Stack Architecture
 -----------
