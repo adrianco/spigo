@@ -111,8 +111,8 @@ func NameDropHandler(dependencies *map[string]time.Time, microservices *map[stri
 			ch <- Message{GetRequest, listener, time.Now(), msg.Intention}
 		}
 	} else { // update dependency with full name and listener channel
-		microservice := msg.Intention // message body is buddy name
-		if microservice != name {     // don't talk to myself
+		microservice := msg.Intention                                      // message body is buddy name
+		if microservice != name && (*microservices)[microservice] == nil { // don't talk to myself or record duplicates
 			// remember how to talk to this buddy
 			(*microservices)[microservice] = msg.ResponseChan // message channel is buddy's listener
 			(*dependencies)[names.Service(microservice)] = msg.Sent
