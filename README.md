@@ -76,7 +76,7 @@ $ ./spigo -a netflixoss -d 2 -r
 
 Migration from LAMP to NetflixOSS
 -----------
-The orchestration to create this is a hack that needs to be refactored to clean it up, but the step by step works.
+The orchestration to create this now uses a eureka discovery service per zone and has been heavily refactored.
 [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/migration.html?1)
 
 Start with a monolithic LAMP stack
