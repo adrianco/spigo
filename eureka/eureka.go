@@ -3,12 +3,11 @@
 package eureka
 
 import (
-	"fmt"
 	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/edda"
 	"github.com/adrianco/spigo/gotocol"
-	"github.com/adrianco/spigo/graphjson"
+	"github.com/adrianco/spigo/names"
 	"log"
 	"sync"
 	"time"
@@ -25,7 +24,7 @@ func Start(listener chan gotocol.Message, name string) {
 	var ok bool
 	hist := collect.NewHist(name)
 	microservices := make(map[string]chan gotocol.Message, archaius.Conf.Dunbar)
-	servicetypes := make(map[string]graphjson.NodeV0r3, archaius.Conf.Dunbar) // service type for each microservice
+	eurekaservices := make(map[string]chan gotocol.Message, 2)
 	log.Println(name + ": starting")
 	for {
 		msg, ok = <-listener
@@ -37,14 +36,26 @@ func Start(listener chan gotocol.Message, name string) {
 			log.Printf("%v(backlog %v): %v\n", name, len(listener), msg)
 		}
 		switch msg.Imposition {
-		// for new nodes and edges record the data and maybe pass on to be logged
-		case gotocol.Hello:
-			var node graphjson.NodeV0r3
-			fmt.Sscanf(msg.Intention, "%s%s", &node.Node, &node.Service) // space delimited
-			microservices[node.Node] = msg.ResponseChan
-			servicetypes[node.Node] = node
-			if edda.Logchan != nil {
-				edda.Logchan <- msg
+		// used to wire up connections to other eureka nodes only
+		case gotocol.NameDrop:
+			if msg.Intention != name { // don't talk to myself
+				eurekaservices[msg.Intention] = msg.ResponseChan
+			}
+		// for new nodes record the data, replicate and maybe pass on to be logged
+		case gotocol.Put:
+			if microservices[msg.Intention] == nil { // ignore duplicate requests
+				microservices[msg.Intention] = msg.ResponseChan
+				// replicate request
+				for _, c := range eurekaservices {
+					gotocol.Message{gotocol.Replicate, msg.ResponseChan, time.Now(), msg.Intention}.GoSend(c)
+				}
+				if edda.Logchan != nil {
+					edda.Logchan <- msg
+				}
+			}
+		case gotocol.Replicate:
+			if microservices[msg.Intention] == nil { // ignore multiple requests
+				microservices[msg.Intention] = msg.ResponseChan
 			}
 		case gotocol.Goodbye:
 			close(listener)
@@ -55,8 +66,19 @@ func Start(listener chan gotocol.Message, name string) {
 				edda.Logchan <- msg
 			}
 		case gotocol.GetRequest:
-			if msg.Intention != "" && microservices[msg.Intention] != nil {
-				gotocol.Message{gotocol.GetResponse, listener, time.Now(), servicetypes[msg.Intention].Service}.GoSend(msg.ResponseChan)
+			if msg.Intention == "" {
+				log.Fatal(name + ": empty GetRequest")
+			}
+			if microservices[msg.Intention] != nil { // matched a unique full name
+				gotocol.Message{gotocol.NameDrop, microservices[msg.Intention], time.Now(), msg.Intention}.GoSend(msg.ResponseChan)
+				break
+			}
+			// linear scan for now, optimize if needed later by remembering timestamps or lists of services
+			for n, ch := range microservices { // respond with all the names that match the service component
+				// log.Printf("%v: matching %v with %v\n", name, n, msg.Intention)
+				if names.Service(n) == msg.Intention {
+					gotocol.Message{gotocol.NameDrop, ch, time.Now(), n}.GoSend(msg.ResponseChan)
+				}
 			}
 		}
 	}

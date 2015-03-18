@@ -33,6 +33,7 @@ func main() {
 	flag.BoolVar(&reload, "r", false, "Reload <arch>.json to setup architecture")
 	flag.BoolVar(&archaius.Conf.Collect, "c", false, "Collect metrics to <arch>_metrics.json and via http:")
 	flag.IntVar(&archaius.Conf.StopStep, "s", 0, "    Stop creating microservices at this step, 0 = don't stop")
+	flag.StringVar(&archaius.Conf.EurekaPoll, "u", "1s", "    Polling interval for Eureka name service")
 	var cpuprofile = flag.String("cpuprofile", "", "Write cpu profile to file")
 	flag.Parse()
 	if *cpuprofile != "" {

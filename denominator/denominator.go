@@ -13,15 +13,18 @@ import (
 
 // Start the denominator, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
-	dunbar := 5 // starting point for how many nodes to remember
+	dunbar := 6 // starting point for how many nodes to remember
 	// remember the channel to talk to microservices
 	microservices := make(map[string]chan gotocol.Message, dunbar)
 	microindex := make([]chan gotocol.Message, dunbar)
-	var netflixoss chan gotocol.Message // remember how to talk back to creator
-	var name string                     // remember my name
-	hist := collect.NewHist("")         // don't know name yet
-	var edda chan gotocol.Message       // if set, send updates
+	dependencies := make(map[string]time.Time, dunbar) // dependent services and time last updated
+	var netflixoss chan gotocol.Message                // remember how to talk back to creator
+	var name string                                    // remember my name
+	hist := collect.NewHist("")                        // don't know name yet
+	eureka := make(map[string]chan gotocol.Message, 3 * archaius.Conf.Regions) // service registry per zone and region
 	var chatrate time.Duration
+	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
+	eurekaTicker := time.NewTicker(ep)
 	chatTicker := time.NewTicker(time.Hour)
 	chatTicker.Stop()
 	for {
@@ -40,21 +43,9 @@ func Start(listener chan gotocol.Message) {
 					hist = collect.NewHist(name)
 				}
 			case gotocol.Inform:
-				// remember where to send updates
-				edda = msg.ResponseChan
-				// logger channel is buffered so no need to use GoSend
-				edda <- gotocol.Message{gotocol.Hello, nil, time.Now(), name + " " + "denominator"}
+				eureka[msg.Intention] = gotocol.InformHandler(msg, name, listener)
 			case gotocol.NameDrop:
-				// don't remember too many buddies and don't talk to myself
-				microservice := msg.Intention // message body is buddy name
-				if len(microservices) < dunbar && microservice != name {
-					// remember how to talk to this buddy
-					microservices[microservice] = msg.ResponseChan // message channel is buddy's listener
-					if edda != nil {
-						// if it's setup, tell the logger I have a new buddy to talk to
-						edda <- gotocol.Message{gotocol.Inform, listener, time.Now(), name + " " + microservice}
-					}
-				}
+				gotocol.NameDropHandler(&dependencies, &microservices, msg, name, listener, eureka)
 			case gotocol.Chat:
 				// setup the ticker to run at the specified rate
 				d, e := time.ParseDuration(msg.Intention)
@@ -71,6 +62,12 @@ func Start(listener chan gotocol.Message) {
 				}
 				gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(netflixoss)
 				return
+			}
+		case <-eurekaTicker.C: // check to see if any new dependencies have appeared
+			for dep, _ := range dependencies {
+				for _, ch := range eureka {
+					ch <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), dep}
+				}
 			}
 		case <-chatTicker.C:
 			if len(microservices) > 0 {

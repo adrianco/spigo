@@ -26,9 +26,8 @@ import (
 // noodles channels mapped by microservice name connects netflixoss to everyone
 var noodles map[string]chan gotocol.Message
 
-var listener chan gotocol.Message   // netflixoss listener
-var eurekachan chan gotocol.Message // eureka - eventually for each zone and region
-var root string                     // root name to run
+var listener chan gotocol.Message // netflixoss listener
+var root string                   // root name to run
 
 // AWS region names
 var rnames = [...]string{"us-east-1", "us-west-2", "eu-west-1", "eu-east-1", "ap-south-1", "ap-south-2"}
@@ -36,18 +35,40 @@ var rnames = [...]string{"us-east-1", "us-west-2", "eu-west-1", "eu-east-1", "ap
 // netflixoss always needs three zones
 var znames = [...]string{"zoneA", "zoneB", "zoneC"}
 
+var eurekachan map[string]chan gotocol.Message // eureka for each region.zone
+
 // Create a tier
-func Create(servicename, packagename string, regions, count int, dependencies []string) {
+func Create(servicename, packagename string, regions, count int, dependencies ...string) string {
+	var name string
+	if regions == 0 { // for dns that isn't in a region or zone
+		log.Printf("Create cross region: " + servicename)
+		name = names.Make(archaius.Conf.Arch, "*", "*", servicename, packagename, 0)
+		StartPackage(name, dependencies)
+	}
 	for r := 0; r < regions; r++ {
-		for i := r * count; i < (r+1)*count; i++ {
-			name := names.Make(archaius.Conf.Arch, rnames[r], znames[i%3], servicename, packagename, i)
-			StartPackage(name)
+		if count == 0 { // for AWS services that are cross zone like elb
+			log.Printf("Create cross zone: " + servicename)
+			name = names.Make(archaius.Conf.Arch, rnames[r], "*", servicename, packagename, 0)
+			StartPackage(name, dependencies)
+		} else {
+			log.Printf("Create service: " + servicename)
+			for i := r * count; i < (r+1)*count; i++ {
+				name = names.Make(archaius.Conf.Arch, rnames[r], znames[i%3], servicename, packagename, i)
+				StartPackage(name, dependencies)
+			}
 		}
 	}
+	return name
 }
 
-func StartPackage(name string) {
-	noodles[name] = make(chan gotocol.Message)
+func StartPackage(name string, dependencies []string) {
+	if names.Package(name) == "eureka" {
+		eurekachan[name] = make(chan gotocol.Message, archaius.Conf.Population)
+		go eureka.Start(eurekachan[name], name)
+		return
+	} else {
+		noodles[name] = make(chan gotocol.Message)
+	}
 	// start the service and tell it it's name
 	switch names.Package(name) {
 	case "pirate":
@@ -71,13 +92,36 @@ func StartPackage(name string) {
 		log.Fatal("migration: unknown package: " + names.Package(name))
 	}
 	noodles[name] <- gotocol.Message{gotocol.Hello, listener, time.Now(), name}
-	noodles[name] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+	// there is a eureka service registry in each zone, so in-zone services just get to talk to their local registry
+	// elb are cross zone, so need to see all registries in a region
+	// denominator are cross region so need to see all registries globally
+	for n, ch := range eurekachan {
+		if names.Region(name) == "*" {
+			// need to know every eureka in all zones and regions
+			noodles[name] <- gotocol.Message{gotocol.Inform, ch, time.Now(), n}
+		} else {
+			if names.Zone(name) == "*" && names.Region(name) == names.Region(n) {
+				// need every eureka in my region
+				noodles[name] <- gotocol.Message{gotocol.Inform, ch, time.Now(), n}
+			} else {
+				if names.RegionZone(name) == names.RegionZone(n) {
+					// just the eureka in this specific zone
+					noodles[name] <- gotocol.Message{gotocol.Inform, ch, time.Now(), n}
+				}
+			}
+		}
+	}
+	// pass on symbolic dependencies without channels that will be looked up in Eureka later
+	for _, dep := range dependencies {
+		if dep != "" {
+			noodles[name] <- gotocol.Message{gotocol.NameDrop, nil, time.Now(), dep}
+		}
+	}
 }
 
 // Reload the network from a file
 func Reload(arch string) {
-	listener = make(chan gotocol.Message)                             // listener for netflixoss
-	eurekachan = make(chan gotocol.Message, archaius.Conf.Population) // listener for eureka
+	listener = make(chan gotocol.Message) // listener for netflixoss
 	log.Println("migration reloading from " + arch + ".json")
 	g := graphjson.ReadArch(arch)
 	archaius.Conf.Population = 0 // just to make sure
@@ -87,16 +131,16 @@ func Reload(arch string) {
 			archaius.Conf.Population++
 		}
 	}
-	// create the map of channels
+	// create the maps of channels
 	noodles = make(map[string]chan gotocol.Message, archaius.Conf.Population)
+	eurekachan = make(map[string]chan gotocol.Message, 3*archaius.Conf.Regions)
+
 	// eureka and edda aren't recorded in the json file to simplify the graph
-	// TODO need to have a eureka per region
-	go eureka.Start(eurekachan, "netflixoss.eureka")
 	// Start all the services
 	for _, element := range g.Graph {
 		if element.Node != "" {
 			name := element.Node
-			StartPackage(name)
+			StartPackage(name, nil)
 		}
 	}
 	// Make all the connections
@@ -116,256 +160,132 @@ func Reload(arch string) {
 // Start lamp and netflixoss
 func Start() {
 	arch := archaius.Conf.Arch
-	listener = make(chan gotocol.Message)                             // listener for netflixoss
-	eurekachan = make(chan gotocol.Message, archaius.Conf.Population) // listener for netflixoss
+	listener = make(chan gotocol.Message) // listener for netflixoss
 	if archaius.Conf.Population < 1 {
 		log.Fatal("migration: can't create less than 1 microservice")
 	} else {
 		log.Printf("migration: scaling to %v%%", archaius.Conf.Population)
 	}
-	// create map of channels
+	// create maps of channels
 	noodles = make(map[string]chan gotocol.Message, archaius.Conf.Population)
-
-	// start the service registry first, TODO needs to be one per region
-	go eureka.Start(eurekachan, "migration.eureka")
-
-	// we need a DNS service to create a global multi-region architecture
-	dnsname := names.Make(arch, "*", "*", "www-dns", "denominator", 0)
-	noodles[dnsname] = make(chan gotocol.Message)
-	go denominator.Start(noodles[dnsname])
-	// setup the dns name and logging, set chat rate after everything else is started
-	noodles[dnsname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), dnsname}
-	noodles[dnsname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+	eurekachan = make(map[string]chan gotocol.Message, 3*archaius.Conf.Regions)
 
 	// Build the configuration step by step
 
-	// we need elb as a front end in each region to spread request traffic around each endpoint
-	// remember regions in the global config
-	for i, s := range rnames {
-		archaius.Conf.RegionNames[i] = s
+	// create eureka service registries in each zone
+	euname := "eureka"
+	eucount := 3
+	// start mysql data store layer, which connects to itself
+	mysqlcount := 2
+	sname := "rds-mysql"
+	// start memcached layer, only one per region
+	mname := "memcache"
+	mcount := 1
+	if archaius.Conf.StopStep >= 3 {
+		// start evcache layer, one per zone
+		mname = "evcache"
+		mcount = 3
 	}
-	// elb for api endpoint
-	elbcnt := 0
-	// cross region cassandra cluster names need to scope outside loop
+	// priam managed Cassandra cluster, turtle because it's used to configure other clusters
+	priamCassandracount := 12 * archaius.Conf.Population / 100
 	cname := "cassTurtle"
 	cpkg := "priamCassandra"
-	for r := 0; r < archaius.Conf.Regions; r++ {
-		rname := rnames[r]
-		elbname := names.Make(arch, rname, "ABC", "www-elb", "elb", elbcnt)
-		elbcnt++
-		noodles[elbname] = make(chan gotocol.Message)
-		go elb.Start(noodles[elbname])
-		// setup the elb's name and logging, set chat rate after everything else is started
-		noodles[elbname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), elbname}
-		noodles[elbname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-		// tell denominator how to talk to the elb
-		noodles[dnsname] <- gotocol.Message{gotocol.NameDrop, noodles[elbname], time.Now(), elbname}
+	// staash data access layer connects to mysql master and slave, and evcache
+	staashcount := 6 * archaius.Conf.Population / 100
+	tname := "turtle"
+	//  php business logic, we can create a network of simple services from the karyon package
+	phpcount := 9 * archaius.Conf.Population / 100
+	pname := "php"
+	// some node microservice logic, we can create a network of simple services from the karyon package
+	nodecount := 9 * archaius.Conf.Population / 100
+	nname := "node"
+	// zuul api proxies and insert between elb and php
+	zuulcount := 9 * archaius.Conf.Population / 100
+	zuname := "wwwproxy"
+	// AWS elastic load balancer
+	elbname := "www-elb"
+	// DNS endpoint
+	dns := "www"
 
-		// start lamp stack
-
-		// start mysql data store layer
-		mysqlcount := 2
-		sname := "rds-mysql"
-		spkg := "store"
-		for i := r * mysqlcount; i < (r+1)*mysqlcount; i++ {
-			mysqlname := names.Make(arch, rname, znames[i%3], sname, spkg, i)
-			noodles[mysqlname] = make(chan gotocol.Message)
-			go store.Start(noodles[mysqlname])
-			noodles[mysqlname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), mysqlname}
-			noodles[mysqlname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
+	// setup name service and cross zone replication links
+	Create(euname, "eureka", archaius.Conf.Regions, eucount)
+	for n, ch := range eurekachan {
+		var n1, n2 string
+		switch names.Zone(n) {
+		case znames[0]:
+			n1 = znames[1]
+			n2 = znames[2]
+		case znames[1]:
+			n1 = znames[0]
+			n2 = znames[2]
+		case znames[2]:
+			n1 = znames[0]
+			n2 = znames[1]
 		}
-		// connect master mysql in a zone to slave mysql in second zone
-		master := names.Make(arch, rname, znames[0], sname, spkg, (r * 2))
-		slave := names.Make(arch, rname, znames[1], sname, spkg, (r*2)+1)
-		noodles[master] <- gotocol.Message{gotocol.NameDrop, noodles[slave], time.Now(), slave}
-
-		// start memcached layer, one per region
-		mname := "memcache"
-		mpkg := "store"
-		memname := names.Make(arch, rname, znames[0], mname, mpkg, r)
-		if archaius.Conf.StopStep < 3 {
-			noodles[memname] = make(chan gotocol.Message)
-			go store.Start(noodles[memname])
-			noodles[memname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), memname}
-			noodles[memname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-		}
-
-		// start php business logic, we can create a network of simple services from the karyon package
-		phpcount := 9 * archaius.Conf.Population / 100
-		pname := "php"
-		ppkg := "karyon" // karyon randomly calls its dependencies which isn't really right for master/slave/cache
-		for i := r * phpcount; i < (r+1)*phpcount; i++ {
-			phpname := names.Make(arch, rname, znames[i%3], pname, ppkg, i)
-			noodles[phpname] = make(chan gotocol.Message)
-			go karyon.Start(noodles[phpname])
-			noodles[phpname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), phpname}
-			noodles[phpname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-			if archaius.Conf.StopStep == 1 {
-				noodles[elbname] <- gotocol.Message{gotocol.NameDrop, noodles[phpname], time.Now(), phpname}
+		for nn, cch := range eurekachan {
+			if names.Region(nn) == names.Region(n) && (names.Zone(nn) == n1 || names.Zone(nn) == n2) {
+				log.Println("Eureka cross connect from: " + n + " to " + nn)
+				ch <- gotocol.Message{gotocol.NameDrop, cch, time.Now(), nn}
 			}
-			if archaius.Conf.StopStep < 3 {
-				// connect all the php to mysql and memcached in one zone only
-				noodles[phpname] <- gotocol.Message{gotocol.NameDrop, noodles[master], time.Now(), master}
-				noodles[phpname] <- gotocol.Message{gotocol.NameDrop, noodles[slave], time.Now(), slave}
-				noodles[phpname] <- gotocol.Message{gotocol.NameDrop, noodles[memname], time.Now(), memname}
-			}
-		}
-
-		if archaius.Conf.StopStep == 1 {
-			run(dnsname)
-			return
-		}
-
-		// start zuul api proxies and insert between elb and php
-		zuulcount := 9 * archaius.Conf.Population / 100
-		zuname := "wwwproxy"
-		zupkg := "zuul"
-		for i := r * zuulcount; i < (r+1)*zuulcount; i++ {
-			zuulname := names.Make(arch, rname, znames[i%3], zuname, zupkg, i)
-			noodles[zuulname] = make(chan gotocol.Message)
-			go zuul.Start(noodles[zuulname])
-			noodles[zuulname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), zuulname}
-			noodles[zuulname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-			// connect all the zuul in a zone to all php in that zone only, and unhook php from elb
-			for j := r*phpcount + i%3; j < (r+1)*phpcount; j = j + 3 {
-				p := names.Make(arch, rname, znames[i%3], pname, ppkg, j)
-				noodles[zuulname] <- gotocol.Message{gotocol.NameDrop, noodles[p], time.Now(), p}
-				//noodles[elbname] <- gotocol.Message{gotocol.Forget, nil, time.Now(), p}
-			}
-			// hook all the zuul proxies up to the elb in this region
-			noodles[elbname] <- gotocol.Message{gotocol.NameDrop, noodles[zuulname], time.Now(), zuulname}
-		}
-
-		if archaius.Conf.StopStep == 2 {
-			run(dnsname)
-			return
-		}
-
-		// start evcache layer, one per zone
-		evcachecount := 3
-		mname = "evcache"
-		mpkg = "store"
-		for i := r * evcachecount; i < (r+1)*evcachecount; i++ {
-			evname := names.Make(arch, rname, znames[i%3], mname, mpkg, i)
-			noodles[evname] = make(chan gotocol.Message)
-			go store.Start(noodles[evname])
-			noodles[evname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), evname}
-			noodles[evname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-		}
-
-		// start staash data access layer and connect to mysql master and slave, and evcache
-		staashcount := 6 * archaius.Conf.Population / 100
-		tname := "turtle"
-		tpkg := "staash"
-		for i := r * staashcount; i < (r+1)*staashcount; i++ {
-			staashname := names.Make(arch, rname, znames[i%3], tname, tpkg, i)
-			noodles[staashname] = make(chan gotocol.Message)
-			go staash.Start(noodles[staashname])
-			noodles[staashname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), staashname}
-			noodles[staashname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-			// connect to mysql
-			noodles[staashname] <- gotocol.Message{gotocol.NameDrop, noodles[master], time.Now(), master}
-			noodles[staashname] <- gotocol.Message{gotocol.NameDrop, noodles[slave], time.Now(), slave}
-			// connect all staash to all evcache
-			for j := 0; j < evcachecount; j++ {
-				evname := names.Make(arch, rname, znames[j%3], mname, mpkg, r*evcachecount+j)
-				noodles[staashname] <- gotocol.Message{gotocol.NameDrop, noodles[evname], time.Now(), evname}
-			}
-		}
-
-		// connect php to staash
-		for i := r * phpcount; i < (r+1)*phpcount; i++ {
-			phpname := names.Make(arch, rname, znames[i%3], pname, ppkg, i)
-			// connect all the php in a zone to all staash in that zone only
-			for j := r*staashcount + i%3; j < (r+1)*staashcount; j = j + 3 {
-				s := names.Make(arch, rname, znames[i%3], tname, tpkg, j)
-				noodles[phpname] <- gotocol.Message{gotocol.NameDrop, noodles[s], time.Now(), s}
-			}
-			// disconnect php from direct access to mysql
-			//noodles[phpname] <- gotocol.Message{gotocol.Forget, nil, time.Now(), master}
-			//noodles[phpname] <- gotocol.Message{gotocol.Forget, nil, time.Now(), slave}
-		}
-
-		if archaius.Conf.StopStep == 3 {
-			run(dnsname)
-			return
-		}
-
-		// start more microservice logic, we can create a network of simple services from the karyon package
-		nodecount := 9 * archaius.Conf.Population / 100
-		nname := "node"
-		npkg := "karyon"
-		for i := r * nodecount; i < (r+1)*nodecount; i++ {
-			nodename := names.Make(arch, rname, znames[i%3], nname, npkg, i)
-			noodles[nodename] = make(chan gotocol.Message)
-			go karyon.Start(noodles[nodename])
-			noodles[nodename] <- gotocol.Message{gotocol.Hello, listener, time.Now(), nodename}
-			noodles[nodename] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-			for j := r*staashcount + i%3; j < (r+1)*staashcount; j = j + 3 {
-				s := names.Make(arch, rname, znames[i%3], tname, tpkg, j)
-				noodles[nodename] <- gotocol.Message{gotocol.NameDrop, noodles[s], time.Now(), s}
-			}
-		}
-		for i := r * zuulcount; i < (r+1)*zuulcount; i++ {
-			zuulname := names.Make(arch, rname, znames[i%3], zuname, zupkg, i)
-			// connect all the zuul in a zone to all node in that zone only
-			for j := r*nodecount + i%3; j < (r+1)*nodecount; j = j + 3 {
-				n := names.Make(arch, rname, znames[i%3], nname, npkg, j)
-				noodles[zuulname] <- gotocol.Message{gotocol.NameDrop, noodles[n], time.Now(), n}
-			}
-		}
-
-		if archaius.Conf.StopStep == 4 {
-			run(dnsname)
-			return
-		}
-
-		// start first priam managed Cassandra cluster, turtle because it's used to configure other clusters
-		priamCassandracount := 12 * archaius.Conf.Population / 100
-		for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
-			priamCassandraname := names.Make(arch, rname, znames[i%3], cname, cpkg, i)
-			noodles[priamCassandraname] = make(chan gotocol.Message)
-			go priamCassandra.Start(noodles[priamCassandraname])
-			noodles[priamCassandraname] <- gotocol.Message{gotocol.Hello, listener, time.Now(), priamCassandraname}
-			noodles[priamCassandraname] <- gotocol.Message{gotocol.Inform, eurekachan, time.Now(), ""}
-		}
-
-		// make the cross zone priamCassandra connections, assumes staash/astayanax ring aware client routing
-		for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
-			priamCassandraZ0 := names.Make(arch, rname, znames[i%3], cname, cpkg, i)
-			priamCassandraZ1 := names.Make(arch, rname, znames[(i+1)%3], cname, cpkg, r*priamCassandracount+(i+1)%priamCassandracount)
-			noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ1], time.Now(), priamCassandraZ1}
-			priamCassandraZ2 := names.Make(arch, rname, znames[(i+2)%3], cname, cpkg, r*priamCassandracount+(i+2)%priamCassandracount)
-			noodles[priamCassandraZ0] <- gotocol.Message{gotocol.NameDrop, noodles[priamCassandraZ2], time.Now(), priamCassandraZ2}
-		}
-
-		if archaius.Conf.StopStep == 5 {
-			run(dnsname)
-			return
-		}
-
-		// connect staash data access layer to Cassandra
-		for i := r * staashcount; i < (r+1)*staashcount; i++ {
-			staashname := names.Make(arch, rname, znames[i%3], tname, tpkg, i)
-			// connect all the staash in a zone to all priamCassandra in that zone only
-			for j := r*priamCassandracount + i%3; j < (r+1)*priamCassandracount; j = j + 3 {
-				pc := names.Make(arch, rname, znames[i%3], cname, cpkg, j)
-				noodles[staashname] <- gotocol.Message{gotocol.NameDrop, noodles[pc], time.Now(), pc}
-			}
-		}
-		if archaius.Conf.StopStep == 6 {
-			run(dnsname)
-			return
 		}
 	}
 
-	// stop here for 7 for single region, then add second region for step 8, then join them for 9
-	if archaius.Conf.StopStep == 7 || archaius.Conf.StopStep == 8 {
+	switch archaius.Conf.StopStep {
+	case 1: // basic LAMP with memcache
+		Create(sname, "store", archaius.Conf.Regions, mysqlcount, sname)
+		Create(mname, "store", archaius.Conf.Regions, mcount)
+		Create(pname, "karyon", archaius.Conf.Regions, phpcount, sname, mname)
+		Create(elbname, "elb", archaius.Conf.Regions, 0, pname)
+	case 2: // LAMP with zuul and memcache
+		Create(sname, "store", archaius.Conf.Regions, mysqlcount, sname)
+		Create(mname, "store", archaius.Conf.Regions, mcount)
+		Create(pname, "karyon", archaius.Conf.Regions, phpcount, sname, mname)
+		Create(zuname, "zuul", archaius.Conf.Regions, zuulcount, pname)
+		Create(elbname, "elb", archaius.Conf.Regions, 0, zuname)
+	case 3: // LAMP with zuul and staash and evcache
+		Create(sname, "store", archaius.Conf.Regions, mysqlcount, sname)
+		Create(mname, "store", archaius.Conf.Regions, mcount)
+		Create(tname, "staash", archaius.Conf.Regions, staashcount, sname, mname)
+		Create(pname, "karyon", archaius.Conf.Regions, phpcount, tname)
+		Create(zuname, "zuul", archaius.Conf.Regions, zuulcount, pname)
+		Create(elbname, "elb", archaius.Conf.Regions, 0, zuname)
+	case 4: // added node microservice
+		Create(sname, "store", archaius.Conf.Regions, mysqlcount, sname)
+		Create(mname, "store", archaius.Conf.Regions, mcount)
+		Create(tname, "staash", archaius.Conf.Regions, staashcount, sname, mname, cname)
+		Create(pname, "karyon", archaius.Conf.Regions, phpcount, tname)
+		Create(nname, "karyon", archaius.Conf.Regions, nodecount, tname)
+		Create(zuname, "zuul", archaius.Conf.Regions, zuulcount, pname, nname)
+		Create(elbname, "elb", archaius.Conf.Regions, 0, zuname)
+	case 5: // added cassandra alongside mysql
+		Create(cname, "priamCassandra", archaius.Conf.Regions, priamCassandracount, cname)
+		Create(sname, "store", archaius.Conf.Regions, mysqlcount, sname)
+		Create(mname, "store", archaius.Conf.Regions, mcount)
+		Create(tname, "staash", archaius.Conf.Regions, staashcount, sname, mname, cname)
+		Create(pname, "karyon", archaius.Conf.Regions, phpcount, tname)
+		Create(nname, "karyon", archaius.Conf.Regions, nodecount, tname)
+		Create(zuname, "zuul", archaius.Conf.Regions, zuulcount, pname, nname)
+		Create(elbname, "elb", archaius.Conf.Regions, 0, zuname)
+	default: // for all higher steps
+		fallthrough
+	case 6: // removed mysql so that multi-region will work properly
+		Create(cname, "priamCassandra", archaius.Conf.Regions, priamCassandracount, cname)
+		Create(mname, "store", archaius.Conf.Regions, mcount)
+		Create(tname, "staash", archaius.Conf.Regions, staashcount, mname, cname)
+		Create(pname, "karyon", archaius.Conf.Regions, phpcount, tname)
+		Create(nname, "karyon", archaius.Conf.Regions, nodecount, tname)
+		Create(zuname, "zuul", archaius.Conf.Regions, zuulcount, pname, nname)
+		Create(elbname, "elb", archaius.Conf.Regions, 0, zuname)
+	}
+
+	dnsname := Create(dns, "denominator", 0, 0, elbname)
+
+	// stop here for for single region, then add second region, then join them
+	if archaius.Conf.StopStep < 8 {
 		run(dnsname)
 		return
 	}
-	// Connect cross region Cassandra
-	priamCassandracount := 12 * archaius.Conf.Population / 100
+	// Connect cross region Cassandra0
 	if archaius.Conf.Regions > 1 {
 		// for each region
 		for r := 0; r < archaius.Conf.Regions; r++ {
@@ -400,8 +320,6 @@ func run(rootservice string) {
 	for _, noodle := range noodles {
 		gotocol.Message{gotocol.Goodbye, nil, time.Now(), "shutdown"}.GoSend(noodle)
 	}
-	// listen one extra time to catch eureka reply
-	gotocol.Message{gotocol.Goodbye, listener, time.Now(), "shutdown"}.GoSend(eurekachan)
 	for len(noodles) > 0 {
 		msg = <-listener
 		if archaius.Conf.Msglog {
@@ -415,7 +333,14 @@ func run(rootservice string) {
 			}
 		}
 	}
-	// wait for eureka to flush messages and exit
+	// shutdown eureka and wait to catch eureka reply
+	for _, ch := range eurekachan {
+		gotocol.Message{gotocol.Goodbye, listener, time.Now(), "shutdown"}.GoSend(ch)
+	}
+	for _ = range eurekachan {
+		msg = <-listener
+	}
+	// wait for all the eureka to flush messages and exit
 	eureka.Wg.Wait()
 	collect.Save()
 	log.Println("migration: Exit")

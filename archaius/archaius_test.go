@@ -22,6 +22,7 @@ func TestConf(t *testing.T) {
 	}
 	Conf.Collect = true
 	Conf.StopStep = 2
+	Conf.EurekaPoll = "1s"
 	fmt.Println(string(AsJson()))
 	FromJson(AsJson())
 	fmt.Println(Conf)

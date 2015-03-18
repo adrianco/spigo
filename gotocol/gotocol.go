@@ -4,6 +4,8 @@ package gotocol
 
 import (
 	"fmt"
+	"github.com/adrianco/spigo/names"
+	"log"
 	"time"
 )
 
@@ -90,4 +92,35 @@ func Send(to chan<- Message, msg Message) {
 // GoSend asynchronous message send, parks it on a new goroutine until it completes
 func (msg Message) GoSend(to chan Message) {
 	go func(c chan Message, m Message) { c <- m }(to, msg)
+}
+
+// InformHandler default handler for Inform message
+func InformHandler(msg Message, name string, listener chan Message) chan Message {
+	if name == "" {
+		log.Fatal(name + "Inform message received before Hello message")
+	}
+	// service registry channel is buffered so no need to use GoSend to tell Eureka we exist
+	msg.ResponseChan <- Message{Put, listener, time.Now(), name}
+	return msg.ResponseChan
+}
+
+func NameDropHandler(dependencies *map[string]time.Time, microservices *map[string]chan Message, msg Message, name string, listener chan Message, eureka map[string]chan Message) {
+	if msg.ResponseChan == nil { // dependency by service name, needs to be looked up in eureka
+		(*dependencies)[msg.Intention] = msg.Sent // remember it for later
+		for _, ch := range eureka {
+			ch <- Message{GetRequest, listener, time.Now(), msg.Intention}
+		}
+	} else { // update dependency with full name and listener channel
+		microservice := msg.Intention // message body is buddy name
+		if microservice != name {     // don't talk to myself
+			// remember how to talk to this buddy
+			(*microservices)[microservice] = msg.ResponseChan // message channel is buddy's listener
+			(*dependencies)[names.Service(microservice)] = msg.Sent
+			for _, ch := range eureka {
+				// tell one of the service registries I have a new buddy to talk to so it doesn't get logged more than once
+				ch <- Message{Inform, listener, time.Now(), name + " " + microservice}
+				return
+			}
+		}
+	}
 }

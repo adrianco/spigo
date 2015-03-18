@@ -8,6 +8,7 @@ import (
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
 	"github.com/adrianco/spigo/graphml"
+	"github.com/adrianco/spigo/names"
 	"log"
 	"sync"
 	"time"
@@ -27,6 +28,7 @@ func Start(name string) {
 		return
 	}
 	var msg gotocol.Message
+	microservices := make(map[string]bool, archaius.Conf.Dunbar)
 	var ok bool
 	hist := collect.NewHist(name)
 	log.Println(name + ": starting")
@@ -55,9 +57,12 @@ func Start(name string) {
 			graphml.WriteEdge(msg.Intention)
 			graphjson.WriteEdge(msg.Intention)
 		} else {
-			if msg.Imposition == gotocol.Hello {
-				graphml.WriteNode(msg.Intention)
-				graphjson.WriteNode(msg.Intention)
+			if msg.Imposition == gotocol.Put {
+				if microservices[msg.Intention] == false {
+					microservices[msg.Intention] = true
+					graphml.WriteNode(msg.Intention + " " + names.Package(msg.Intention))
+					graphjson.WriteNode(msg.Intention + " " + names.Package(msg.Intention))
+				}
 			}
 		}
 	}

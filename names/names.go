@@ -35,6 +35,11 @@ func Zone(name string) string {
 	return strings.Split(name, ".")[zone]
 }
 
+func RegionZone(name string) string {
+	s := strings.Split(name, ".")
+	return s[region]+"."+s[zone]
+}
+
 func Service(name string) string {
 	return strings.Split(name, ".")[service]
 }
