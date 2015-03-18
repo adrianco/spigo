@@ -104,22 +104,24 @@ func InformHandler(msg Message, name string, listener chan Message) chan Message
 	return msg.ResponseChan
 }
 
-func NameDropHandler(dependencies *map[string]time.Time, microservices *map[string]chan Message, msg Message, name string, listener chan Message, eureka map[string]chan Message) {
+func NameDropHandler(dependencies *map[string]time.Time, microservices *map[string]chan Message, msg Message, name string, listener chan Message, eureka map[string]chan Message, crosszone ...bool) {
 	if msg.ResponseChan == nil { // dependency by service name, needs to be looked up in eureka
 		(*dependencies)[msg.Intention] = msg.Sent // remember it for later
 		for _, ch := range eureka {
 			ch <- Message{GetRequest, listener, time.Now(), msg.Intention}
 		}
 	} else { // update dependency with full name and listener channel
-		microservice := msg.Intention                                      // message body is buddy name
-		if microservice != name && (*microservices)[microservice] == nil { // don't talk to myself or record duplicates
-			// remember how to talk to this buddy
-			(*microservices)[microservice] = msg.ResponseChan // message channel is buddy's listener
-			(*dependencies)[names.Service(microservice)] = msg.Sent
-			for _, ch := range eureka {
-				// tell one of the service registries I have a new buddy to talk to so it doesn't get logged more than once
-				ch <- Message{Inform, listener, time.Now(), name + " " + microservice}
-				return
+		microservice := msg.Intention // message body is buddy name
+		if len(crosszone) > 0 || names.Zone(name) == names.Zone(microservice) {
+			if microservice != name && (*microservices)[microservice] == nil { // don't talk to myself or record duplicates
+				// remember how to talk to this buddy
+				(*microservices)[microservice] = msg.ResponseChan // message channel is buddy's listener
+				(*dependencies)[names.Service(microservice)] = msg.Sent
+				for _, ch := range eureka {
+					// tell one of the service registries I have a new buddy to talk to so it doesn't get logged more than once
+					ch <- Message{Inform, listener, time.Now(), name + " " + microservice}
+					return
+				}
 			}
 		}
 	}

@@ -1,6 +1,6 @@
-// Package elb simulates an Elastic Load Balancer
-// Takes incoming traffic and spreads it over microservices in three availability zones
-package elb
+// Package monolith simulates a generic business logic microservice
+// Takes incoming traffic and calls into dependent microservices in a single zone
+package monolith
 
 import (
 	"github.com/adrianco/spigo/archaius"
@@ -11,20 +11,20 @@ import (
 	"time"
 )
 
-// Start the elb, all configuration and state is sent via messages
+// Start monolith, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
 	dunbar := 30 // starting point for how many nodes to remember
 	// remember the channel to talk to microservices
 	microservices := make(map[string]chan gotocol.Message, dunbar)
 	microindex := make([]chan gotocol.Message, dunbar)
 	dependencies := make(map[string]time.Time, dunbar) // dependent services and time last updated
-	var netflixoss, requestor chan gotocol.Message     // remember how to talk back to creator
+	var netflixoss, requestor chan gotocol.Message     // remember creator and how to talk back to incoming requests
 	var name string                                    // remember my name
-	eureka := make(map[string]chan gotocol.Message, 3) // service registry per zone
+	eureka := make(map[string]chan gotocol.Message, 1) // service registry
 	var chatrate time.Duration
+	hist := collect.NewHist("")
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
 	eurekaTicker := time.NewTicker(ep)
-	hist := collect.NewHist("")
 	chatTicker := time.NewTicker(time.Hour)
 	chatTicker.Stop()
 	for {
@@ -44,7 +44,7 @@ func Start(listener chan gotocol.Message) {
 				}
 			case gotocol.Inform:
 				eureka[msg.Intention] = gotocol.InformHandler(msg, name, listener)
-			case gotocol.NameDrop: // cross zone = true
+			case gotocol.NameDrop: // monolith talks cross zones, only difference from karyon
 				gotocol.NameDropHandler(&dependencies, &microservices, msg, name, listener, eureka, true)
 			case gotocol.Forget:
 				// forget a buddy
@@ -71,7 +71,7 @@ func Start(listener chan gotocol.Message) {
 						}
 					}
 					m := rand.Intn(len(microservices))
-					// pass on request to a random service
+					// start a request to a random service
 					gotocol.Message{gotocol.GetRequest, listener, time.Now(), msg.Intention}.GoSend(microindex[m])
 				}
 			case gotocol.GetResponse:
@@ -96,7 +96,7 @@ func Start(listener chan gotocol.Message) {
 				}
 			case gotocol.Goodbye:
 				if archaius.Conf.Msglog {
-					log.Printf("%v: Going away, chatting every %v\n", name, chatrate)
+					log.Printf("%v: Going away\n", name)
 				}
 				gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(netflixoss)
 				return
@@ -109,8 +109,8 @@ func Start(listener chan gotocol.Message) {
 			}
 		case <-chatTicker.C:
 			if len(microservices) > 0 {
-				// build index if needed
-				if len(microindex) != len(microservices) {
+				if len(microservices) != len(microindex) {
+					// rebuild index
 					i := 0
 					for _, ch := range microservices {
 						microindex[i] = ch
@@ -121,6 +121,7 @@ func Start(listener chan gotocol.Message) {
 				// start a request to a random member of this elb
 				gotocol.Message{gotocol.GetRequest, listener, time.Now(), name}.GoSend(microindex[m])
 			}
+			//default:
 		}
 	}
 }

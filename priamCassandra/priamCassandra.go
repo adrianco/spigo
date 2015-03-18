@@ -18,11 +18,11 @@ func Start(listener chan gotocol.Message) {
 	// remember the channel to talk to microservices
 	microservices := make(map[string]chan gotocol.Message, dunbar)
 	dependencies := make(map[string]time.Time, dunbar) // dependent services and time last updated
-	store := make(map[string]string, 4) // key value store
+	store := make(map[string]string, 4)                // key value store
 	store["why?"] = "because..."
-	var netflixoss, requestor chan gotocol.Message // remember creator and how to talk back to incoming requests
-	var name string                                // remember my name
-	eureka := make(map[string]chan gotocol.Message, 3 * archaius.Conf.Regions) // service registry per zone and region
+	var netflixoss, requestor chan gotocol.Message                           // remember creator and how to talk back to incoming requests
+	var name string                                                          // remember my name
+	eureka := make(map[string]chan gotocol.Message, 3*archaius.Conf.Regions) // service registry per zone and region
 	var chatrate time.Duration
 	hist := collect.NewHist("")
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
@@ -46,8 +46,8 @@ func Start(listener chan gotocol.Message) {
 				}
 			case gotocol.Inform:
 				eureka[msg.Intention] = gotocol.InformHandler(msg, name, listener)
-			case gotocol.NameDrop:
-				gotocol.NameDropHandler(&dependencies, &microservices, msg, name, listener, eureka)
+			case gotocol.NameDrop: // cross zone = true
+				gotocol.NameDropHandler(&dependencies, &microservices, msg, name, listener, eureka, true)
 			case gotocol.Chat:
 				// setup the ticker to run at the specified rate
 				d, e := time.ParseDuration(msg.Intention)

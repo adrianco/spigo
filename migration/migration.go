@@ -13,6 +13,7 @@ import (
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
 	"github.com/adrianco/spigo/karyon"         // business logic microservice
+	"github.com/adrianco/spigo/monolith"       // business logic monolith
 	"github.com/adrianco/spigo/names"          // manage service name hierarchy
 	"github.com/adrianco/spigo/pirate"         // random end user network
 	"github.com/adrianco/spigo/priamCassandra" // Priam managed Cassandra cluster
@@ -82,6 +83,8 @@ func StartPackage(name string, dependencies []string) {
 		go zuul.Start(noodles[name])
 	case "karyon":
 		go karyon.Start(noodles[name])
+	case "monolith":
+		go monolith.Start(noodles[name])
 	case "staash":
 		go staash.Start(noodles[name])
 	case "priamCassandra":
@@ -234,12 +237,12 @@ func Start() {
 	case 1: // basic LAMP with memcache
 		Create(sname, "store", archaius.Conf.Regions, mysqlcount, sname)
 		Create(mname, "store", archaius.Conf.Regions, mcount)
-		Create(pname, "karyon", archaius.Conf.Regions, phpcount, sname, mname)
+		Create(pname, "monolith", archaius.Conf.Regions, phpcount, sname, mname)
 		Create(elbname, "elb", archaius.Conf.Regions, 0, pname)
 	case 2: // LAMP with zuul and memcache
 		Create(sname, "store", archaius.Conf.Regions, mysqlcount, sname)
 		Create(mname, "store", archaius.Conf.Regions, mcount)
-		Create(pname, "karyon", archaius.Conf.Regions, phpcount, sname, mname)
+		Create(pname, "monolith", archaius.Conf.Regions, phpcount, sname, mname)
 		Create(zuname, "zuul", archaius.Conf.Regions, zuulcount, pname)
 		Create(elbname, "elb", archaius.Conf.Regions, 0, zuname)
 	case 3: // LAMP with zuul and staash and evcache
