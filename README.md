@@ -1,6 +1,8 @@
 spigo
 =====
 
+[![GoDoc](https://godoc.org/github.com/adrianco/spigo?status.svg)](https://godoc.org/github.com/adrianco/spigo)
+
 Simulate Protocol Interactions in Go using nanoservice actors
 
 Suitable for fairly large scale simulations, runs well up to 100,000 independent nanoservice actors. Three architectures are implemented. One creates a peer to peer social network (fsm and pirates). The others are based on a LAMP stack or NetflixOSS microservices in a more tree structured model. The migration architecture starts with LAMP and ends with NetflixOSS.
@@ -22,8 +24,6 @@ http://www.slideshare.net/adriancockcroft/software-architecture-monitoring-micro
                 Create(zuname, "zuul", archaius.Conf.Regions, zuulcount, pname, nname)
                 Create(elbname, "elb", archaius.Conf.Regions, 0, zuname)
 ```
-
-[![GoDoc](https://godoc.org/github.com/adrianco/spigo?status.svg)](https://godoc.org/github.com/adrianco/spigo)
 
 ![Migration ](migration5.png)
 
