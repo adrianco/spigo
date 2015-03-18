@@ -7,6 +7,22 @@ Suitable for fairly large scale simulations, runs well up to 100,000 independent
 
 Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,000 messages and wait to shut them all down again takes about 4 seconds. The resulting graph can be visualized via GraphML or rendered by saving to Graph JSON and viewing in a web browser via D3.
 
+A few lines of code can be used to create an interesting architecture. The code is still being cleaned up and refactored, but if you figure out your own architecture in this form it's going to be easy to carry forward as Spigo evolves.
+
+Presentation at the O'Reilly Software Architecture Conference: Monitoring Microservices - A Challenge
+http://www.slideshare.net/adriancockcroft/software-architecture-monitoring-microservices-a-challenge
+
+```
+                Create(cname, "priamCassandra", archaius.Conf.Regions, priamCassandracount, cname)
+                Create(sname, "store", archaius.Conf.Regions, mysqlcount, sname)
+                Create(mname, "store", archaius.Conf.Regions, mcount)
+                Create(tname, "staash", archaius.Conf.Regions, staashcount, sname, mname, cname)
+                Create(pname, "karyon", archaius.Conf.Regions, phpcount, tname)
+                Create(nname, "karyon", archaius.Conf.Regions, nodecount, tname)
+                Create(zuname, "zuul", archaius.Conf.Regions, zuulcount, pname, nname)
+                Create(elbname, "elb", archaius.Conf.Regions, 0, zuname)
+```
+
 [![GoDoc](https://godoc.org/github.com/adrianco/spigo?status.svg)](https://godoc.org/github.com/adrianco/spigo)
 
 ```
