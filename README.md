@@ -25,21 +25,54 @@ http://www.slideshare.net/adriancockcroft/software-architecture-monitoring-micro
 
 [![GoDoc](https://godoc.org/github.com/adrianco/spigo?status.svg)](https://godoc.org/github.com/adrianco/spigo)
 
+![Migration ](migration5.png)
+
 ```
-$ spigo -h
-Usage of spigo:
-  -a="netflixoss": Architecture to create or read, netflixoss, fsm or lamp
+$ ./spigo -h
+Usage of ./spigo:
+  -a="netflixoss": Architecture to create or read, fsm, lamp, migration, or netflixoss
   -c=false: Collect metrics to <arch>_metrics.json and via http:
   -cpuprofile="": Write cpu profile to file
   -d=10:    Simulation duration in seconds
   -g=false: Enable GraphML logging of nodes and edges to <arch>.graphml
   -j=false: Enable GraphJSON logging of nodes and edges to <arch>.json
   -m=false: Enable console logging of every message
-  -p=100:   Pirate population for fsm or scale factor % for netflixoss
+  -p=100:   Pirate population for fsm or scale factor % for netflixoss etc.
   -r=false: Reload <arch>.json to setup architecture
   -s=0:     Stop creating microservices at this step, 0 = don't stop
+  -u="1s":     Polling interval for Eureka name service
   -w=1:     Wide area regions
   
+$ ./spigo -a migration -d 2 -j
+2015/03/18 08:35:31 migration: scaling to 100%
+2015/03/18 08:35:31 Create service: eureka
+2015/03/18 08:35:31 Eureka cross connect from: migration.us-east-1.zoneA.eureka.eureka.eureka0 to migration.us-east-1.zoneB.eureka.eureka.eureka1
+2015/03/18 08:35:31 Eureka cross connect from: migration.us-east-1.zoneA.eureka.eureka.eureka0 to migration.us-east-1.zoneC.eureka.eureka.eureka2
+2015/03/18 08:35:31 Eureka cross connect from: migration.us-east-1.zoneB.eureka.eureka.eureka1 to migration.us-east-1.zoneA.eureka.eureka.eureka0
+2015/03/18 08:35:31 Eureka cross connect from: migration.us-east-1.zoneB.eureka.eureka.eureka1 to migration.us-east-1.zoneC.eureka.eureka.eureka2
+2015/03/18 08:35:31 Eureka cross connect from: migration.us-east-1.zoneC.eureka.eureka.eureka2 to migration.us-east-1.zoneA.eureka.eureka.eureka0
+2015/03/18 08:35:31 Eureka cross connect from: migration.us-east-1.zoneC.eureka.eureka.eureka2 to migration.us-east-1.zoneB.eureka.eureka.eureka1
+2015/03/18 08:35:31 Create service: cassTurtle
+2015/03/18 08:35:31 migration.edda: starting
+2015/03/18 08:35:31 migration.us-east-1.zoneA.eureka.eureka.eureka0: starting
+2015/03/18 08:35:31 migration.us-east-1.zoneB.eureka.eureka.eureka1: starting
+2015/03/18 08:35:31 migration.us-east-1.zoneC.eureka.eureka.eureka2: starting
+2015/03/18 08:35:31 Create service: memcache
+2015/03/18 08:35:31 Create service: turtle
+2015/03/18 08:35:31 Create service: php
+2015/03/18 08:35:31 Create service: node
+2015/03/18 08:35:31 Create service: wwwproxy
+2015/03/18 08:35:31 Create cross zone: www-elb
+2015/03/18 08:35:31 Create cross region: www
+2015/03/18 08:35:31 migration: denominator activity rate  10ms
+2015/03/18 08:35:33 migration: Shutdown
+2015/03/18 08:35:33 migration.us-east-1.zoneB.eureka.eureka.eureka1: closing
+2015/03/18 08:35:33 migration.us-east-1.zoneC.eureka.eureka.eureka2: closing
+2015/03/18 08:35:33 migration.us-east-1.zoneA.eureka.eureka.eureka0: closing
+2015/03/18 08:35:33 migration: Exit
+2015/03/18 08:35:33 spigo: migration complete
+2015/03/18 08:35:33 migration.edda: closing
+
 $ ./spigo -a netflixoss -d 1 -j -c
 2015/02/20 09:44:25 netflixoss: scaling to 100%
 2015/02/20 09:44:25 HTTP metrics now available at localhost:8123/debug/vars
