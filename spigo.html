@@ -2,13 +2,29 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Force layout</title>
+		<title>spigo</title>
+		<link rel="stylesheet" href="ui/css/tooltip.css" />
+		<link rel="stylesheet" href="ui/css/svg.css" />
 	</head>
 	<body>
 		<p>Spigo</p>
+		<input id="next" type="button" value="Next Step" />
 
-		<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
-		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+		<input id="charge-button" type="button" value="More Charge" />
+
+		<select name="architecture" id="architecture">
+			<option value="lamp">Lamp</option>
+			<option value="netflixoss">Netflix OSS</option>
+			<option value="migration" selected>Migration</option>
+		</select>
+
+		<div id="tooltip" class="hidden">
+			<p><span id="value">node</span></p>
+		</div>
+
+		<script type="text/javascript" src="ui/js/vendor/d3.min.js"></script>
+		<script type="text/javascript" src="ui/js/vendor/jquery.min.js"></script>
+		<script type="text/javascript" src="ui/js/vendor/underscore.min.js"></script>
 		<script type="text/javascript" src="ui/js/app.js"></script>
 	</body>
 </html>
