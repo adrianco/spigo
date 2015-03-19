@@ -26,7 +26,7 @@ Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI
                 Create(elbname, "elb", archaius.Conf.Regions, 0, zuname)
 ```
 
-![Migration ](migration5.png)
+![Migration ](png/migration5.png)
 
 ```
 $ ./spigo -h
@@ -130,37 +130,37 @@ The orchestration to create this now uses a eureka discovery service per zone an
 [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html?arch=migration)
 
 Start with a monolithic LAMP stack
-![Migration ](migration1.png)
+![Migration ](png/migration1.png)
 
 Interpose Zuul proxy between load balancer and PHP monolith services
-![Migration ](migration2.png)
+![Migration ](png/migration2.png)
 
 Replace single memcached with cross zone EVcache replicated memcached and change PHP to access MySQL via Staash (Storage Tier as a Service HTTP)
-![Migration ](migration3.png)
+![Migration ](png/migration3.png)
 
 Add some Node based microservices between Zuul and Staash alongside PHP
-![Migration ](migration4.png)
+![Migration ](png/migration4.png)
 
 Start a Cassandra cluster and connect to Staash alongside MySQL and evcache for data and access migration
-![Migration ](migration5.png)
+![Migration ](png/migration5.png)
 
 Remove MySQL to be ready to go multi-region
-![Migration ](migration6.png)
+![Migration ](png/migration6.png)
 
 Add a second region without connecting up cassandra
-![Migration ](migration7.png)
+![Migration ](png/migration7.png)
 
 Connect regions together using multi-region Cassandra
-![Migration ](migration8.png)
+![Migration ](png/migration8.png)
 
 Extend to six regions, an interesting visualization challenge
-![Migration ](migration9.png)
+![Migration ](png/migration9.png)
 
 LAMP Stack Architecture
 -----------
 To create a starting point for architecture transitions, an AWS hosted LAMP stack is simulated. It has DNS feeding an ELB, then a horizontally scaled layer of PHP servers backed with a single memcached and a master slave pair of MySQL servers. The configuration is managed using a Eureka name service and logged by Edda. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html?arch=lamp)
 
-![LAMP stack](lamp.png)
+![LAMP stack](png/lamp.png)
 
 NetflixOSS Architecture
 -----------
@@ -170,20 +170,20 @@ Each microservice is based on Karyon as the prototype to copy when creating a ne
 
 Scaled to 200% with one ELB in the center, three zones with six Zuul and 18 Karyon each zone, rendered using GraphJSON and D3.
 
-![200% scale NetflixOSS](netflixoss-200-json.png)
+![200% scale NetflixOSS](png/netflixoss-200-json.png)
 
 Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon and two staash in each zone, rendered using GraphJSON and D3.
 
-![100% scale NetflixOSS](netflixoss-staash-100.png)
+![100% scale NetflixOSS](png/netflixoss-staash-100.png)
 
 Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon, two Staash and four Priam-Cassandra in each zone, rendered using GraphJSON and D3.
 
-![100% scale NetflixOSS](netflixoss-priamCassandra-100.png)
+![100% scale NetflixOSS](png/netflixoss-priamCassandra-100.png)
 
 Scaled 100% with Denominator connected to an ELB in two different regions, and cross region Priam-Cassandra connections, showing a tooltip and the charge increase option.
 [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html?arch=netflixoss)
 
-![Two Region NetflixOSS](netflixoss-w2-tooltip.png)
+![Two Region NetflixOSS](png/netflixoss-w2-tooltip.png)
 
 With the -m option all messages are logged as they are received. The time taken to deliver the message is shown
 ```
@@ -209,10 +209,10 @@ With the -m option all messages are logged as they are received. The time taken 
 100 Pirates 
 -----------
 After seeding with two random friends GraphML rendered using yFiles
-![100 pirates seeded with two random friends each](spigo100x2.png)
+![100 pirates seeded with two random friends each](png/spigo100x2.png)
 
 After chatting and making new friends rendered using graphJSON and D3
-![100 pirates after chatting](spigo-100-json.png)
+![100 pirates after chatting](png/spigo-100-json.png)
 
 [Run spigo.html in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html?arch=fsm)
 
