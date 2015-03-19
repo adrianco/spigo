@@ -126,7 +126,7 @@ $ ./spigo -a netflixoss -d 2 -r
 Migration from LAMP to NetflixOSS
 -----------
 The orchestration to create this now uses a eureka discovery service per zone and has been heavily refactored.
-[Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/migration.html?1)
+[Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html?arch=migration)
 
 Start with a monolithic LAMP stack
 ![Migration ](migration1.png)
@@ -157,7 +157,7 @@ Extend to six regions, an interesting visualization challenge
 
 LAMP Stack Architecture
 -----------
-To create a starting point for architecture transitions, an AWS hosted LAMP stack is simulated. It has DNS feeding an ELB, then a horizontally scaled layer of PHP servers backed with a single memcached and a master slave pair of MySQL servers. The configuration is managed using a Eureka name service and logged by Edda. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/lamp.html)
+To create a starting point for architecture transitions, an AWS hosted LAMP stack is simulated. It has DNS feeding an ELB, then a horizontally scaled layer of PHP servers backed with a single memcached and a master slave pair of MySQL servers. The configuration is managed using a Eureka name service and logged by Edda. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html?arch=lamp)
 
 ![LAMP stack](lamp.png)
 
@@ -180,7 +180,7 @@ Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon, t
 ![100% scale NetflixOSS](netflixoss-priamCassandra-100.png)
 
 Scaled 100% with Denominator connected to an ELB in two different regions, and cross region Priam-Cassandra connections, showing a tooltip and the charge increase option.
-[Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/netflixoss.html)
+[Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html?arch=netflixoss)
 
 ![Two Region NetflixOSS](netflixoss-w2-tooltip.png)
 
@@ -213,7 +213,7 @@ After seeding with two random friends GraphML rendered using yFiles
 After chatting and making new friends rendered using graphJSON and D3
 ![100 pirates after chatting](spigo-100-json.png)
 
-[Run spigo.html in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html)
+[Run spigo.html in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html?arch=fsm)
 
 Spigo uses a common message protocol called Gotocol which contains a channel of the same type. This allows message listener endpoints to be passed around to dynamically create an arbitrary interconnection network.
 
