@@ -11,8 +11,9 @@ Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,00
 
 A few lines of code can be used to create an interesting architecture. The code is still being cleaned up and refactored, but if you figure out your own architecture in this form it's going to be easy to carry forward as Spigo evolves.
 
-Presentation at the O'Reilly Software Architecture Conference: Monitoring Microservices - A Challenge
+Keynote presentation at the O'Reilly Software Architecture Conference: Monitoring Microservices - A Challenge
 http://www.slideshare.net/adriancockcroft/software-architecture-monitoring-microservices-a-challenge
+Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI 
 
 ```
                 Create(cname, "priamCassandra", archaius.Conf.Regions, priamCassandracount, cname)
