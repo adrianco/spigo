@@ -1,25 +1,21 @@
 //Dynamically grow a graph, adding nodes and edges
 //By Adrian Cockcroft @adrianco github.com/adrianco/d3grow
 
-;(function(window, document, d3, $, undefined) {
+;(function(window, document, d3, $, _, undefined) {
 	'use strict';
 
-	var step = 2;
 	var width = 1400;
 	var height = 1000;
 	var dataset = { nodes: [], edges: [] };
 	var nodecount = 0;
 	var charge = -100;
 	var colors = d3.scale.category10();
+	var query = {};
 	var root;
 	var svg;
 	var force;
-
-	var cycleNext = function cycleNext() {
-		step++;
-		if (step > 9) step = 1;
-		window.location.href = "?" + step;
-	};
+	var step;
+	var architecture;
 
 	//Initialize a default force layout, using the nodes and edges in dataset
 	force = d3.layout.force()
@@ -136,28 +132,80 @@
 		update();
 	};
 
-	var step = window.location.search.substring(1);
-	var migrationFile = 'migration' + step + '.json';
+	var cycleNext = function cycleNext() {
+		step = (step !== '') ? parseInt(step, 10) + 1 : 1;
 
-	d3.json(migrationFile, function(error, json) {
-		if (error) {
-			console.log('>>>>> Error loading json file: ' + migrationFile);
-		}
+		if (step > 9) step = 1;
 
-		console.log(json.version);
+		window.location.assign(buildUrl(true));
+	};
 
-		json.graph.forEach(function(element) {
-			if (element.node) addNode(element.node);
+	var updateArchitecture = function updateArchitecture(e) {
+		var $target = $(this);
+
+		architecture = $target
+			.find('option:selected')
+			.val();
+
+		window.location.assign(buildUrl(false));
+	};
+
+	var buildUrl = function buildUrl(includeStep) {
+		var arch = (architecture) ? '?arch=' + architecture : '?arch=migration';
+		var s = (step) ? '&step=' + step : '&step=0';
+
+		var url = window.location.origin +
+				window.location.pathname +
+				arch ;
+
+		url = (includeStep) ? url + s : url;
+		return url;
+	};
+
+	var init = function init() {
+		var queryParams = window.location.search
+			.substring(1)
+			.split('&');
+
+		_(queryParams).each(function(param) {
+			var parts = param.split('=');
+			query[parts[0]] = parts[1];
 		});
 
-		json.graph.forEach(function(element) {
-			if (element.edge) addEdge(element.source, element.target);
-		});
+		step = (query.step && query.step !== 0) ? query.step : '';
+		architecture = (query.arch) ? query.arch : 'migration';
+		var jsonFile = architecture + step + '.json';
 
-		update();
-	});
+		d3.json(jsonFile, function(error, json) {
+			if (error) {
+				console.log('>>>>> Error loading json file: ' + jsonFile);
+				return;
+			}
+
+			console.log('>>>>> JSON version: ' + json.version);
+
+			$('#architecture').val(architecture);
+
+			if (architecture === 'lamp') $('#next').hide();
+			else $('#next').show();
+
+			json.graph.forEach(function(element) {
+				if (element.node) addNode(element.node);
+			});
+
+			json.graph.forEach(function(element) {
+				if (element.edge) addEdge(element.source, element.target);
+			});
+
+			update();
+		});
+	};
 
 	// set up event handlers
 	$('#next').on('click', cycleNext);
 	$('#charge-button').on('click', decreaseCharge);
-})(this, this.document, d3, jQuery);
+	$('#architecture').on('change', updateArchitecture);
+
+	init();
+})(this, this.document, d3, jQuery, _);
+
