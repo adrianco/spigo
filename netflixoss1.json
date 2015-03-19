@@ -1,7 +1,7 @@
 {
   "arch":"netflixoss1",
   "version":"spigo-0.3",
-  "args":"[./spigo -d 2 -m -s 1 -j -w 2]",
+  "args":"[./spigo -a netflixoss -d 1 -j -s 1]",
   "graph":[
     {"node":"netflixoss.*.*.global-api-dns.denominator.global-api-dns0","service":"denominator"}
   ]

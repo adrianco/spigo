@@ -1,0 +1,8 @@
+{
+  "arch":"lamp1",
+  "version":"spigo-0.3",
+  "args":"[./spigo -a lamp -d 1 -j -s 1]",
+  "graph":[
+    {"node":"lamp.*.*.www-dns.denominator.www-dns0","service":"denominator"}
+  ]
+}
