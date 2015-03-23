@@ -13,11 +13,11 @@ Suitable for fairly large scale simulations, runs well up to 100,000 independent
 
 Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,000 messages and wait to shut them all down again takes about 4 seconds. The resulting graph can be visualized via GraphML or rendered by saving to Graph JSON and viewing in a web browser via D3.
 
-A few lines of code can be used to create an interesting architecture. The code is still being cleaned up and refactored, look at the migration.go architecture as the current best example to copy. If you figure out your own architecture in the form shown below it's going to be easy to carry forward as Spigo evolves. A big thanks is due to Kurtis Kemple for cleaning up the javascript/D3 UI code.
+A few lines of code can be used to create an interesting architecture. The code is still being cleaned up and refactored, look at the migration.go architecture as the current best example to copy. If you figure out your own architecture in the form shown below it's going to be easy to carry forward as Spigo evolves. A big thanks is due to [Kurtis Kemple](https://github.com/kkemple) for cleaning up the javascript/D3 UI code.
 
 Keynote presentation at the O'Reilly Software Architecture Conference: Monitoring Microservices - A Challenge
 http://www.slideshare.net/adriancockcroft/software-architecture-monitoring-microservices-a-challenge
-Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI 
+Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI
 
 ```
 asgard.Create(cname, "priamCassandra", archaius.Conf.Regions, priamCassandracount, cname)
@@ -30,7 +30,7 @@ asgard.Create(zuname, asgard.ZuulPkg, archaius.Conf.Regions, zuulcount, pname, n
 asgard.Create(elbname, asgard.ElbPkg, archaius.Conf.Regions, 0, zuname)
 ```
 
-![Migration ](png/migration5.png)
+![Migration ](png/migration-5-2.png)
 
 ```
 $ ./spigo -h
@@ -47,7 +47,7 @@ Usage of ./spigo:
   -s=0:     Stop creating microservices at this step, 0 = don't stop
   -u="1s":     Polling interval for Eureka name service
   -w=1:     Wide area regions
-  
+
 $ ./spigo -a migration -d 2 -j
 2015/03/18 08:35:31 migration: scaling to 100%
 2015/03/18 08:35:31 Create service: eureka
@@ -131,38 +131,51 @@ $ ./spigo -a netflixoss -d 2 -r
 Migration from LAMP to NetflixOSS
 -----------
 The orchestration to create this now uses a eureka discovery service per zone and has been heavily refactored.
-[Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html?arch=migration)
+[Run this simulation in your browser](http://simianviz.divshot.io/migration)
 
 Start with a monolithic LAMP stack
-![Migration ](png/migration1.png)
+![Migration ](png/migration-1-1.png)
 
 Interpose Zuul proxy between load balancer and PHP monolith services
-![Migration ](png/migration2.png)
+![Migration ](png/migration-2-1.png)
 
 Replace single memcached with cross zone EVcache replicated memcached and change PHP to access MySQL via Staash (Storage Tier as a Service HTTP)
-![Migration ](png/migration3.png)
+![Migration ](png/migration-3-1.png)
+![Migration ](png/migration-3-2.png)
 
 Add some Node based microservices between Zuul and Staash alongside PHP
-![Migration ](png/migration4.png)
+![Migration ](png/migration-4-.png)
 
 Start a Cassandra cluster and connect to Staash alongside MySQL and evcache for data and access migration
-![Migration ](png/migration5.png)
+![Migration ](png/migration-5-1.png)
+![Migration ](png/migration-5-2.png)
 
 Remove MySQL to be ready to go multi-region
-![Migration ](png/migration6.png)
+![Migration ](png/migration-6-1.png)
+![Migration ](png/migration-6-2.png)
 
 Add a second region without connecting up cassandra
-![Migration ](png/migration7.png)
+![Migration ](png/migration-7-1.png)
+![Migration ](png/migration-7-2.png)
+![Migration ](png/migration-7-3.png)
 
 Connect regions together using multi-region Cassandra
-![Migration ](png/migration8.png)
+![Migration ](png/migration-8-1.png)
+![Migration ](png/migration-8-2.png)
+![Migration ](png/migration-8-3.png)
+![Migration ](png/migration-8-4.png)
+![Migration ](png/migration-8-5.png)
 
 Extend to six regions, an interesting visualization challenge
-![Migration ](png/migration9.png)
+![Migration ](png/migration-9-1.png)
+![Migration ](png/migration-9-2.png)
+![Migration ](png/migration-9-3.png)
+![Migration ](png/migration-9-4.png)
+![Migration ](png/migration-9-5.png)
 
 LAMP Stack Architecture
 -----------
-To create a starting point for architecture transitions, an AWS hosted LAMP stack is simulated. It has DNS feeding an ELB, then a horizontally scaled layer of PHP servers backed with a single memcached and a master slave pair of MySQL servers. The configuration is managed using a Eureka name service and logged by Edda. [Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html?arch=lamp)
+To create a starting point for architecture transitions, an AWS hosted LAMP stack is simulated. It has DNS feeding an ELB, then a horizontally scaled layer of PHP servers backed with a single memcached and a master slave pair of MySQL servers. The configuration is managed using a Eureka name service and logged by Edda. [Run this simulation in your browser](http://simianviz.divshot.io/lamp)
 
 ![LAMP stack](png/lamp.png)
 
@@ -185,7 +198,7 @@ Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon, t
 ![100% scale NetflixOSS](png/netflixoss-priamCassandra-100.png)
 
 Scaled 100% with Denominator connected to an ELB in two different regions, and cross region Priam-Cassandra connections, showing a tooltip and the charge increase option.
-[Run this in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html?arch=netflixoss)
+[Run this simulation in your browser](http://simianviz.divshot.io/netflixoss)
 
 ![Two Region NetflixOSS](png/netflixoss-w2-tooltip.png)
 
@@ -210,7 +223,7 @@ With the -m option all messages are logged as they are received. The time taken 
 2015/03/01 13:16:09 netflixoss.*.*.global-api-dns.denominator.global-api-dns0: gotocol: 2.422us GetResponse because...
 ```
 
-100 Pirates 
+100 Pirates
 -----------
 After seeding with two random friends GraphML rendered using yFiles
 ![100 pirates seeded with two random friends each](png/spigo100x2.png)
@@ -218,7 +231,7 @@ After seeding with two random friends GraphML rendered using yFiles
 After chatting and making new friends rendered using graphJSON and D3
 ![100 pirates after chatting](png/spigo-100-json.png)
 
-[Run spigo.html in your browser by clicking here](http://rawgit.com/adrianco/spigo/master/spigo.html?arch=fsm)
+[Run this simulation in your browser](http://simianviz.divshot.io/fsm)
 
 Spigo uses a common message protocol called Gotocol which contains a channel of the same type. This allows message listener endpoints to be passed around to dynamically create an arbitrary interconnection network.
 
