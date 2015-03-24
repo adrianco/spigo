@@ -33,7 +33,10 @@ type Configuration struct {
 	Regions int `json:"regions,omitempty"`
 
 	// RegionNames is the default names of the regions
-	RegionNames [10]string `json:"regionnames,omitempty"`
+	RegionNames [6]string `json:"regionnames,omitempty"`
+
+	// ZoneNames is the default names of the zones
+	ZoneNames   [3]string `json:"zonenames,omitempty"`
 
 	// Collect turns on Metrics collection
 	Collect bool `json:"collect,omitempty"`
@@ -42,10 +45,13 @@ type Configuration struct {
 	StopStep int `json:"stopstep,omitempty"`
 
 	// EurekaPoll interval in seconds
-	EurekaPoll string `json:"eurekapoll, omitempty"`
+	EurekaPoll string `json:"eurekapoll,omitempty"`
 }
 
-var Conf Configuration
+var Conf = Configuration{
+	RegionNames: [...]string{"us-east-1", "us-west-2", "eu-west-1", "eu-east-1", "ap-south-1", "ap-south-2"},
+	ZoneNames: [...]string{"zoneA", "zoneB", "zoneC"},
+}
 
 // return current config as json
 func AsJson() []byte {
@@ -59,5 +65,5 @@ func FromJson(confJSON []byte) {
 
 // return formatted as string
 func (Configuration) String() string {
-	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\nRegions:    %v\nRegionNames:%v\nCollect:    %v\nStopStep:   %v\nEurekaPoll: %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog, Conf.Regions, Conf.RegionNames, Conf.Collect, Conf.StopStep, Conf.EurekaPoll)
+	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\nRegions:    %v\nRegionNames:%v\nZoneNames:  %v\nCollect:    %v\nStopStep:   %v\nEurekaPoll: %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog, Conf.Regions, Conf.RegionNames, Conf.ZoneNames, Conf.Collect, Conf.StopStep, Conf.EurekaPoll)
 }

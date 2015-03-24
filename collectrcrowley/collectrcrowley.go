@@ -12,7 +12,7 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"os"
+	//	"os"
 	"time"
 )
 
@@ -34,10 +34,11 @@ func Measure(h metrics.Histogram, d time.Duration) {
 
 func Save() {
 	if archaius.Conf.Collect {
-		file, _ := os.Create(archaius.Conf.Arch + "_metrics.json")
-		j, e := metrics.MarshalJSON()
-		file.WriteString(string(j))
-		file.Close()
+		// no way to do this easily with this version of metrics
+		//file, _ := os.Create(archaius.Conf.Arch + "_metrics.json")
+		//j, e := metrics.MarshalJSON()
+		//file.WriteString(string(j))
+		//file.Close()
 	}
 }
 
