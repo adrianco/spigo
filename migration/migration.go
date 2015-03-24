@@ -24,19 +24,18 @@ import (
 	"time"
 )
 
-// noodles channels mapped by microservice name connects netflixoss to everyone
-var noodles map[string]chan gotocol.Message
+var (
+	// noodles channels mapped by microservice name connects netflixoss to everyone
+	noodles    map[string]chan gotocol.Message
+	eurekachan map[string]chan gotocol.Message // eureka for each region.zone
+	listener   chan gotocol.Message            // netflixoss listener
+	root       string                          // root name to run
 
-var listener chan gotocol.Message // netflixoss listener
-var root string                   // root name to run
-
-// AWS region names
-var rnames = [...]string{"us-east-1", "us-west-2", "eu-west-1", "eu-east-1", "ap-south-1", "ap-south-2"}
-
-// netflixoss always needs three zones
-var znames = [...]string{"zoneA", "zoneB", "zoneC"}
-
-var eurekachan map[string]chan gotocol.Message // eureka for each region.zone
+	// AWS region names
+	rnames = [...]string{"us-east-1", "us-west-2", "eu-west-1", "eu-east-1", "ap-south-1", "ap-south-2"}
+	// netflixoss always needs three zones
+	znames = [...]string{"zoneA", "zoneB", "zoneC"}
+)
 
 // Create a tier
 func Create(servicename, packagename string, regions, count int, dependencies ...string) string {
