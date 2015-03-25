@@ -70,11 +70,22 @@ func Start(listener chan gotocol.Message) {
 				fmt.Sscanf(msg.Intention, "%s%s", &key, &value)
 				if key != "" && value != "" {
 					store[key] = value
-					// duplicate the request on to all connected priamCassandra nodes
-					if len(microservices) > 0 {
+					// duplicate the request on to priamCassandra nodes in each zone and one in each region
+					for _, z := range names.OtherZones(name, archaius.Conf.ZoneNames) {
 						// replicate request
-						for _, c := range microservices {
-							gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Intention}.GoSend(c)
+						for n, c := range microservices {
+							if names.Region(n) == names.Region(name) && names.Zone(n) == z {
+								gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Intention}.GoSend(c)
+								break // only need to send it to one node in each zone, no tokens yet
+							}
+						}
+					}
+					for _, r := range names.OtherRegions(name, archaius.Conf.RegionNames[0:archaius.Conf.Regions]) {
+						for n, c := range microservices {
+							if names.Region(n) == r {
+								gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Intention}.GoSend(c)
+								break // only need to send it to one node in each region, no tokens yet
+							}
 						}
 					}
 				}
@@ -91,18 +102,20 @@ func Start(listener chan gotocol.Message) {
 				myregion := names.Region(name)
 				//log.Printf("%v: %v\n", name, myregion)
 				// find if this was a cross region Replicate
-				for n, c := range microservices {
-					// find the name matching incoming request channel
-					if c == msg.ResponseChan {
-						if myregion != names.Region(n) {
-							// Replicate from out of region needs to be Replicated only to other zones in this Region
-							for nz, cz := range microservices {
-								if myregion == names.Region(nz) {
-									//log.Printf("%v rep to: %v\n", name, nz)
-									gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Intention}.GoSend(cz)
+				for in, c := range microservices {
+					// find the name matching incoming request channel to see where its coming from
+					if c == msg.ResponseChan && myregion != names.Region(in) {
+						// Replicate from out of region needs to be Replicated once only to other zones in this Region
+						for _, z := range names.OtherZones(name, archaius.Conf.ZoneNames) {
+							// replicate request
+							for n, c := range microservices {
+								if names.Region(n) == myregion && names.Zone(n) == z {
+									gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Intention}.GoSend(c)
+									break // only need to send it to one node in each zone, no tokens yet
 								}
 							}
 						}
+						break
 					}
 				}
 			case gotocol.Goodbye:

@@ -35,6 +35,30 @@ func Zone(name string) string {
 	return strings.Split(name, ".")[zone]
 }
 
+func OtherZones(name string, znames [3]string) [2]string {
+	var nz [2]string
+	for i, z := range znames {
+		if Zone(name) == z {
+			nz[0] = znames[(i+1)%3]
+			nz[1] = znames[(i+2)%3]
+		}
+	}
+	return nz
+}
+
+func OtherRegions(name string, rnames []string) []string {
+	var nr []string
+	regions := len(rnames)
+	for i, r := range rnames {
+		if Region(name) == r {
+			for j := 1; j < regions; j++ {
+				nr = append(nr, rnames[(i+j)%regions])
+			}
+		}
+	}
+	return nr
+}
+
 func RegionZone(name string) string {
 	s := strings.Split(name, ".")
 	return s[region]+"."+s[zone]

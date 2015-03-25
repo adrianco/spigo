@@ -4,6 +4,7 @@ package names
 import (
 	"fmt"
 	"testing"
+	"github.com/adrianco/spigo/archaius"
 )
 
 func TestNames(t *testing.T) {
@@ -18,4 +19,6 @@ func TestNames(t *testing.T) {
 	fmt.Println("service:     " + Service(name))
 	fmt.Println("AMI/Package: " + AMI(name) + " " + Package(name))
 	fmt.Println("Instance:    " + Instance(name))
+	fmt.Printf("OtherZones:  %v\n", OtherZones(name, archaius.Conf.ZoneNames))
+	fmt.Printf("OtherRegions:%v\n", OtherRegions(name, archaius.Conf.RegionNames[:]))
 }
