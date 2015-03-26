@@ -174,7 +174,7 @@
 
 		step = (query.step && query.step !== 0) ? query.step : '';
 		architecture = (query.arch) ? query.arch : 'migration';
-		var jsonFile = architecture + step + '.json';
+		var jsonFile = 'json/' + architecture + step + '.json';
 
 		d3.json(jsonFile, function(error, json) {
 			if (error) {

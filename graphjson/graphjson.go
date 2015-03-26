@@ -58,7 +58,7 @@ func Setup(arch string) {
 	if Enabled == false {
 		return
 	}
-	file, _ = os.Create(arch + ".json")
+	file, _ = os.Create("json/" + arch + ".json")
 	Write(fmt.Sprintf("{\n  \"arch\":\"%v\",\n  \"version\":\"spigo-0.3\",\n  \"args\":\"%v\",\n  \"graph\":[", arch, os.Args))
 	comma = false
 }

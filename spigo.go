@@ -1,5 +1,5 @@
 // Package main for spigo - simulate protocol interactions in go.
-// Terminology is a mix of promise theory and flying spaghetti monster lore
+// Terminology is a mix of NetflixOSS, promise theory and flying spaghetti monster lore
 package main
 
 import (

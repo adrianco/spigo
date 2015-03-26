@@ -1,9 +1,0 @@
-{
-  "arch":"lamp2",
-  "version":"spigo-0.3",
-  "args":"[./spigo -a lamp -d 1 -j -s 2]",
-  "graph":[
-    {"node":"lamp.*.*.www-dns.denominator.www-dns0","service":"denominator"},
-    {"node":"lamp.us-east-1.AB.www-elb.elb.www-elb0","service":"elb"}
-  ]
-}
