@@ -86,12 +86,18 @@ func (msg Message) String() string {
 
 // Send a synchronous message
 func Send(to chan<- Message, msg Message) {
-	to <- msg
+	if to != nil {
+		to <- msg
+	}
 }
 
 // GoSend asynchronous message send, parks it on a new goroutine until it completes
 func (msg Message) GoSend(to chan Message) {
-	go func(c chan Message, m Message) { c <- m }(to, msg)
+	go func(c chan Message, m Message) {
+		if c != nil {
+			c <- m
+		}
+	}(to, msg)
 }
 
 // InformHandler default handler for Inform message
@@ -108,7 +114,7 @@ func NameDropHandler(dependencies *map[string]time.Time, microservices *map[stri
 	if msg.ResponseChan == nil { // dependency by service name, needs to be looked up in eureka
 		(*dependencies)[msg.Intention] = msg.Sent // remember it for later
 		for _, ch := range eureka {
-			ch <- Message{GetRequest, listener, time.Now(), msg.Intention}
+			Send(ch, Message{GetRequest, listener, time.Now(), msg.Intention})
 		}
 	} else { // update dependency with full name and listener channel
 		microservice := msg.Intention // message body is buddy name
@@ -119,7 +125,7 @@ func NameDropHandler(dependencies *map[string]time.Time, microservices *map[stri
 				(*dependencies)[names.Service(microservice)] = msg.Sent
 				for _, ch := range eureka {
 					// tell one of the service registries I have a new buddy to talk to so it doesn't get logged more than once
-					ch <- Message{Inform, listener, time.Now(), name + " " + microservice}
+					Send(ch, Message{Inform, listener, time.Now(), name + " " + microservice})
 					return
 				}
 			}
