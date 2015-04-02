@@ -124,7 +124,7 @@ func Start() {
 		asgard.Create(zuname, asgard.ZuulPkg, archaius.Conf.Regions, zuulcount, pname, nname)
 		asgard.Create(elbname, asgard.ElbPkg, archaius.Conf.Regions, 0, zuname)
 	case 5: // added cassandra alongside mysql
-		asgard.Create(cname, "priamCassandra", archaius.Conf.Regions, priamCassandracount, cname)
+		asgard.Create(cname, asgard.PriamCassandraPkg, archaius.Conf.Regions, priamCassandracount, cname)
 		asgard.Create(sname, asgard.StorePkg, archaius.Conf.Regions, mysqlcount, sname)
 		asgard.Create(mname, asgard.StorePkg, archaius.Conf.Regions, mcount)
 		asgard.Create(tname, asgard.StaashPkg, archaius.Conf.Regions, staashcount, sname, mname, cname)
