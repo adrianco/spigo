@@ -76,7 +76,6 @@ func Create(servicename, packagename string, regions, count int, dependencies ..
 	return name
 }
 
-
 // Reload the network from a file
 func Reload(arch string) string {
 	root := ""
