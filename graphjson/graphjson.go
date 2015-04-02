@@ -113,7 +113,7 @@ func Close() {
 
 // ReadArch parses graphjson
 func ReadArch(arch string) *GraphV0r3 {
-	data, err := ioutil.ReadFile(arch + ".json")
+	data, err := ioutil.ReadFile("json/" + arch + ".json")
 	if err != nil {
 		log.Fatal(err)
 	}

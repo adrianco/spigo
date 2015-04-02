@@ -9,7 +9,6 @@ import (
 	"github.com/adrianco/spigo/asgard"   // tools to create an architecture
 	"github.com/adrianco/spigo/collect"  // metrics collector
 	"github.com/adrianco/spigo/gotocol"
-	"github.com/adrianco/spigo/graphjson"
 	"github.com/adrianco/spigo/names" // manage service name hierarchy
 	"log"
 	"time"
@@ -17,40 +16,7 @@ import (
 
 // Reload the network from a file
 func Reload(arch string) {
-	root := ""
-	log.Println("migration reloading from " + arch + ".json")
-	g := graphjson.ReadArch(arch)
-	archaius.Conf.Population = 0 // just to make sure
-	// count how many nodes there are
-	for _, element := range g.Graph {
-		if element.Node != "" {
-			archaius.Conf.Population++
-		}
-	}
-	asgard.CreateChannels()
-	asgard.CreateEureka()
-	// eureka and edda aren't recorded in the json file to simplify the graph
-	// Start all the services
-	for _, element := range g.Graph {
-		if element.Node != "" {
-			name := element.Node
-			asgard.StartNode(name, nil)
-			if names.Package(name) == asgard.DenominatorPkg {
-				root = name
-			}
-		}
-	}
-	// Make all the connections
-	for _, element := range g.Graph {
-		if element.Edge != "" && element.Source != "" && element.Target != "" {
-			asgard.Connect(element.Source, element.Target)
-		}
-	}
-	// run for a while
-	if root == "" {
-		log.Fatal("No denominator root microservice specified")
-	}
-	run(root)
+	run(asgard.Reload(arch))
 }
 
 // Start lamp to netflixoss step by step migration

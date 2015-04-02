@@ -9,7 +9,7 @@ import (
 	"github.com/adrianco/spigo/elb"         // elastic load balancer
 	"github.com/adrianco/spigo/eureka"      // service and attribute registry
 	"github.com/adrianco/spigo/gotocol"
-	//"github.com/adrianco/spigo/graphjson"
+	"github.com/adrianco/spigo/graphjson"
 	"github.com/adrianco/spigo/karyon"         // business logic microservice
 	"github.com/adrianco/spigo/monolith"       // business logic monolith
 	"github.com/adrianco/spigo/names"          // manage service name hierarchy
@@ -74,6 +74,45 @@ func Create(servicename, packagename string, regions, count int, dependencies ..
 		}
 	}
 	return name
+}
+
+
+// Reload the network from a file
+func Reload(arch string) string {
+	root := ""
+	log.Println("migration reloading from " + arch + ".json")
+	g := graphjson.ReadArch(arch)
+	archaius.Conf.Population = 0 // just to make sure
+	// count how many nodes there are
+	for _, element := range g.Graph {
+		if element.Node != "" {
+			archaius.Conf.Population++
+		}
+	}
+	CreateChannels()
+	CreateEureka()
+	// eureka and edda aren't recorded in the json file to simplify the graph
+	// Start all the services
+	for _, element := range g.Graph {
+		if element.Node != "" {
+			name := element.Node
+			StartNode(name, nil)
+			if names.Package(name) == DenominatorPkg {
+				root = name
+			}
+		}
+	}
+	// Make all the connections
+	for _, element := range g.Graph {
+		if element.Edge != "" && element.Source != "" && element.Target != "" {
+			Connect(element.Source, element.Target)
+		}
+	}
+	// run for a while
+	if root == "" {
+		log.Fatal("No denominator root microservice specified")
+	}
+	return root
 }
 
 // Tell a source node how to connect to a target node directly by name, only used when Eureka can't be used
