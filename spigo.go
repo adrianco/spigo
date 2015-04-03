@@ -5,6 +5,7 @@ package main
 import (
 	"flag"
 	"github.com/adrianco/spigo/archaius"   // store the config for global lookup
+	"github.com/adrianco/spigo/asgard"     // tools to create an architecture
 	"github.com/adrianco/spigo/collect"    // metrics to extvar
 	"github.com/adrianco/spigo/edda"       // log configuration state
 	"github.com/adrianco/spigo/fsm"        // fsm and pirates
@@ -59,42 +60,24 @@ func main() {
 	}
 	archaius.Conf.RunDuration = time.Duration(duration) * time.Second
 	// start up the selected architecture
-	switch archaius.Conf.Arch {
-	case "fsm":
-		go edda.Start("fsm.edda") // start edda first
-		if reload {
-			fsm.Reload(archaius.Conf.Arch)
-		} else {
+	go edda.Start(archaius.Conf.Arch + ".edda") // start edda first
+	if reload {
+		asgard.Run(asgard.Reload(archaius.Conf.Arch))
+	} else {
+		switch archaius.Conf.Arch {
+		case "fsm":
 			fsm.Start()
-		}
-		log.Println("spigo: fsm complete")
-	case "netflixoss":
-		go edda.Start("netflixoss.edda") // start edda first
-		if reload {
-			netflixoss.Reload(archaius.Conf.Arch)
-		} else {
+		case "netflixoss":
 			netflixoss.Start()
-		}
-		log.Println("spigo: netflixoss complete")
-	case "lamp":
-		go edda.Start("lamp.edda") // start edda first
-		if reload {
-			lamp.Reload(archaius.Conf.Arch)
-		} else {
+		case "lamp":
 			lamp.Start()
+		case "migration":
+			migration.Start() // from lamp to netflixoss
+		default:
+			log.Fatal("Architecture " + archaius.Conf.Arch + " isn't recognized")
 		}
-		log.Println("spigo: lamp complete")
-	case "migration": // from lamp to netflixoss
-		go edda.Start("migration.edda") // start edda first
-		if reload {
-			migration.Reload(archaius.Conf.Arch)
-		} else {
-			migration.Start()
-		}
-		log.Println("spigo: migration complete")
-	default:
-		log.Fatal("Architecture " + archaius.Conf.Arch + " isn't recognized")
 	}
+	log.Println("spigo: complete")
 	// stop edda if it's running and wait for edda to flush messages
 	if edda.Logchan != nil {
 		close(edda.Logchan)

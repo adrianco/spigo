@@ -10,16 +10,13 @@ import (
 	"log"
 )
 
-// Reload the network from a file
-func Reload(arch string) {
-	run(asgard.Reload(arch))
-}
-
 // Start lamp to netflixoss step by step migration
 func Start() {
+	// make some shorter names
 	arch := archaius.Conf.Arch
 	rnames := archaius.Conf.RegionNames
 	znames := archaius.Conf.ZoneNames
+	regions := archaius.Conf.Regions
 	if archaius.Conf.Population < 1 {
 		log.Fatal("migration: can't create less than 1 microservice")
 	} else {
@@ -60,78 +57,72 @@ func Start() {
 	dns := "www"
 	switch archaius.Conf.StopStep {
 	case 1: // basic LAMP with memcache
-		asgard.Create(sname, asgard.StorePkg, archaius.Conf.Regions, mysqlcount, sname)
-		asgard.Create(mname, asgard.StorePkg, archaius.Conf.Regions, mcount)
-		asgard.Create(pname, asgard.MonolithPkg, archaius.Conf.Regions, phpcount, sname, mname)
-		asgard.Create(elbname, asgard.ElbPkg, archaius.Conf.Regions, 0, pname)
+		asgard.Create(sname, asgard.StorePkg, regions, mysqlcount, sname)
+		asgard.Create(mname, asgard.StorePkg, regions, mcount)
+		asgard.Create(pname, asgard.MonolithPkg, regions, phpcount, sname, mname)
+		asgard.Create(elbname, asgard.ElbPkg, regions, 0, pname)
 	case 2: // LAMP with zuul and memcache
-		asgard.Create(sname, asgard.StorePkg, archaius.Conf.Regions, mysqlcount, sname)
-		asgard.Create(mname, asgard.StorePkg, archaius.Conf.Regions, mcount)
-		asgard.Create(pname, asgard.MonolithPkg, archaius.Conf.Regions, phpcount, sname, mname)
-		asgard.Create(zuname, asgard.ZuulPkg, archaius.Conf.Regions, zuulcount, pname)
-		asgard.Create(elbname, asgard.ElbPkg, archaius.Conf.Regions, 0, zuname)
+		asgard.Create(sname, asgard.StorePkg, regions, mysqlcount, sname)
+		asgard.Create(mname, asgard.StorePkg, regions, mcount)
+		asgard.Create(pname, asgard.MonolithPkg, regions, phpcount, sname, mname)
+		asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, pname)
+		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
 	case 3: // LAMP with zuul and staash and evcache
-		asgard.Create(sname, asgard.StorePkg, archaius.Conf.Regions, mysqlcount, sname)
-		asgard.Create(mname, asgard.StorePkg, archaius.Conf.Regions, mcount)
-		asgard.Create(tname, asgard.StaashPkg, archaius.Conf.Regions, staashcount, sname, mname)
-		asgard.Create(pname, asgard.KaryonPkg, archaius.Conf.Regions, phpcount, tname)
-		asgard.Create(zuname, asgard.ZuulPkg, archaius.Conf.Regions, zuulcount, pname)
-		asgard.Create(elbname, asgard.ElbPkg, archaius.Conf.Regions, 0, zuname)
+		asgard.Create(sname, asgard.StorePkg, regions, mysqlcount, sname)
+		asgard.Create(mname, asgard.StorePkg, regions, mcount)
+		asgard.Create(tname, asgard.StaashPkg, regions, staashcount, sname, mname)
+		asgard.Create(pname, asgard.KaryonPkg, regions, phpcount, tname)
+		asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, pname)
+		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
 	case 4: // added node microservice
-		asgard.Create(sname, asgard.StorePkg, archaius.Conf.Regions, mysqlcount, sname)
-		asgard.Create(mname, asgard.StorePkg, archaius.Conf.Regions, mcount)
-		asgard.Create(tname, asgard.StaashPkg, archaius.Conf.Regions, staashcount, sname, mname, cname)
-		asgard.Create(pname, asgard.KaryonPkg, archaius.Conf.Regions, phpcount, tname)
-		asgard.Create(nname, asgard.KaryonPkg, archaius.Conf.Regions, nodecount, tname)
-		asgard.Create(zuname, asgard.ZuulPkg, archaius.Conf.Regions, zuulcount, pname, nname)
-		asgard.Create(elbname, asgard.ElbPkg, archaius.Conf.Regions, 0, zuname)
+		asgard.Create(sname, asgard.StorePkg, regions, mysqlcount, sname)
+		asgard.Create(mname, asgard.StorePkg, regions, mcount)
+		asgard.Create(tname, asgard.StaashPkg, regions, staashcount, sname, mname, cname)
+		asgard.Create(pname, asgard.KaryonPkg, regions, phpcount, tname)
+		asgard.Create(nname, asgard.KaryonPkg, regions, nodecount, tname)
+		asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, pname, nname)
+		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
 	case 5: // added cassandra alongside mysql
-		asgard.Create(cname, asgard.PriamCassandraPkg, archaius.Conf.Regions, priamCassandracount, cname)
-		asgard.Create(sname, asgard.StorePkg, archaius.Conf.Regions, mysqlcount, sname)
-		asgard.Create(mname, asgard.StorePkg, archaius.Conf.Regions, mcount)
-		asgard.Create(tname, asgard.StaashPkg, archaius.Conf.Regions, staashcount, sname, mname, cname)
-		asgard.Create(pname, asgard.KaryonPkg, archaius.Conf.Regions, phpcount, tname)
-		asgard.Create(nname, asgard.KaryonPkg, archaius.Conf.Regions, nodecount, tname)
-		asgard.Create(zuname, asgard.ZuulPkg, archaius.Conf.Regions, zuulcount, pname, nname)
-		asgard.Create(elbname, asgard.ElbPkg, archaius.Conf.Regions, 0, zuname)
+		asgard.Create(cname, asgard.PriamCassandraPkg, regions, priamCassandracount, cname)
+		asgard.Create(sname, asgard.StorePkg, regions, mysqlcount, sname)
+		asgard.Create(mname, asgard.StorePkg, regions, mcount)
+		asgard.Create(tname, asgard.StaashPkg, regions, staashcount, sname, mname, cname)
+		asgard.Create(pname, asgard.KaryonPkg, regions, phpcount, tname)
+		asgard.Create(nname, asgard.KaryonPkg, regions, nodecount, tname)
+		asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, pname, nname)
+		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
 	default: // for all higher steps
 		fallthrough
 	case 6: // removed mysql so that multi-region will work properly
-		asgard.Create(cname, asgard.PriamCassandraPkg, archaius.Conf.Regions, priamCassandracount, cname)
-		asgard.Create(mname, asgard.StorePkg, archaius.Conf.Regions, mcount)
-		asgard.Create(tname, asgard.StaashPkg, archaius.Conf.Regions, staashcount, mname, cname)
-		asgard.Create(pname, asgard.KaryonPkg, archaius.Conf.Regions, phpcount, tname)
-		asgard.Create(nname, asgard.KaryonPkg, archaius.Conf.Regions, nodecount, tname)
-		asgard.Create(zuname, asgard.ZuulPkg, archaius.Conf.Regions, zuulcount, pname, nname)
-		asgard.Create(elbname, asgard.ElbPkg, archaius.Conf.Regions, 0, zuname)
+		asgard.Create(cname, asgard.PriamCassandraPkg, regions, priamCassandracount, cname)
+		asgard.Create(mname, asgard.StorePkg, regions, mcount)
+		asgard.Create(tname, asgard.StaashPkg, regions, staashcount, mname, cname)
+		asgard.Create(pname, asgard.KaryonPkg, regions, phpcount, tname)
+		asgard.Create(nname, asgard.KaryonPkg, regions, nodecount, tname)
+		asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, pname, nname)
+		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
 	}
 	dnsname := asgard.Create(dns, asgard.DenominatorPkg, 0, 0, elbname)
 	// stop here for for single region, then add second region, then join them
 	if archaius.Conf.StopStep < 8 {
-		run(dnsname)
+		asgard.Run(dnsname)
 		return
 	}
 	// Connect cross region Cassandra0
-	if archaius.Conf.Regions > 1 {
+	if regions > 1 {
 		// for each region
-		for r := 0; r < archaius.Conf.Regions; r++ {
+		for r := 0; r < regions; r++ {
 			// for each priamCassandrian in that region
 			for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
 				pC := names.Make(arch, rnames[r], znames[i%3], cname, asgard.PriamCassandraPkg, i)
 				// for each of the other regions connect to one node
-				for j := 1; j < archaius.Conf.Regions; j++ {
-					pCindex := (i + j*priamCassandracount) % (archaius.Conf.Regions * priamCassandracount)
-					pCremote := names.Make(arch, rnames[(r+1)%archaius.Conf.Regions], znames[pCindex%3], cname, asgard.PriamCassandraPkg, pCindex)
+				for j := 1; j < regions; j++ {
+					pCindex := (i + j*priamCassandracount) % (regions * priamCassandracount)
+					pCremote := names.Make(arch, rnames[(r+1)%regions], znames[pCindex%3], cname, asgard.PriamCassandraPkg, pCindex)
 					asgard.Connect(pC, pCremote)
 				}
 			}
 		}
 	}
-	run(dnsname)
-}
-
-// Run migration for a while then shut down
-func run(rootservice string) {
-	asgard.Run(rootservice)
-	log.Println("migration: Exit")
+	asgard.Run(dnsname)
 }

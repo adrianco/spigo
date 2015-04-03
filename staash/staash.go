@@ -13,14 +13,13 @@ import (
 
 // Start staash, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
-	dunbar := 30 // starting point for how many nodes to remember
 	// remember the channel to talk to microservices
-	microservices := make(map[string]chan gotocol.Message, dunbar)
-	microindex := make([]chan gotocol.Message, dunbar)
-	dependencies := make(map[string]time.Time, dunbar) // dependent services and time last updated
-	var netflixoss, requestor chan gotocol.Message     // remember creator and how to talk back to incoming requests
-	var name string                                    // remember my name
-	eureka := make(map[string]chan gotocol.Message, 1) // service registry
+	microservices := make(map[string]chan gotocol.Message, archaius.Conf.Population)
+	microindex := make([]chan gotocol.Message, archaius.Conf.Population)
+	dependencies := make(map[string]time.Time, archaius.Conf.Population) // dependent services and time last updated
+	var netflixoss, requestor chan gotocol.Message                       // remember creator and how to talk back to incoming requests
+	var name string                                                      // remember my name
+	eureka := make(map[string]chan gotocol.Message, 1)                   // service registry
 	var chatrate time.Duration
 	hist := collect.NewHist("")
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)

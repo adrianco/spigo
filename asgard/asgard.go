@@ -169,8 +169,14 @@ func StartNode(name string, dependencies []string) {
 	// there is a eureka service registry in each zone, so in-zone services just get to talk to their local registry
 	// elb are cross zone, so need to see all registries in a region
 	// denominator are cross region so need to see all registries globally
+	crossregion := false
+	for _, d := range dependencies {
+		if d == "eureka" {
+			crossregion = true
+		}
+	}
 	for n, ch := range eurekachan {
-		if names.Region(name) == "*" {
+		if names.Region(name) == "*" || crossregion {
 			// need to know every eureka in all zones and regions
 			gotocol.Send(noodles[name], gotocol.Message{gotocol.Inform, ch, time.Now(), n})
 		} else {
@@ -187,7 +193,7 @@ func StartNode(name string, dependencies []string) {
 	}
 	// pass on symbolic dependencies without channels that will be looked up in Eureka later
 	for _, dep := range dependencies {
-		if dep != "" {
+		if dep != "" && dep != "eureka" { // ignore special case of eureka in dependency list
 			gotocol.Send(noodles[name], gotocol.Message{gotocol.NameDrop, nil, time.Now(), dep})
 		}
 	}
@@ -220,13 +226,19 @@ func CreateEureka() {
 	}
 }
 
+// connect to eureka services in every region
+func ConnectEveryEureka(name string) {
+	for n, ch := range eurekachan {
+		gotocol.Send(noodles[name], gotocol.Message{gotocol.Inform, ch, time.Now(), n})
+	}
+}
+
 // Run migration for a while then shut down
 func Run(rootservice string) {
 	// tell denominator to start chatting with microservices every 0.01 secs
 	delay := fmt.Sprintf("%dms", 10)
 	log.Println(rootservice+" activity rate ", delay)
 	SendToName(rootservice, gotocol.Message{gotocol.Chat, nil, time.Now(), delay})
-
 	// wait until the delay has finished
 	if archaius.Conf.RunDuration >= time.Millisecond {
 		time.Sleep(archaius.Conf.RunDuration)

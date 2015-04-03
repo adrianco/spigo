@@ -6,20 +6,12 @@ package netflixoss
 import (
 	"github.com/adrianco/spigo/archaius" // global configuration
 	"github.com/adrianco/spigo/asgard"   // tools to create an architecture
-	"github.com/adrianco/spigo/names"    // manage service name hierarchy
 	"log"
 )
 
-// Reload the network from a file
-func Reload(arch string) {
-	run(asgard.Reload(arch))
-}
-
 // Start netflixoss
 func Start() {
-	arch := archaius.Conf.Arch
-	rnames := archaius.Conf.RegionNames
-	znames := archaius.Conf.ZoneNames
+	regions := archaius.Conf.Regions
 	if archaius.Conf.Population < 1 {
 		log.Fatal("netflixoss: can't create less than 1 microservice")
 	} else {
@@ -47,40 +39,18 @@ func Start() {
 	// DNS endpoint
 	dns := "www"
 
-	asgard.Create(cname, asgard.PriamCassandraPkg, archaius.Conf.Regions, priamCassandracount, cname)
-	asgard.Create(tname, asgard.StaashPkg, archaius.Conf.Regions, staashcount, cname)
-	asgard.Create(jname, asgard.KaryonPkg, archaius.Conf.Regions, javacount, tname)
-	asgard.Create(nname, asgard.KaryonPkg, archaius.Conf.Regions, nodecount, jname)
-	asgard.Create(zuname, asgard.ZuulPkg, archaius.Conf.Regions, zuulcount, nname)
-	asgard.Create(elbname, asgard.ElbPkg, archaius.Conf.Regions, 0, zuname)
+	asgard.Create(cname, asgard.PriamCassandraPkg, regions, priamCassandracount, "eureka", cname)
+	asgard.Create(tname, asgard.StaashPkg, regions, staashcount, cname)
+	asgard.Create(jname, asgard.KaryonPkg, regions, javacount, tname)
+	asgard.Create(nname, asgard.KaryonPkg, regions, nodecount, jname)
+	asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, nname)
+	asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
 
 	dnsname := asgard.Create(dns, asgard.DenominatorPkg, 0, 0, elbname)
 	// stop here for for single region, then add second region, then join them
 	if archaius.Conf.StopStep < 8 {
-		run(dnsname)
+		asgard.Run(dnsname)
 		return
 	}
-	// Connect cross region Cassandra0
-	if archaius.Conf.Regions > 1 {
-		// for each region
-		for r := 0; r < archaius.Conf.Regions; r++ {
-			// for each priamCassandrian in that region
-			for i := r * priamCassandracount; i < (r+1)*priamCassandracount; i++ {
-				pC := names.Make(arch, rnames[r], znames[i%3], cname, asgard.PriamCassandraPkg, i)
-				// for each of the other regions connect to one node
-				for j := 1; j < archaius.Conf.Regions; j++ {
-					pCindex := (i + j*priamCassandracount) % (archaius.Conf.Regions * priamCassandracount)
-					pCremote := names.Make(arch, rnames[(r+1)%archaius.Conf.Regions], znames[pCindex%3], cname, asgard.PriamCassandraPkg, pCindex)
-					asgard.Connect(pC, pCremote)
-				}
-			}
-		}
-	}
-	run(dnsname)
-}
-
-// Run netflixoss for a while then shut down
-func run(rootservice string) {
-	asgard.Run(rootservice)
-	log.Println("netflixoss: Exit")
+	asgard.Run(dnsname)
 }
