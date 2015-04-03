@@ -4,14 +4,10 @@
 package netflixoss
 
 import (
-	"fmt"
 	"github.com/adrianco/spigo/archaius" // global configuration
 	"github.com/adrianco/spigo/asgard"   // tools to create an architecture
-	"github.com/adrianco/spigo/collect"  // metrics collector
-	"github.com/adrianco/spigo/gotocol"
-	"github.com/adrianco/spigo/names" // manage service name hierarchy
+	"github.com/adrianco/spigo/names"    // manage service name hierarchy
 	"log"
-	"time"
 )
 
 // Reload the network from a file
@@ -85,18 +81,6 @@ func Start() {
 
 // Run netflixoss for a while then shut down
 func run(rootservice string) {
-	// tell denominator to start chatting with microservices every 0.01 secs
-	delay := fmt.Sprintf("%dms", 10)
-	log.Println("netflixoss: denominator activity rate ", delay)
-	asgard.SendToName(rootservice, gotocol.Message{gotocol.Chat, nil, time.Now(), delay})
-
-	// wait until the delay has finished
-	if archaius.Conf.RunDuration >= time.Millisecond {
-		time.Sleep(archaius.Conf.RunDuration)
-	}
-	log.Println("netflixoss: Shutdown")
-	asgard.ShutdownNodes()
-	asgard.ShutdownEureka()
-	collect.Save()
+	asgard.Run(rootservice)
 	log.Println("netflixoss: Exit")
 }

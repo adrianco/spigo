@@ -2,9 +2,9 @@
 package asgard
 
 import (
-	//"fmt"
-	"github.com/adrianco/spigo/archaius" // global configuration
-	//"github.com/adrianco/spigo/collect"     // metrics collector
+	"fmt"
+	"github.com/adrianco/spigo/archaius"    // global configuration
+	"github.com/adrianco/spigo/collect"     // metrics collector
 	"github.com/adrianco/spigo/denominator" // DNS service
 	"github.com/adrianco/spigo/elb"         // elastic load balancer
 	"github.com/adrianco/spigo/eureka"      // service and attribute registry
@@ -117,7 +117,7 @@ func Reload(arch string) string {
 // Tell a source node how to connect to a target node directly by name, only used when Eureka can't be used
 func Connect(source, target string) {
 	if noodles[source] != nil && noodles[target] != nil {
-		noodles[source] <- gotocol.Message{gotocol.NameDrop, noodles[target], time.Now(), target}
+		gotocol.Send(noodles[source], gotocol.Message{gotocol.NameDrop, noodles[target], time.Now(), target})
 		//log.Println("Link " + source + " > " + target)
 	} else {
 		log.Fatal("Asgard can't link " + source + " > " + target)
@@ -127,7 +127,7 @@ func Connect(source, target string) {
 // send a message directly to a name via asgard, only used during setup
 func SendToName(name string, msg gotocol.Message) {
 	if noodles[name] != nil {
-		noodles[name] <- msg
+		gotocol.Send(noodles[name], msg)
 	} else {
 		log.Fatal("Asgard can't send to " + name)
 	}
@@ -172,15 +172,15 @@ func StartNode(name string, dependencies []string) {
 	for n, ch := range eurekachan {
 		if names.Region(name) == "*" {
 			// need to know every eureka in all zones and regions
-			noodles[name] <- gotocol.Message{gotocol.Inform, ch, time.Now(), n}
+			gotocol.Send(noodles[name], gotocol.Message{gotocol.Inform, ch, time.Now(), n})
 		} else {
 			if names.Zone(name) == "*" && names.Region(name) == names.Region(n) {
 				// need every eureka in my region
-				noodles[name] <- gotocol.Message{gotocol.Inform, ch, time.Now(), n}
+				gotocol.Send(noodles[name], gotocol.Message{gotocol.Inform, ch, time.Now(), n})
 			} else {
 				if names.RegionZone(name) == names.RegionZone(n) {
 					// just the eureka in this specific zone
-					noodles[name] <- gotocol.Message{gotocol.Inform, ch, time.Now(), n}
+					gotocol.Send(noodles[name], gotocol.Message{gotocol.Inform, ch, time.Now(), n})
 				}
 			}
 		}
@@ -188,7 +188,7 @@ func StartNode(name string, dependencies []string) {
 	// pass on symbolic dependencies without channels that will be looked up in Eureka later
 	for _, dep := range dependencies {
 		if dep != "" {
-			noodles[name] <- gotocol.Message{gotocol.NameDrop, nil, time.Now(), dep}
+			gotocol.Send(noodles[name], gotocol.Message{gotocol.NameDrop, nil, time.Now(), dep})
 		}
 	}
 }
@@ -214,10 +214,27 @@ func CreateEureka() {
 		for nn, cch := range eurekachan {
 			if names.Region(nn) == names.Region(n) && (names.Zone(nn) == n1 || names.Zone(nn) == n2) {
 				//log.Println("Eureka cross connect from: " + n + " to " + nn)
-				ch <- gotocol.Message{gotocol.NameDrop, cch, time.Now(), nn}
+				gotocol.Send(ch, gotocol.Message{gotocol.NameDrop, cch, time.Now(), nn})
 			}
 		}
 	}
+}
+
+// Run migration for a while then shut down
+func Run(rootservice string) {
+	// tell denominator to start chatting with microservices every 0.01 secs
+	delay := fmt.Sprintf("%dms", 10)
+	log.Println(rootservice+" activity rate ", delay)
+	SendToName(rootservice, gotocol.Message{gotocol.Chat, nil, time.Now(), delay})
+
+	// wait until the delay has finished
+	if archaius.Conf.RunDuration >= time.Millisecond {
+		time.Sleep(archaius.Conf.RunDuration)
+	}
+	log.Println("migration: Shutdown")
+	ShutdownNodes()
+	ShutdownEureka()
+	collect.Save()
 }
 
 // shut down the nodes and wait for them to go away
