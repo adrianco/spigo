@@ -4,6 +4,7 @@ package graphml
 
 import (
 	"fmt"
+	"github.com/adrianco/spigo/archaius"
 	"os"
 )
 
@@ -15,10 +16,12 @@ var edgeid int // unique id for each edge to keep graphml happy
 
 // Setup opens the file and and writes the header
 func Setup(filename string) {
-	if Enabled == false {
-		return
+	Enabled = true
+	ss := ""
+	if archaius.Conf.StopStep > 0 {
+		ss = fmt.Sprintf("%v", archaius.Conf.StopStep)
 	}
-	file, _ = os.Create("gml/" + filename + ".graphml")
+	file, _ = os.Create("gml/" + filename + ss + ".graphml")
 	file.WriteString(
 		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n  <graphml xmlns=\"http://graphml.graphdrawing.org/xmlns/graphml\"\n   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n   xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns/graphml http://www.yworks.com/xml/schema/graphml/1.0/ygraphml.xsd\"\n    xmlns:y=\"http://www.yworks.com/xml/graphml\">\n    <key id=\"d0\" for=\"node\" yfiles.type=\"nodegraphics\"/>\n    <key id=\"d1\" for=\"edge\" yfiles.type=\"edgegraphics\"/>\n    <key id=\"d2\" for=\"node\" attr.name=\"Text\" attr.type=\"string\"/>\n    <graph id=\"spigo\" edgedefault=\"directed\">\n")
 }

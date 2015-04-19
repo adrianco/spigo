@@ -4,6 +4,7 @@ package graphjson
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/adrianco/spigo/archaius"
 	"io/ioutil"
 	"log"
 	"os"
@@ -55,11 +56,14 @@ var comma bool
 // Setup by opening the "arch".json file and writing a header, noting the generated architecture
 // type, version and args for the run
 func Setup(arch string) {
-	if Enabled == false {
-		return
+	Enabled = true
+	ss := ""
+	if archaius.Conf.StopStep > 0 {
+		ss = fmt.Sprintf("%v", archaius.Conf.StopStep)
 	}
-	file, _ = os.Create("json/" + arch + ".json")
-	Write(fmt.Sprintf("{\n  \"arch\":\"%v\",\n  \"version\":\"spigo-0.3\",\n  \"args\":\"%v\",\n  \"graph\":[", arch, os.Args))
+	file, _ = os.Create("json/" + arch + ss + ".json")
+	//Write(fmt.Sprintf("{\n  \"arch\":\"%v\",\n  \"version\":\"spigo-0.3\",\n  \"args\":\"%v\",\n  \"graph\":[", arch, os.Args))
+	Write(fmt.Sprintf("{\n  %q:%q,\n  %q:%q,\n  %q:\"%v\",\n  %q:[", "arch", arch, "version", "spigo-0.3", "args", os.Args, "graph"))
 	comma = false
 }
 
@@ -113,12 +117,21 @@ func Close() {
 
 // ReadArch parses graphjson
 func ReadArch(arch string) *GraphV0r3 {
-	data, err := ioutil.ReadFile("json/" + arch + ".json")
+	ss := ""
+	if archaius.Conf.StopStep > 0 {
+		ss = fmt.Sprintf("%v", archaius.Conf.StopStep)
+	}
+	fn := "json/" + arch + ss + ".json"
+	log.Println("Reloading from " + fn)
+	data, err := ioutil.ReadFile(fn)
 	if err != nil {
 		log.Fatal(err)
 	}
 	v := new(GraphVersion)
-	json.Unmarshal(data, v)
+	err = json.Unmarshal(data, v)
+	if err != nil {
+		log.Fatal(err)
+	}
 	log.Println("Version: ", v.Version)
 	switch v.Version {
 	case "spigo-0.3":
@@ -127,7 +140,7 @@ func ReadArch(arch string) *GraphV0r3 {
 		log.Println("Architecture: ", g.Arch)
 		return g
 	default:
-		log.Println("Uknown version ", v.Version)
+		log.Fatal("Uknown version ", v.Version)
 		return nil
 	}
 }

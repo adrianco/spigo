@@ -79,7 +79,6 @@ func Create(servicename, packagename string, regions, count int, dependencies ..
 // Reload the network from a file
 func Reload(arch string) string {
 	root := ""
-	log.Println("migration reloading from " + arch + ".json")
 	g := graphjson.ReadArch(arch)
 	archaius.Conf.Population = 0 // just to make sure
 	// count how many nodes there are
