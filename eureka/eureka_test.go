@@ -15,10 +15,10 @@ func TestDiscovery(t *testing.T) {
 	fmt.Println("eureka_test start")
 	listener := make(chan gotocol.Message)
 	edda.Logchan = make(chan gotocol.Message, 10) // buffered channel
-	go edda.Start("test.edda")
 	archaius.Conf.Msglog = true
 	archaius.Conf.GraphjsonFile = "test"
 	archaius.Conf.GraphmlFile = "test"
+	go edda.Start("test.edda")
 	eureka := make(chan gotocol.Message, 10)
 	go Start(eureka, "test.eureka")
 	// stack up a series of requests in the buffered channel
