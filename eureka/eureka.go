@@ -15,6 +15,11 @@ import (
 
 var Wg sync.WaitGroup
 
+type meta struct {
+	online     bool
+	registered time.Time
+}
+
 // Start eureka discovery service and set name directly
 func Start(listener chan gotocol.Message, name string) {
 	// use a waitgroup so whoever starts eureka can tell the logs have been flushed
@@ -25,6 +30,8 @@ func Start(listener chan gotocol.Message, name string) {
 	hist := collect.NewHist(name)
 	microservices := make(map[string]chan gotocol.Message, archaius.Conf.Dunbar)
 	eurekaservices := make(map[string]chan gotocol.Message, 2)
+	metadata := make(map[string]meta, archaius.Conf.Dunbar)
+	lastrequest := make(map[chan gotocol.Message]time.Time) // remember time of last request from this requestor
 	log.Println(name + ": starting")
 	for {
 		msg, ok = <-listener
@@ -45,6 +52,7 @@ func Start(listener chan gotocol.Message, name string) {
 		case gotocol.Put:
 			if microservices[msg.Intention] == nil { // ignore duplicate requests
 				microservices[msg.Intention] = msg.ResponseChan
+				metadata[msg.Intention] = meta{true, msg.Sent}
 				// replicate request
 				for _, c := range eurekaservices {
 					gotocol.Message{gotocol.Replicate, msg.ResponseChan, time.Now(), msg.Intention}.GoSend(c)
@@ -56,6 +64,7 @@ func Start(listener chan gotocol.Message, name string) {
 		case gotocol.Replicate:
 			if microservices[msg.Intention] == nil { // ignore multiple requests
 				microservices[msg.Intention] = msg.ResponseChan
+				metadata[msg.Intention] = meta{true, time.Now()}
 			}
 		case gotocol.Goodbye:
 			close(listener)
@@ -73,13 +82,17 @@ func Start(listener chan gotocol.Message, name string) {
 				gotocol.Message{gotocol.NameDrop, microservices[msg.Intention], time.Now(), msg.Intention}.GoSend(msg.ResponseChan)
 				break
 			}
-			// linear scan for now, optimize if needed later by remembering timestamps or lists of services
-			for n, ch := range microservices { // respond with all the names that match the service component
+			for n, ch := range microservices { // respond with all the online names that match the service component
 				// log.Printf("%v: matching %v with %v\n", name, n, msg.Intention)
-				if names.Service(n) == msg.Intention {
-					gotocol.Message{gotocol.NameDrop, ch, time.Now(), n}.GoSend(msg.ResponseChan)
+				if names.Service(n) == msg.Intention && metadata[n].online {
+					// if there was an update for the looked up service since last check
+					if metadata[n].registered.After(lastrequest[msg.ResponseChan]) {
+						gotocol.Message{gotocol.NameDrop, ch, time.Now(), n}.GoSend(msg.ResponseChan)
+					}
 				}
 			}
+			// remember for next time
+			lastrequest[msg.ResponseChan] = time.Now()
 		}
 	}
 	log.Println(name + ": closing")
