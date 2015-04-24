@@ -66,9 +66,6 @@ func Start(listener chan gotocol.Message, name string) {
 				microservices[msg.Intention] = msg.ResponseChan
 				metadata[msg.Intention] = meta{true, time.Now()}
 			}
-		case gotocol.Goodbye:
-			close(listener)
-			gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(msg.ResponseChan)
 		case gotocol.Inform:
 			// don't store edges in discovery but do log them
 			if edda.Logchan != nil {
@@ -84,15 +81,26 @@ func Start(listener chan gotocol.Message, name string) {
 			}
 			for n, ch := range microservices { // respond with all the online names that match the service component
 				// log.Printf("%v: matching %v with %v\n", name, n, msg.Intention)
-				if names.Service(n) == msg.Intention && metadata[n].online {
+				if names.Service(n) == msg.Intention {
 					// if there was an update for the looked up service since last check
 					if metadata[n].registered.After(lastrequest[msg.ResponseChan]) {
-						gotocol.Message{gotocol.NameDrop, ch, time.Now(), n}.GoSend(msg.ResponseChan)
+						if metadata[n].online {
+							gotocol.Message{gotocol.NameDrop, ch, time.Now(), n}.GoSend(msg.ResponseChan)
+						} else {
+							gotocol.Message{gotocol.Forget, ch, time.Now(), n}.GoSend(msg.ResponseChan)
+						}
 					}
 				}
 			}
 			// remember for next time
 			lastrequest[msg.ResponseChan] = time.Now()
+		case gotocol.Forget:
+			if microservices[msg.Intention] != nil { // matched a unique full name
+				metadata[msg.Intention] = meta{false, time.Now()}
+			}
+		case gotocol.Goodbye:
+			close(listener)
+			gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(msg.ResponseChan)
 		}
 	}
 	log.Println(name + ": closing")
