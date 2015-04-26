@@ -47,17 +47,17 @@ func Start(name string) {
 		if archaius.Conf.Msglog {
 			log.Printf("%v(backlog %v): %v\n", name, len(Logchan), msg)
 		}
-		if msg.Imposition == gotocol.Inform {
+		switch msg.Imposition {
+		case gotocol.Inform:
 			graphml.WriteEdge(msg.Intention)
 			graphjson.WriteEdge(msg.Intention)
-		} else {
-			if msg.Imposition == gotocol.Put {
-				if microservices[msg.Intention] == false {
-					microservices[msg.Intention] = true
-					graphml.WriteNode(msg.Intention + " " + names.Package(msg.Intention))
-					graphjson.WriteNode(msg.Intention + " " + names.Package(msg.Intention))
-				}
+		case gotocol.Put:
+			if microservices[msg.Intention] == false { // only log a node once
+				microservices[msg.Intention] = true
+				graphml.WriteNode(msg.Intention + " " + names.Package(msg.Intention))
+				graphjson.WriteNode(msg.Intention + " " + names.Package(msg.Intention))
 			}
+		case gotocol.Forget: // remove the node
 		}
 	}
 	log.Println(name + ": closing")

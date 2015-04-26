@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 )
 
 // Enabled is set via command line flags to turn on json logging
@@ -16,34 +17,48 @@ var Enabled bool
 var file *os.File
 var edgeid int // unique id for each edge
 
-// NodeV0r3 defines a node for version 0.3, used to make json nodes for writing
-type NodeV0r3 struct {
+// NodeV0r4 defines a node for version 0.4, used to make json nodes for writing
+type NodeV0r4 struct {
 	Node    string `json:"node"`
-	Service string `json:"service"`
+	Package string `json:"package"`             // name changed from 0.3 to 0.4
+	Tstamp  string `json:"timestamp,omitempty"` // 0.4
 }
 
-// EdgeV0r3 defines an edge for version 0.3, used to make json edges for writing
-type EdgeV0r3 struct {
+// EdgeV0r4 defines an edge for version 0.4, used to make json edges for writing
+type EdgeV0r4 struct {
 	Edge   string `json:"edge"`
 	Source string `json:"source"`
 	Target string `json:"target"`
+	Tstamp string `json:"timestamp,omitempty"` // 0.4
 }
 
-// ElementV0r3 defines a way to read either a node or an edge in the graph for version 0.3
-type ElementV0r3 struct {
+// DoneV0r4 records a node that goes away, and its exit status. New in 0.4
+type DoneV0r4 struct {
+	Done   string `json:"done"`
+	Exit   string `json:"exit"`
+	Tstamp string `json:"timestamp"`
+}
+
+// ElementV0r4 defines a way to read either a node, edge or done in the graph for version 0.3 or 0.4
+type ElementV0r4 struct {
 	Node    string `json:"node,omitempty"`
-	Service string `json:"service,omitempty"`
+	Package string `json:"package,omitempty"`
+	Service string `json:"service,omitempty"` // name changed from service 0.3 to package 0.4
 	Edge    string `json:"edge,omitempty"`
 	Source  string `json:"source,omitempty"`
 	Target  string `json:"target,omitempty"`
+	Done    string `json:"target,omitempty"`
+	Exit    string `json:"exit,omitempty"`
+	Tstamp  string `json:"timestamp,omitempty"`
 }
 
-// GraphV0r3 defines version 0.3 of the graphjson file format with an array of elements
-type GraphV0r3 struct {
+// GraphV0r4 defines version 0.4 of the graphjson file format with an array of elements
+type GraphV0r4 struct {
 	Arch    string        `json:"arch"`
 	Version string        `json:"version"`
 	Args    string        `json:"args"`
-	Graph   []ElementV0r3 `json:"graph"`
+	Date    string        `json:"date,omitempty"` // 0.4
+	Graph   []ElementV0r4 `json:"graph"`
 }
 
 // GraphVersion extracts the version so it can be checked
@@ -62,8 +77,7 @@ func Setup(arch string) {
 		ss = fmt.Sprintf("%v", archaius.Conf.StopStep)
 	}
 	file, _ = os.Create("json/" + arch + ss + ".json")
-	//Write(fmt.Sprintf("{\n  \"arch\":\"%v\",\n  \"version\":\"spigo-0.3\",\n  \"args\":\"%v\",\n  \"graph\":[", arch, os.Args))
-	Write(fmt.Sprintf("{\n  %q:%q,\n  %q:%q,\n  %q:\"%v\",\n  %q:[", "arch", arch, "version", "spigo-0.3", "args", os.Args, "graph"))
+	Write(fmt.Sprintf("{\n  %q:%q,\n  %q:%q,\n  %q:\"%v\",\n  %q:%q,\n  %q:[", "arch", arch, "version", "spigo-0.4", "args", os.Args, "date", time.Now().Format(time.RFC3339Nano), "graph"))
 	comma = false
 }
 
@@ -86,8 +100,9 @@ func WriteNode(nameService string) {
 	if Enabled == false {
 		return
 	}
-	var node NodeV0r3
-	fmt.Sscanf(nameService, "%s%s", &node.Node, &node.Service) // space delimited
+	var node NodeV0r4
+	fmt.Sscanf(nameService, "%s%s", &node.Node, &node.Package) // space delimited
+	node.Tstamp = time.Now().Format(time.RFC3339Nano)
 	// node id should be unique and service indicates service type
 	nodeJSON, _ := json.Marshal(node)
 	Write(fmt.Sprintf("%v    %v", commaNewline(), string(nodeJSON)))
@@ -99,9 +114,10 @@ func WriteEdge(fromTo string) {
 		return
 	}
 	edgeid = edgeid + 1
-	var edge EdgeV0r3
+	var edge EdgeV0r4
 	fmt.Sscanf(fromTo, "%s%s", &edge.Source, &edge.Target) // two space delimited names
 	edge.Edge = fmt.Sprintf("e%v", edgeid)
+	edge.Tstamp = time.Now().Format(time.RFC3339Nano)
 	edgeJSON, _ := json.Marshal(edge)
 	Write(fmt.Sprintf("%v    %v", commaNewline(), string(edgeJSON)))
 }
@@ -116,7 +132,7 @@ func Close() {
 }
 
 // ReadArch parses graphjson
-func ReadArch(arch string) *GraphV0r3 {
+func ReadArch(arch string) *GraphV0r4 {
 	ss := ""
 	if archaius.Conf.StopStep > 0 {
 		ss = fmt.Sprintf("%v", archaius.Conf.StopStep)
@@ -135,7 +151,9 @@ func ReadArch(arch string) *GraphV0r3 {
 	log.Println("Version: ", v.Version)
 	switch v.Version {
 	case "spigo-0.3":
-		g := new(GraphV0r3)
+		fallthrough
+	case "spigo-0.4":
+		g := new(GraphV0r4)
 		json.Unmarshal(data, g)
 		log.Println("Architecture: ", g.Arch)
 		return g

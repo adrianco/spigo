@@ -97,6 +97,13 @@ func Start(listener chan gotocol.Message, name string) {
 		case gotocol.Forget:
 			if microservices[msg.Intention] != nil { // matched a unique full name
 				metadata[msg.Intention] = meta{false, time.Now()}
+				// replicate request
+				for _, c := range eurekaservices {
+					gotocol.Message{gotocol.Replicate, nil, time.Now(), msg.Intention}.GoSend(c)
+				}
+				if edda.Logchan != nil {
+					edda.Logchan <- msg
+				}
 			}
 		case gotocol.Goodbye:
 			close(listener)
