@@ -32,6 +32,14 @@ type EdgeV0r4 struct {
 	Tstamp string `json:"timestamp,omitempty"` // 0.4
 }
 
+// ForgetV0r4 records an edge that has been forgotten and should be removed, forget id should match previous edge id
+type ForgetV0r4 struct {
+	Forget string `json:"forget"`
+	Source string `json:"source"`
+	Target string `json:"target"`
+	Tstamp string `json:"timestamp"`
+}
+
 // DoneV0r4 records a node that goes away, and its exit status. New in 0.4
 type DoneV0r4 struct {
 	Done   string `json:"done"`
