@@ -7,7 +7,7 @@ The name spigo is taken, but simianviz wasn't, so domains have been registered e
 
 Simulate Protocol Interactions in Go using nanoservice actors - spigo
 
-SIMulate Interactive Actor Network VIsualiZation - simianviz - also visualize the simian army in action (not yet implemented)
+SIMulate Interactive Actor Network VIsualiZation - simianviz - also visualize the simian army in action (not yet implemented), however current work in progress is adding features to allow edges and nodes to be removed from the simulation, and timestamps have been added to the output file format.
 
 Suitable for fairly large scale simulations, runs well up to 100,000 independent nanoservice actors. Three architectures are implemented. One creates a peer to peer social network (fsm and pirates). The others are based on a LAMP stack or NetflixOSS microservices in a more tree structured model. The migration architecture starts with LAMP and ends with NetflixOSS.
 
