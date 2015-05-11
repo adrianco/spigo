@@ -1,1 +1,4 @@
 *.DS_Store
+.divshot-cache
+ui/node_modules
+ui/dist

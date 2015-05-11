@@ -1,0 +1,83 @@
+{
+  "name": "spigo",
+  "version": "0.1.0",
+  "description": "spigo =====",
+  "main": "",
+  "scripts": {
+    "test": "gulp test",
+    "lint": "gulp lint",
+    "build:prod": "gulp build-prod"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adrianco/spigo"
+  },
+  "author": "Adrian Cockcroft <adrian.cockcroft@gmail.com> (http://www.millicomputer.com)",
+  "contributors": [
+    "Kurtis Kemple <kurtiskemple@gmail.com> (http://iamnotarealprogrammer.com)"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adrianco/spigo/issues",
+    "email": "adrian.cockcroft@gmail.com"
+  },
+  "homepage": "https://github.com/adrianco/spigo",
+  "dependencies": {
+    "ampersand-app": "^1.0.4",
+    "ampersand-router": "^3.0.2",
+    "async": "^0.9.0",
+    "bluebird": "^2.9.25",
+    "d3": "^3.5.5",
+    "d3-tip": "^0.6.7",
+    "flux": "^2.0.3",
+    "font-awesome": "^4.3.0",
+    "jquery": "^2.1.3",
+    "keymirror": "^0.1.1",
+    "lodash.assign": "^3.1.0",
+    "lodash.bind": "^3.1.0",
+    "lodash.filter": "^3.1.0",
+    "lodash.foreach": "^3.0.3",
+    "lodash.indexof": "^3.0.2",
+    "lodash.pluck": "^3.1.1",
+    "lodash.reduce": "^3.1.1",
+    "react": "^0.13.2",
+    "superagent": "^0.21.0"
+  },
+  "devDependencies": {
+    "babel": "^4.7.4",
+    "babel-eslint": "^1.0.14",
+    "babelify": "^5.0.3",
+    "browserify": "^9.0.3",
+    "chai": "^2.1.1",
+    "glob": "^5.0.1",
+    "gulp": "^3.8.11",
+    "gulp-clean": "^0.3.1",
+    "gulp-concat": "^2.5.2",
+    "gulp-connect": "^2.2.0",
+    "gulp-eslint": "^0.6.0",
+    "gulp-jasmine": "^2.0.0",
+    "gulp-karma": "0.0.4",
+    "gulp-less": "^3.0.1",
+    "gulp-minify-css": "^1.0.0",
+    "gulp-mocha": "^2.0.0",
+    "gulp-nodemon": "^1.0.5",
+    "gulp-notify": "^2.2.0",
+    "gulp-plumber": "^0.6.6",
+    "gulp-rename": "^1.2.0",
+    "gulp-sourcemaps": "^1.5.0",
+    "gulp-uglify": "^1.1.0",
+    "jasmine-core": "^2.2.0",
+    "karma": "^0.12.31",
+    "karma-browserify": "^4.1.2",
+    "karma-jasmine": "^0.3.5",
+    "karma-nyan-reporter": "0.0.60",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-spec-reporter": "0.0.18",
+    "mocha": "^2.2.1",
+    "nock": "^1.4.0",
+    "run-sequence": "^1.0.2",
+    "shelljs": "^0.4.0",
+    "sinon": "^1.13.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
