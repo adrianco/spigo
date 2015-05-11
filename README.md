@@ -144,7 +144,7 @@ Replace single memcached with cross zone EVcache replicated memcached and change
 ![Migration ](png/migration-3-2.png)
 
 Add some Node based microservices between Zuul and Staash alongside PHP
-![Migration ](png/migration-4-.png)
+![Migration ](png/migration-4-1.png)
 
 Start a Cassandra cluster and connect to Staash alongside MySQL and evcache for data and access migration
 ![Migration ](png/migration-5-1.png)

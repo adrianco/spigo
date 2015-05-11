@@ -1,5 +1,5 @@
 language: go
-script: cd ui && npm install && npm run build:prod
+script: cd ui && npm install && npm run build:prod && cd ..
 deploy:
   provider: divshot
   environment:
