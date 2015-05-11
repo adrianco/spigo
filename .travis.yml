@@ -4,6 +4,6 @@ deploy:
   provider: divshot
   environment:
     master: production
-    skip_cleanup: true
+  skip_cleanup: true
   api_key:
     secure: P0cRcXCoqy/hnAiLfzfIQyo7bylMmb8hLhbxe29nTTCmUBtjfvDPzv9pZrlpeK0oVyTmpdgO675Bb6+jsn+s0u44LqvgbaOcJWhrBS87EQiLKwi1VdCdJwzO3CZoEDz5xUQ/yxbgdk5epZ7HrEQN3ZubNGLkaxy5YezBp7hhhXk=
