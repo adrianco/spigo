@@ -170,7 +170,6 @@ Extend to six regions, an interesting visualization challenge
 ![Migration ](png/migration-9-1.png)
 ![Migration ](png/migration-9-2.png)
 ![Migration ](png/migration-9-3.png)
-![Migration ](png/migration-9-4.png)
 ![Migration ](png/migration-9-5.png)
 
 LAMP Stack Architecture
