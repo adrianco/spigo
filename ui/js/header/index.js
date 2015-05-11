@@ -8,8 +8,7 @@ export default React.createClass({
 			<header id="header">
 				<div className="branding">
 					<h1>
-						<span className="logo-spi">Spi</span>
-						<span className="logo-go">go</span>
+						SIMIANVIZ
 					</h1>
 				</div>
 			</header>
