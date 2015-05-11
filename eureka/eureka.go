@@ -94,7 +94,7 @@ func Start(listener chan gotocol.Message, name string) {
 			}
 			// remember for next time
 			lastrequest[msg.ResponseChan] = time.Now()
-		case gotocol.Forget:
+		case gotocol.Delete: // remove a node
 			if microservices[msg.Intention] != nil { // matched a unique full name
 				metadata[msg.Intention] = meta{false, time.Now()}
 				// replicate request

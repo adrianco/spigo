@@ -32,11 +32,11 @@ const (
 	Put
 	// Replicate - "key value" Save a replicated copy
 	Replicate
-	// Forget - NameOfBuddy Forget connection to buddy
+	// Forget - FromBuddy ToBuddy Forget link between two buddies
 	Forget
 	// Delete - key Remove key and value
 	Delete
-	// Goodbye - - // tell FSM and exit
+	// Goodbye - name // tell FSM and exit
 	Goodbye // test assumes this is the last and exits
 	numOfImpositions
 )
@@ -130,5 +130,15 @@ func NameDropHandler(dependencies *map[string]time.Time, microservices *map[stri
 				}
 			}
 		}
+	}
+}
+
+// ForgetHandler removes a buddy from the buddy list
+func ForgetHandler(dependencies *map[string]time.Time, microservices *map[string]chan Message, msg Message) {
+	microservice := msg.Intention              // message body is buddy name to forget
+	if (*microservices)[microservice] != nil { // an existing buddy to forget
+		// forget how to talk to this buddy
+		(*dependencies)[names.Service(microservice)] = msg.Sent // remember when we were told to forget this service
+		delete(*microservices, microservice)
 	}
 }

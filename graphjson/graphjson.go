@@ -15,7 +15,8 @@ import (
 var Enabled bool
 
 var file *os.File
-var edgeid int // unique id for each edge
+var edgeid int                // unique id for each edge
+var edgemap map[string]string // remember which edge was which
 
 // NodeV0r4 defines a node for version 0.4, used to make json nodes for writing
 type NodeV0r4 struct {
@@ -55,6 +56,7 @@ type ElementV0r4 struct {
 	Edge    string `json:"edge,omitempty"`
 	Source  string `json:"source,omitempty"`
 	Target  string `json:"target,omitempty"`
+	Forget  string `json:"forget"`
 	Done    string `json:"target,omitempty"`
 	Exit    string `json:"exit,omitempty"`
 	Tstamp  string `json:"timestamp,omitempty"`
@@ -87,6 +89,7 @@ func Setup(arch string) {
 	file, _ = os.Create("json/" + arch + ss + ".json")
 	Write(fmt.Sprintf("{\n  %q:%q,\n  %q:%q,\n  %q:\"%v\",\n  %q:%q,\n  %q:[", "arch", arch, "version", "spigo-0.4", "args", os.Args, "date", time.Now().Format(time.RFC3339Nano), "graph"))
 	comma = false
+	edgemap = make(map[string]string, archaius.Conf.Population)
 }
 
 // Write a string to the file
@@ -104,20 +107,33 @@ func commaNewline() string {
 }
 
 // WriteNode writes the node to a file given a space separated name and service type
-func WriteNode(nameService string) {
+func WriteNode(nameService string, t time.Time) {
 	if Enabled == false {
 		return
 	}
 	var node NodeV0r4
 	fmt.Sscanf(nameService, "%s%s", &node.Node, &node.Package) // space delimited
-	node.Tstamp = time.Now().Format(time.RFC3339Nano)
+	node.Tstamp = t.Format(time.RFC3339Nano)
 	// node id should be unique and service indicates service type
 	nodeJSON, _ := json.Marshal(node)
 	Write(fmt.Sprintf("%v    %v", commaNewline(), string(nodeJSON)))
 }
 
+// WriteDone records that a node has gone away normally
+func WriteDone(name string, t time.Time) {
+	if Enabled == false {
+		return
+	}
+	var done DoneV0r4
+	done.Done = name
+	done.Exit = "normal"
+	done.Tstamp = t.Format(time.RFC3339Nano)
+	nodeJSON, _ := json.Marshal(done)
+	Write(fmt.Sprintf("%v    %v", commaNewline(), string(nodeJSON)))
+}
+
 // WriteEdge writes the edge to a file given a space separated from and to node name
-func WriteEdge(fromTo string) {
+func WriteEdge(fromTo string, t time.Time) {
 	if Enabled == false {
 		return
 	}
@@ -125,9 +141,23 @@ func WriteEdge(fromTo string) {
 	var edge EdgeV0r4
 	fmt.Sscanf(fromTo, "%s%s", &edge.Source, &edge.Target) // two space delimited names
 	edge.Edge = fmt.Sprintf("e%v", edgeid)
-	edge.Tstamp = time.Now().Format(time.RFC3339Nano)
+	edgemap[fromTo] = edge.Edge // remember the named edge so it can be forgotten later
+	edge.Tstamp = t.Format(time.RFC3339Nano)
 	edgeJSON, _ := json.Marshal(edge)
 	Write(fmt.Sprintf("%v    %v", commaNewline(), string(edgeJSON)))
+}
+
+// WriteForget writes the forgotten edge to a file given a space separated edge id, from and to node names
+func WriteForget(fromTo string, t time.Time) {
+	if Enabled == false {
+		return
+	}
+	var forget ForgetV0r4
+	fmt.Sscanf(fromTo, "%s%s", &forget.Source, &forget.Target) // two space delimited names
+	forget.Forget = edgemap[fromTo]
+	forget.Tstamp = t.Format(time.RFC3339Nano)
+	forgetJSON, _ := json.Marshal(forget)
+	Write(fmt.Sprintf("%v    %v", commaNewline(), string(forgetJSON)))
 }
 
 // Close completes the json file format and closes the file

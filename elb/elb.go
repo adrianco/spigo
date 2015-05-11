@@ -13,7 +13,7 @@ import (
 
 // Start the elb, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
-	dunbar := 30 // starting point for how many nodes to remember
+	dunbar := archaius.Conf.Population
 	// remember the channel to talk to microservices
 	microservices := make(map[string]chan gotocol.Message, dunbar)
 	microindex := make([]chan gotocol.Message, dunbar)
@@ -48,7 +48,7 @@ func Start(listener chan gotocol.Message) {
 				gotocol.NameDropHandler(&dependencies, &microservices, msg, name, listener, eureka, true)
 			case gotocol.Forget:
 				// forget a buddy
-				delete(microservices, msg.Intention)
+				gotocol.ForgetHandler(&dependencies, &microservices, msg)
 			case gotocol.Chat:
 				// setup the ticker to run at the specified rate
 				d, e := time.ParseDuration(msg.Intention)

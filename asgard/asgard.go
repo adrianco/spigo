@@ -4,6 +4,7 @@ package asgard
 import (
 	"fmt"
 	"github.com/adrianco/spigo/archaius"    // global configuration
+	"github.com/adrianco/spigo/chaosmonkey" // delete nodes at random
 	"github.com/adrianco/spigo/collect"     // metrics collector
 	"github.com/adrianco/spigo/denominator" // DNS service
 	"github.com/adrianco/spigo/elb"         // elastic load balancer
@@ -233,14 +234,16 @@ func ConnectEveryEureka(name string) {
 }
 
 // Run migration for a while then shut down
-func Run(rootservice string) {
+func Run(rootservice, victim string) {
 	// tell denominator to start chatting with microservices every 0.01 secs
 	delay := fmt.Sprintf("%dms", 10)
 	log.Println(rootservice+" activity rate ", delay)
 	SendToName(rootservice, gotocol.Message{gotocol.Chat, nil, time.Now(), delay})
 	// wait until the delay has finished
 	if archaius.Conf.RunDuration >= time.Millisecond {
-		time.Sleep(archaius.Conf.RunDuration)
+		time.Sleep(archaius.Conf.RunDuration/2)
+		chaosmonkey.Delete(&noodles, victim) // kill a random victim half way through
+		time.Sleep(archaius.Conf.RunDuration/2)	
 	}
 	log.Println("migration: Shutdown")
 	ShutdownNodes()

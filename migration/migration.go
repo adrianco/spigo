@@ -148,5 +148,5 @@ func Start() {
 		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
 	}
 	dnsname := asgard.Create(dns, asgard.DenominatorPkg, 0, 0, elbname)
-	asgard.Run(dnsname)
+	asgard.Run(dnsname, "")
 }

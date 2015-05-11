@@ -37,5 +37,5 @@ func Start() {
 	asgard.Create(pname, asgard.MonolithPkg, regions, phpcount, sname, mname)
 	asgard.Create(elbname, asgard.ElbPkg, regions, 0, pname)
 	dnsname := asgard.Create(dns, asgard.DenominatorPkg, 0, 0, elbname)
-	asgard.Run(dnsname)
+	asgard.Run(dnsname, "")
 }

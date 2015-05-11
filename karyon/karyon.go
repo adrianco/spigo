@@ -18,8 +18,8 @@ func Start(listener chan gotocol.Message) {
 	microservices := make(map[string]chan gotocol.Message, dunbar)
 	microindex := make([]chan gotocol.Message, dunbar)
 	dependencies := make(map[string]time.Time, dunbar) // dependent services and time last updated
-	var netflixoss, requestor chan gotocol.Message // remember creator and how to talk back to incoming requests
-	var name string                                // remember my name
+	var parent, requestor chan gotocol.Message         // remember creator and how to talk back to incoming requests
+	var name string                                    // remember my name
 	eureka := make(map[string]chan gotocol.Message, 1) // service registry
 	var chatrate time.Duration
 	hist := collect.NewHist("")
@@ -38,8 +38,8 @@ func Start(listener chan gotocol.Message) {
 			case gotocol.Hello:
 				if name == "" {
 					// if I don't have a name yet remember what I've been named
-					netflixoss = msg.ResponseChan // remember how to talk to my namer
-					name = msg.Intention          // message body is my name
+					parent = msg.ResponseChan // remember how to talk to my namer
+					name = msg.Intention      // message body is my name
 					hist = collect.NewHist(name)
 				}
 			case gotocol.Inform:
@@ -48,7 +48,7 @@ func Start(listener chan gotocol.Message) {
 				gotocol.NameDropHandler(&dependencies, &microservices, msg, name, listener, eureka)
 			case gotocol.Forget:
 				// forget a buddy
-				delete(microservices, msg.Intention)
+				gotocol.ForgetHandler(&dependencies, &microservices, msg)
 			case gotocol.Chat:
 				// setup the ticker to run at the specified rate
 				d, e := time.ParseDuration(msg.Intention)
@@ -98,7 +98,10 @@ func Start(listener chan gotocol.Message) {
 				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away\n", name)
 				}
-				gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(netflixoss)
+				for _, ch := range eureka { // tell name service I'm not going to be here
+					ch <- gotocol.Message{gotocol.Delete, nil, time.Now(), name}
+				}
+				gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(parent)
 				return
 			}
 		case <-eurekaTicker.C: // check to see if any new dependencies have appeared

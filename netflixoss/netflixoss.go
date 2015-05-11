@@ -45,5 +45,5 @@ func Start() {
 	asgard.Create(nname, asgard.KaryonPkg, regions, nodecount, jname)
 	asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, nname)
 	asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
-	asgard.Run(asgard.Create(dns, asgard.DenominatorPkg, 0, 0, elbname))
+	asgard.Run(asgard.Create(dns, asgard.DenominatorPkg, 0, 0, elbname), "")
 }

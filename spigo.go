@@ -65,7 +65,7 @@ func main() {
 	// start up the selected architecture
 	go edda.Start(archaius.Conf.Arch + ".edda") // start edda first
 	if reload {
-		asgard.Run(asgard.Reload(archaius.Conf.Arch))
+		asgard.Run(asgard.Reload(archaius.Conf.Arch), "")
 	} else {
 		switch archaius.Conf.Arch {
 		case "fsm":

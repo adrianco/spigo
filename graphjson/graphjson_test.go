@@ -1,4 +1,4 @@
-// graphjson tests
+// graphjson tests - just make sure the json conversions work
 package graphjson
 
 import (
@@ -89,7 +89,8 @@ func TestGraph(t *testing.T) {
 		    {"edge":"e13","source":"lamp.us-east-1.*.www-elb.elb.www-elb0","target":"lamp.us-east-1.zoneC.phpweb.monolith.phpweb2","timestamp":"2015-04-26T23:52:45.960835814+12:00"},
 		    {"node":"lamp.*.*.www.denominator.www0","package":"denominator","timestamp":"2015-04-26T23:52:45.9608483+12:00"},
 		    {"edge":"e14","source":"lamp.*.*.www.denominator.www0","target":"lamp.us-east-1.*.www-elb.elb.www-elb0","timestamp":"2015-04-26T23:52:45.960860647+12:00"},
-		    {"edge":"e15","source":"lamp.us-east-1.zoneA.rds-mysql.store.rds-mysql0","target":"lamp.us-east-1.zoneB.rds-mysql.store.rds-mysql1","timestamp":"2015-04-26T23:52:46.960271113+12:00"}
+		    {"edge":"e15","source":"lamp.us-east-1.zoneA.rds-mysql.store.rds-mysql0","target":"lamp.us-east-1.zoneB.rds-mysql.store.rds-mysql1","timestamp":"2015-04-26T23:52:46.960271113+12:00"},
+		    {"forget":"e13","source":"lamp.us-east-1.*.www-elb.elb.www-elb0","target":"lamp.us-east-1.zoneC.phpweb.monolith.phpweb2","timestamp":"2015-04-26T23:52:47.960271113+12:00"}
 		  ]
 		}`
 

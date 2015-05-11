@@ -50,14 +50,20 @@ func Start(name string) {
 		switch msg.Imposition {
 		case gotocol.Inform:
 			graphml.WriteEdge(msg.Intention)
-			graphjson.WriteEdge(msg.Intention)
+			graphjson.WriteEdge(msg.Intention, msg.Sent)
 		case gotocol.Put:
 			if microservices[msg.Intention] == false { // only log a node once
 				microservices[msg.Intention] = true
 				graphml.WriteNode(msg.Intention + " " + names.Package(msg.Intention))
-				graphjson.WriteNode(msg.Intention + " " + names.Package(msg.Intention))
+				graphjson.WriteNode(msg.Intention+" "+names.Package(msg.Intention), msg.Sent)
 			}
-		case gotocol.Forget: // remove the node
+		case gotocol.Forget: // forget the edge
+			graphjson.WriteForget(msg.Intention, msg.Sent)
+		case gotocol.Delete: // remove the node
+			if microservices[msg.Intention] == true { // only remove nodes that exist, and only log it once
+				microservices[msg.Intention] = false
+				graphjson.WriteDone(msg.Intention, msg.Sent)
+			}
 		}
 	}
 	log.Println(name + ": closing")
