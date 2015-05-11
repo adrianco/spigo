@@ -12,6 +12,9 @@ import fisheye from 'lib/d3-fisheye';
 import tooltip from 'd3-tip';
 import collideFactory from 'lib/d3-collision-detection';
 import connectedNodesFactory from 'lib/d3-connected-nodes';
+import removableNodesFactory from 'lib/d3-removable-nodes';
+import removableLinksFactory from 'lib/d3-removable-links';
+import linkExpanderFactory from 'lib/d3-link-expander';
 
 d3 = fisheye(d3);
 
@@ -89,12 +92,21 @@ export default React.createClass({
 			.call(this.force.drag);
 
 		const {mouseover, mouseout} = connectedNodesFactory(this.nodes, this.links);
+		const removableNodes = removableNodesFactory(this.nodes, this.links);
+		const removableLinks = removableLinksFactory();
+		const {expand, shrink} = linkExpanderFactory();
 
 		this.nodes
 			.on('mouseover.connection', mouseover)
 			.on('mouseout.connection', mouseout)
 			.on('mouseover.tooltip', this.tip.show)
-			.on('mouseout.tooltip', this.tip.hide);
+			.on('mouseout.tooltip', this.tip.hide)
+			.on('dblclick', removableNodes);
+
+		this.links
+			.on('dblclick', removableLinks)
+			.on('mouseover', expand)
+			.on('mouseout', shrink);
 	},
 
 	componentWillMount () {

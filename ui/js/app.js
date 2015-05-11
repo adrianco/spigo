@@ -7,8 +7,13 @@ import app from 'ampersand-app';
 const router = new Router();
 
 app.extend({
-	init () { router.history.start(); },
-	navigate (path, opts = {}) { router.history.navigate(path, opts); }
+	init () {
+		router.history.start();
+	},
+
+	navigate (path, opts = {}) {
+		router.history.navigate(path, opts);
+	}
 });
 
 app.init();

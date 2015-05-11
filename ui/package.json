@@ -1,7 +1,7 @@
 {
-  "name": "spigo",
+  "name": "simianviz",
   "version": "0.1.0",
-  "description": "spigo =====",
+  "description": "Visualize Protocol Interactions in D3, using JSON genarated by Spigo",
   "main": "",
   "scripts": {
     "test": "node_modules/.bin/gulp test",
