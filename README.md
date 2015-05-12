@@ -20,7 +20,7 @@ http://www.slideshare.net/adriancockcroft/software-architecture-monitoring-micro
 Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI
 
 ```
-asgard.Create(cname, "priamCassandra", archaius.Conf.Regions, priamCassandracount, cname)
+asgard.Create(cname, asgard.priamCassandraPkg, archaius.Conf.Regions, priamCassandracount, cname)
 asgard.Create(sname, asgard.StorePkg, archaius.Conf.Regions, mysqlcount, sname)
 asgard.Create(mname, asgard.StorePkg, archaius.Conf.Regions, mcount)
 asgard.Create(tname, asgard.StaashPkg, archaius.Conf.Regions, staashcount, sname, mname, cname)
