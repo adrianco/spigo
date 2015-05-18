@@ -106,9 +106,9 @@ func Start(listener chan gotocol.Message, name string) {
 				}
 			}
 		case gotocol.Goodbye:
-			close(listener)
 			gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(msg.ResponseChan)
+			log.Println(name + ": closing")
+			return
 		}
 	}
-	log.Println(name + ": closing")
 }

@@ -58,4 +58,8 @@ func TestImpose(t *testing.T) {
 	}
 	// shut down second pirate, which will have said hello twice
 	p2p <- Message{Goodbye, nil, time.Now(), "Pasta la vista"}
+	fmt.Println("len(p2p): ", len(p2p))
+	close(p2p)
+	fmt.Println("closed len(p2p): ", len(p2p))
+
 }

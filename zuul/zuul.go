@@ -13,10 +13,10 @@ import (
 
 // Start zuul, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
-	dunbar := 30 // starting point for how many nodes to remember
+	dunbar := archaius.Conf.Population // starting point for how many nodes to remember
 	// remember the channel to talk to microservices
 	microservices := make(map[string]chan gotocol.Message, dunbar)
-	microindex := make([]chan gotocol.Message, dunbar)
+	microindex := make(map[int]chan gotocol.Message, dunbar)
 	dependencies := make(map[string]time.Time, dunbar) // dependent services and time last updated
 	var netflixoss, requestor chan gotocol.Message // remember creator and how to talk back to incoming requests
 	var name string                                // remember my name
@@ -121,7 +121,6 @@ func Start(listener chan gotocol.Message) {
 				// start a request to a random member of this elb
 				gotocol.Message{gotocol.GetRequest, listener, time.Now(), name}.GoSend(microindex[m])
 			}
-			//default:
 		}
 	}
 }

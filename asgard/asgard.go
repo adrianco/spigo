@@ -245,7 +245,7 @@ func Run(rootservice, victim string) {
 		chaosmonkey.Delete(&noodles, victim) // kill a random victim half way through
 		time.Sleep(archaius.Conf.RunDuration/2)	
 	}
-	log.Println("migration: Shutdown")
+	log.Println("asgard: Shutdown")
 	ShutdownNodes()
 	ShutdownEureka()
 	collect.Save()
@@ -274,6 +274,7 @@ func ShutdownNodes() {
 // shut down the Eureka service registries and wait for them to go away
 func ShutdownEureka() {
 	// shutdown eureka and wait to catch eureka reply
+	//log.Println(eurekachan)
 	for _, ch := range eurekachan {
 		gotocol.Message{gotocol.Goodbye, listener, time.Now(), "shutdown"}.GoSend(ch)
 	}

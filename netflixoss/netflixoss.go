@@ -21,7 +21,7 @@ func Start() {
 	asgard.CreateEureka() // service registries for each zone
 
 	// priam managed Cassandra cluster, turtle because it's used to configure other clusters
-	priamCassandracount := 12 * archaius.Conf.Population / 100
+	priamCassandracount := 1 // 12 * archaius.Conf.Population / 100
 	cname := "cassTurtle"
 	// staash data access layer connects to mysql master and slave, and evcache
 	staashcount := 6 * archaius.Conf.Population / 100
