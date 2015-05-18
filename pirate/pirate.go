@@ -44,9 +44,7 @@ func Start(listener chan gotocol.Message) {
 				}
 			case gotocol.Inform:
 				// remember where to send updates
-				logger = msg.ResponseChan
-				// logger channel is buffered so no need to use GoSend
-				logger <- gotocol.Message{gotocol.Hello, nil, time.Now(), name + " " + "pirate"}
+				logger = gotocol.InformHandler(msg, name, listener)
 			case gotocol.NameDrop:
 				// don't remember too many buddies and don't talk to myself
 				buddy := msg.Intention // message body is buddy name

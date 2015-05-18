@@ -19,20 +19,30 @@ const (
 	instance             // cassTurtle0 - specific instance of service, like EC2 instance
 )
 
+func Splitter(name string, offset hier) string {
+	s := strings.Split(name, ".")
+	if len(s) > int(offset) {
+		return s[offset]
+	} else {
+		return ""
+	}
+}
+
+
 func Make(a, r, z, s, p string, i int) string {
 	return fmt.Sprintf("%v.%v.%v.%v.%v.%v%v", a, r, z, s, p, s, i)
 }
 
 func Arch(name string) string {
-	return strings.Split(name, ".")[arch]
+	return Splitter(name, arch)
 }
 
 func Region(name string) string {
-	return strings.Split(name, ".")[region]
+	return Splitter(name, region)
 }
 
 func Zone(name string) string {
-	return strings.Split(name, ".")[zone]
+	return Splitter(name, zone)
 }
 
 func OtherZones(name string, znames [3]string) [2]string {
@@ -60,16 +70,15 @@ func OtherRegions(name string, rnames []string) []string {
 }
 
 func RegionZone(name string) string {
-	s := strings.Split(name, ".")
-	return s[region]+"."+s[zone]
+	return Splitter(name, region) + ". "+ Splitter(name, zone)
 }
 
 func Service(name string) string {
-	return strings.Split(name, ".")[service]
+	return Splitter(name, service)
 }
 
 func AMI(name string) string {
-	return strings.Split(name, ".")[ami]
+	return Splitter(name, ami)
 }
 
 func Package(name string) string {
@@ -77,5 +86,5 @@ func Package(name string) string {
 }
 
 func Instance(name string) string {
-	return strings.Split(name, ".")[instance]
+	return Splitter(name, instance)
 }

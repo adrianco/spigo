@@ -10,6 +10,7 @@ import (
 	"github.com/adrianco/spigo/edda"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/graphjson"
+	"github.com/adrianco/spigo/names"
 	"github.com/adrianco/spigo/pirate"
 	"log"
 	"math/rand"
@@ -18,7 +19,7 @@ import (
 
 // noodles channels mapped by pirate name connects fsm to everyone
 var noodles map[string]chan gotocol.Message
-var names []string
+var pnames []string
 var listener chan gotocol.Message
 
 // Reload the network from a file
@@ -83,10 +84,10 @@ func Start() {
 	}
 	// create map of channels and a name index to select randoml nodes from
 	noodles = make(map[string]chan gotocol.Message, archaius.Conf.Population)
-	names = make([]string, archaius.Conf.Population) // indexable name list
+	pnames = make([]string, archaius.Conf.Population) // indexable name list
 	log.Println("fsm: population", archaius.Conf.Population, "pirates")
 	for i := 1; i <= archaius.Conf.Population; i++ {
-		name := fmt.Sprintf("Pirate%d", i)
+		name := names.Make(archaius.Conf.Arch, "atlantic", "bermuda", "blackbeard", "pirate", i)
 		noodles[name] = make(chan gotocol.Message)
 		go pirate.Start(noodles[name])
 	}
@@ -94,7 +95,7 @@ func Start() {
 	msgcount := 1
 	start := time.Now()
 	for name, noodle := range noodles {
-		names[i] = name
+		pnames[i] = name
 		i++
 		// tell the pirate it's name and how to talk back to it's fsm
 		// this must be the first message the pirate sees
@@ -107,14 +108,14 @@ func Start() {
 	}
 	log.Println("fsm: Talk amongst yourselves for", archaius.Conf.RunDuration)
 	rand.Seed(int64(len(noodles)))
-	for _, name := range names {
+	for _, name := range pnames {
 		// for each pirate tell them about two other random pirates
 		noodle := noodles[name] // lookup the channel
 		// pick a first random pirate to tell this one about
-		talkto := names[rand.Intn(len(names))]
+		talkto := pnames[rand.Intn(len(pnames))]
 		noodle <- gotocol.Message{gotocol.NameDrop, noodles[talkto], time.Now(), talkto}
 		// pick a second random pirate to tell this one about
-		talkto = names[rand.Intn(len(names))]
+		talkto = pnames[rand.Intn(len(pnames))]
 		noodle <- gotocol.Message{gotocol.NameDrop, noodles[talkto], time.Now(), talkto}
 		// anonymously send this pirate a random amount of GoldCoin up to 100
 		gold := fmt.Sprintf("%d", rand.Intn(100))
@@ -125,7 +126,7 @@ func Start() {
 	}
 	msgcount += 4
 	d := time.Since(start)
-	log.Println("fsm: Delivered", msgcount*len(names), "messages in", d)
+	log.Println("fsm: Delivered", msgcount*len(pnames), "messages in", d)
 	shutdown()
 }
 
