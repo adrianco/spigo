@@ -105,7 +105,7 @@ func InformHandler(msg Message, name string, listener chan Message) chan Message
 	if name == "" {
 		log.Fatal(name + "Inform message received before Hello message")
 	}
-	// service registry channel is buffered so no need to use GoSend to tell Eureka we exist
+	// service registry channel is buffered so don't use GoSend to tell Eureka we exist
 	msg.ResponseChan <- Message{Put, listener, time.Now(), name}
 	return msg.ResponseChan
 }
