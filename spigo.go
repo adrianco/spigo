@@ -4,15 +4,16 @@ package main
 
 import (
 	"flag"
-	"github.com/adrianco/spigo/archaius"   // store the config for global lookup
-	"github.com/adrianco/spigo/asgard"     // tools to create an architecture
-	"github.com/adrianco/spigo/collect"    // metrics to extvar
-	"github.com/adrianco/spigo/edda"       // log configuration state
-	"github.com/adrianco/spigo/fsm"        // fsm and pirates
-	"github.com/adrianco/spigo/gotocol"    // message protocol spec
-	"github.com/adrianco/spigo/lamp"       // typical LAMP stack
-	"github.com/adrianco/spigo/migration"  // migration from LAMP to netflixoss
-	"github.com/adrianco/spigo/netflixoss" // start the netflix opensource microservices
+	"github.com/adrianco/spigo/archaius"     // store the config for global lookup
+	"github.com/adrianco/spigo/architecture" // run an architecture from a json definition
+	"github.com/adrianco/spigo/asgard"       // tools to create an architecture
+	"github.com/adrianco/spigo/collect"      // metrics to extvar
+	"github.com/adrianco/spigo/edda"         // log configuration state
+	"github.com/adrianco/spigo/fsm"          // fsm and pirates
+	"github.com/adrianco/spigo/gotocol"      // message protocol spec
+	"github.com/adrianco/spigo/lamp"         // typical LAMP stack
+	"github.com/adrianco/spigo/migration"    // migration from LAMP to netflixoss
+	"github.com/adrianco/spigo/netflixoss"   // start the netflix opensource microservices
 	"log"
 	"os"
 	"runtime"
@@ -77,7 +78,12 @@ func main() {
 		case "migration":
 			migration.Start() // from lamp to netflixoss
 		default:
-			log.Fatal("Architecture " + archaius.Conf.Arch + " isn't recognized")
+			a := architecture.ReadArch(archaius.Conf.Arch)
+			if a == nil {
+				log.Fatal("Architecture " + archaius.Conf.Arch + " isn't recognized")
+			} else {
+				architecture.Start(a)
+			}
 		}
 	}
 	log.Println("spigo: complete")
