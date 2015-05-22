@@ -13,21 +13,73 @@ Suitable for fairly large scale simulations, runs well up to 100,000 independent
 
 Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,000 messages and wait to shut them all down again takes about 4 seconds. The resulting graph can be visualized via GraphML or rendered by saving to Graph JSON and viewing in a web browser via D3.
 
-A few lines of code can be used to create an interesting architecture. The code is still being cleaned up and refactored, look at the migration.go architecture as the current best example to copy. If you figure out your own architecture in the form shown below it's going to be easy to carry forward as Spigo evolves. A big thanks is due to [Kurtis Kemple](https://github.com/kkemple) for cleaning up the javascript/D3 UI code.
+A few lines of code or a simple json definition file can be used to create an interesting architecture. See json/test_arch.json (shown below) to see how to define an architecture without making code changes. The migration.go architecture is more complex is it steps through a sequence. If you figure out your own architecture in the form shown below it's going to be easy to carry forward as Spigo evolves. A big thanks is due to [Kurtis Kemple](https://github.com/kkemple) for cleaning up the javascript/D3 UI code.
 
 Keynote presentation at the O'Reilly Software Architecture Conference: Monitoring Microservices - A Challenge
 http://www.slideshare.net/adriancockcroft/software-architecture-monitoring-microservices-a-challenge
 Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI
 
 ```
-asgard.Create(cname, asgard.priamCassandraPkg, archaius.Conf.Regions, priamCassandracount, cname)
-asgard.Create(sname, asgard.StorePkg, archaius.Conf.Regions, mysqlcount, sname)
-asgard.Create(mname, asgard.StorePkg, archaius.Conf.Regions, mcount)
-asgard.Create(tname, asgard.StaashPkg, archaius.Conf.Regions, staashcount, sname, mname, cname)
-asgard.Create(pname, asgard.KaryonPkg, archaius.Conf.Regions, phpcount, tname)
-asgard.Create(nname, asgard.KaryonPkg, archaius.Conf.Regions, nodecount, tname)
-asgard.Create(zuname, asgard.ZuulPkg, archaius.Conf.Regions, zuulcount, pname, nname)
-asgard.Create(elbname, asgard.ElbPkg, archaius.Conf.Regions, 0, zuname)
+{
+    "arch": "test",
+    "version": "arch-0.0",
+    "victim": "homepage-node",
+    "services": [
+        {
+            "name": "mysql",
+            "count": 2,
+            "dependencies": [],
+            "package": "store",
+            "regions": 1
+        },
+        {
+            "name": "homepage-node",
+            "count": 9,
+            "dependencies": [
+                "mysql"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "signup-node",
+            "count": 3,
+            "dependencies": [
+                "mysql"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "www-proxy",
+            "count": 3,
+            "dependencies": [
+                "signup-node",
+                "homepage-node"
+            ],
+            "package": "zuul",
+            "regions": 1
+        },
+        {
+            "name": "www-elb",
+            "count": 0,
+            "dependencies": [
+                "www-proxy"
+            ],
+            "package": "elb",
+            "regions": 1
+        },
+        {
+            "name": "www",
+            "count": 0,
+            "dependencies": [
+                "www-elb"
+            ],
+            "package": "denominator",
+            "regions": 0
+        }
+    ]
+}
 ```
 
 ![Migration ](png/migration-5-2.png)
