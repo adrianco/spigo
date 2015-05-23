@@ -82,8 +82,6 @@ Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI
 }
 ```
 
-![Migration ](png/migration-5-2.png)
-
 ```
 $ ./spigo -h
 Usage of ./spigo:
