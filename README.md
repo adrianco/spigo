@@ -9,11 +9,13 @@ Simulate Protocol Interactions in Go using nanoservice actors - spigo
 
 SIMulate Interactive Actor Network VIsualiZation - simianviz - also visualize the simian army in action (not yet implemented), however current work in progress is adding features to allow edges and nodes to be removed from the simulation, and timestamps have been added to the output file format.
 
+[Run the netflixoss simulation in your browser](http://simianviz.divshot.io/netflixoss)
+
 Suitable for fairly large scale simulations, runs well up to 100,000 independent nanoservice actors. Three architectures are implemented. One creates a peer to peer social network (fsm and pirates). The others are based on a LAMP stack or NetflixOSS microservices in a more tree structured model. The migration architecture starts with LAMP and ends with NetflixOSS.
 
 Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,000 messages and wait to shut them all down again takes about 4 seconds. The resulting graph can be visualized via GraphML or rendered by saving to Graph JSON and viewing in a web browser via D3.
 
-A few lines of code or a simple json definition file can be used to create an interesting architecture. See json/test_arch.json (shown below) to see how to define an architecture without making code changes. The migration.go architecture is more complex is it steps through a sequence. If you figure out your own architecture in the form shown below it's going to be easy to carry forward as Spigo evolves. A big thanks is due to [Kurtis Kemple](https://github.com/kkemple) for cleaning up the javascript/D3 UI code.
+A few lines of code or a simple json definition file can be used to create an interesting architecture. See json/test_arch.json (shown below) to see how to define an architecture without making code changes. The migration.go architecture is more complex as it steps through a sequence. If you figure out your own architecture in the form shown below it's going to be easy to carry forward as Spigo evolves. A big thanks is due to [Kurtis Kemple](https://github.com/kkemple) for cleaning up my initial javascript/D3 UI code and building simianviz as a single page app.
 
 Keynote presentation at the O'Reilly Software Architecture Conference: Monitoring Microservices - A Challenge
 http://www.slideshare.net/adriancockcroft/software-architecture-monitoring-microservices-a-challenge
