@@ -11,12 +11,13 @@ import (
 )
 
 type archV0r0 struct {
-	Arch     string        `json:"arch"`
-	Version  string        `json:"version"`
-	Args     string        `json:"args,omitempty"`
-	Date     string        `json:"date,omitempty"`
-	Victim   string        `json:"victim,omitempty"`
-	Services []serviceV0r0 `json:"services"`
+	Arch        string        `json:"arch"`
+	Version     string        `json:"version"`
+	Description string        `json:"description,omitempty"`
+	Args        string        `json:"args,omitempty"`
+	Date        string        `json:"date,omitempty"`
+	Victim      string        `json:"victim,omitempty"`
+	Services    []serviceV0r0 `json:"services"`
 }
 
 type serviceV0r0 struct {
@@ -56,7 +57,7 @@ func ReadArch(arch string) *archV0r0 {
 	a := new(archV0r0)
 	e := json.Unmarshal(data, a)
 	if e == nil {
-		log.Println("Architecture: ", a.Arch)
+		log.Printf("Architecture: %v %v\n", a.Arch, a.Description)
 		return a
 	} else {
 		return nil

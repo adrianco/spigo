@@ -1,7 +1,8 @@
 {
-    "arch": "test",
+    "arch": "aws_ac_ra_web",
+    "description":"See http://media.amazonwebservices.com/architecturecenter/AWS_ac_ra_web_01.pdf",
     "version": "arch-0.0",
-    "victim": "homepage-node",
+    "victim": "webserver",
     "services": [
         {
             "name": "rds-mysql",

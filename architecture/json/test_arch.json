@@ -2,6 +2,7 @@
                 "arch":"test",
                 "version":"arch-0.0",
                 "args":"[spigo -j -d=0 -a netflixoss]",
+		"description":"test structure",
 		"victim":"homepage-node",
                 "date":"2015-04-26T23:52:45.959905585+12:00",
                 "services":[
