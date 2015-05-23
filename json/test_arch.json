@@ -1,15 +1,60 @@
-                {
-                "arch":"test",
-                "version":"arch-0.0",
-                "args":"[spigo -j -d=0 -a netflixoss]",
-		"victim":"homepage-node",
-                "date":"2015-04-26T23:52:45.959905585+12:00",
-                "services":[
-                { "name":"mysql", "package":"store", "regions":1, "count":2, "dependencies":[] },
-                { "name":"homepage-node", "package":"karyon", "regions":1, "count":9, "dependencies":["mysql"] },
-                { "name":"signup-node", "package":"karyon", "regions":1, "count":3, "dependencies":["mysql"] },
-                { "name":"www-proxy", "package":"zuul", "regions":1, "count":3, "dependencies":["signup-node", "homepage-node"] },
-                { "name":"www-elb", "package":"elb", "regions":1, "count":0, "dependencies":["www-proxy"] },
-                { "name":"www", "package":"denominator", "regions":0, "count":0, "dependencies":["www-elb"] }
-                ]
-                }
+{
+    "arch": "test",
+    "version": "arch-0.0",
+    "victim": "homepage-node",
+    "services": [
+        {
+            "name": "mysql",
+            "count": 2,
+            "dependencies": [],
+            "package": "store",
+            "regions": 1
+        },
+        {
+            "name": "homepage-node",
+            "count": 9,
+            "dependencies": [
+                "mysql"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "signup-node",
+            "count": 3,
+            "dependencies": [
+                "mysql"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "www-proxy",
+            "count": 3,
+            "dependencies": [
+                "signup-node",
+                "homepage-node"
+            ],
+            "package": "zuul",
+            "regions": 1
+        },
+        {
+            "name": "www-elb",
+            "count": 0,
+            "dependencies": [
+                "www-proxy"
+            ],
+            "package": "elb",
+            "regions": 1
+        },
+        {
+            "name": "www",
+            "count": 0,
+            "dependencies": [
+                "www-elb"
+            ],
+            "package": "denominator",
+            "regions": 0
+        }
+    ]
+}

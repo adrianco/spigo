@@ -26,7 +26,7 @@ var duration, cpucount int
 
 // main handles command line flags and starts up an architecture
 func main() {
-	flag.StringVar(&archaius.Conf.Arch, "a", "netflixoss", "Architecture to create or read, fsm, lamp, migration, or netflixoss")
+	flag.StringVar(&archaius.Conf.Arch, "a", "netflixoss", "Architecture to create or read, fsm, lamp, migration, netflixoss or json/????_arch.json")
 	flag.IntVar(&archaius.Conf.Population, "p", 100, "  Pirate population for fsm or scale factor % for netflixoss etc.")
 	flag.IntVar(&duration, "d", 10, "   Simulation duration in seconds")
 	flag.IntVar(&archaius.Conf.Regions, "w", 1, "    Wide area regions")
