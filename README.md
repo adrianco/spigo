@@ -87,97 +87,60 @@ Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI
 ```
 $ ./spigo -h
 Usage of ./spigo:
-  -a="netflixoss": Architecture to create or read, fsm, lamp, migration, or netflixoss
-  -c=false: Collect metrics to <arch>_metrics.json and via http:
+  -a="netflixoss": Architecture to create or read, fsm, lamp, migration, netflixoss or json/????_arch.json
+  -c=false: Collect metrics to json/<arch>_metrics.json and via http:
   -cpuprofile="": Write cpu profile to file
+  -cpus=4:  Number of CPUs for Go runtime
   -d=10:    Simulation duration in seconds
   -g=false: Enable GraphML logging of nodes and edges to <arch>.graphml
   -j=false: Enable GraphJSON logging of nodes and edges to <arch>.json
   -m=false: Enable console logging of every message
   -p=100:   Pirate population for fsm or scale factor % for netflixoss etc.
-  -r=false: Reload <arch>.json to setup architecture
+  -r=false: Reload json/<arch>.json to setup architecture
   -s=0:     Stop creating microservices at this step, 0 = don't stop
-  -u="1s":     Polling interval for Eureka name service
+  -u="1s":  Polling interval for Eureka name service
   -w=1:     Wide area regions
 
-$ ./spigo -a migration -d 2 -j
-2015/03/18 08:35:31 migration: scaling to 100%
-2015/03/18 08:35:31 Create service: eureka
-2015/03/18 08:35:31 Eureka cross connect from: migration.us-east-1.zoneA.eureka.eureka.eureka0 to migration.us-east-1.zoneB.eureka.eureka.eureka1
-2015/03/18 08:35:31 Eureka cross connect from: migration.us-east-1.zoneA.eureka.eureka.eureka0 to migration.us-east-1.zoneC.eureka.eureka.eureka2
-2015/03/18 08:35:31 Eureka cross connect from: migration.us-east-1.zoneB.eureka.eureka.eureka1 to migration.us-east-1.zoneA.eureka.eureka.eureka0
-2015/03/18 08:35:31 Eureka cross connect from: migration.us-east-1.zoneB.eureka.eureka.eureka1 to migration.us-east-1.zoneC.eureka.eureka.eureka2
-2015/03/18 08:35:31 Eureka cross connect from: migration.us-east-1.zoneC.eureka.eureka.eureka2 to migration.us-east-1.zoneA.eureka.eureka.eureka0
-2015/03/18 08:35:31 Eureka cross connect from: migration.us-east-1.zoneC.eureka.eureka.eureka2 to migration.us-east-1.zoneB.eureka.eureka.eureka1
-2015/03/18 08:35:31 Create service: cassTurtle
-2015/03/18 08:35:31 migration.edda: starting
-2015/03/18 08:35:31 migration.us-east-1.zoneA.eureka.eureka.eureka0: starting
-2015/03/18 08:35:31 migration.us-east-1.zoneB.eureka.eureka.eureka1: starting
-2015/03/18 08:35:31 migration.us-east-1.zoneC.eureka.eureka.eureka2: starting
-2015/03/18 08:35:31 Create service: memcache
-2015/03/18 08:35:31 Create service: turtle
-2015/03/18 08:35:31 Create service: php
-2015/03/18 08:35:31 Create service: node
-2015/03/18 08:35:31 Create service: wwwproxy
-2015/03/18 08:35:31 Create cross zone: www-elb
-2015/03/18 08:35:31 Create cross region: www
-2015/03/18 08:35:31 migration: denominator activity rate  10ms
-2015/03/18 08:35:33 migration: Shutdown
-2015/03/18 08:35:33 migration.us-east-1.zoneB.eureka.eureka.eureka1: closing
-2015/03/18 08:35:33 migration.us-east-1.zoneC.eureka.eureka.eureka2: closing
-2015/03/18 08:35:33 migration.us-east-1.zoneA.eureka.eureka.eureka0: closing
-2015/03/18 08:35:33 migration: Exit
-2015/03/18 08:35:33 spigo: migration complete
-2015/03/18 08:35:33 migration.edda: closing
+$ $ ./spigo -a migration -d 2 -j
+2015/05/22 17:04:34 migration: scaling to 100%
+2015/05/22 17:04:34 migration.edda: starting
+2015/05/22 17:04:34 migration.us-east-1.zoneC.eureka.eureka.eureka2: starting
+2015/05/22 17:04:34 migration.us-east-1.zoneA.eureka.eureka.eureka0: starting
+2015/05/22 17:04:34 migration.us-east-1.zoneB.eureka.eureka.eureka1: starting
+2015/05/22 17:04:34 migration.*.*.www.denominator.www0 activity rate  10ms
+2015/05/22 17:04:36 asgard: Shutdown
+2015/05/22 17:04:36 migration.us-east-1.zoneA.eureka.eureka.eureka0: closing
+2015/05/22 17:04:36 migration.us-east-1.zoneC.eureka.eureka.eureka2: closing
+2015/05/22 17:04:36 migration.us-east-1.zoneB.eureka.eureka.eureka1: closing
+2015/05/22 17:04:36 spigo: complete
+2015/05/22 17:04:36 migration.edda: closing
 
-$ ./spigo -a netflixoss -d 1 -j -c
-2015/02/20 09:44:25 netflixoss: scaling to 100%
-2015/02/20 09:44:25 HTTP metrics now available at localhost:8123/debug/vars
-2015/02/20 09:44:25 netflixoss.edda: starting
-2015/02/20 09:44:25 netflixoss.eureka: starting
-2015/02/20 09:44:25 netflixoss: denominator activity rate  10ms
-2015/02/20 09:44:26 netflixoss: Shutdown
-2015/02/20 09:44:26 netflixoss.eureka: closing
-2015/02/20 09:44:27 netflixoss: Exit
-2015/02/20 09:44:27 spigo: netflixoss complete
-2015/02/20 09:44:27 netflixoss.edda: closing
+$ $ ./spigo -d 2 -j -c
+2015/05/22 17:05:15 netflixoss: scaling to 100%
+2015/05/22 17:05:15 HTTP metrics now available at localhost:8123/debug/vars
+2015/05/22 17:05:15 netflixoss.edda: starting
+2015/05/22 17:05:15 netflixoss.us-east-1.zoneA.eureka.eureka.eureka0: starting
+2015/05/22 17:05:15 netflixoss.us-east-1.zoneB.eureka.eureka.eureka1: starting
+2015/05/22 17:05:15 netflixoss.us-east-1.zoneC.eureka.eureka.eureka2: starting
+2015/05/22 17:05:15 netflixoss.*.*.www.denominator.www0 activity rate  10ms
+2015/05/22 17:05:16 chaosmonkey delete: netflixoss.us-east-1.zoneC.javaweb.karyon.javaweb17
+2015/05/22 17:05:17 asgard: Shutdown
+2015/05/22 17:05:17 netflixoss.us-east-1.zoneA.eureka.eureka.eureka0: closing
+2015/05/22 17:05:17 netflixoss.us-east-1.zoneC.eureka.eureka.eureka2: closing
+2015/05/22 17:05:17 netflixoss.us-east-1.zoneB.eureka.eureka.eureka1: closing
+2015/05/22 17:05:18 spigo: complete
+2015/05/22 17:05:18 netflixoss.edda: closing
 
-$ ./spigo -d 1 -j -c
-2015/02/20 09:45:25 fsm: population 100 pirates
-2015/02/20 09:45:25 HTTP metrics now available at localhost:8123/debug/vars
-2015/02/20 09:45:25 fsm.edda: starting
-2015/02/20 09:45:25 fsm: Talk amongst yourselves for 1s
-2015/02/20 09:45:25 fsm: Delivered 600 messages in 125.328265ms
-2015/02/20 09:45:26 fsm: Shutdown
-2015/02/20 09:45:26 fsm: Exit
-2015/02/20 09:45:26 spigo: fsm complete
-2015/02/20 09:45:26 fsm.edda: closing
-
-$ ./spigo -a netflixoss -d 2 -r
-2015/02/20 09:48:22 netflixoss reloading from netflixoss.json
-2015/02/20 09:48:22 Version:  spigo-0.3
-2015/02/20 09:48:22 Architecture:  netflixoss
-2015/02/20 09:48:22 netflixoss.eureka: starting
-2015/02/20 09:48:22 Link netflixoss.global-api-dns > netflixoss.us-east-1-elb
-2015/02/20 09:48:22 Link netflixoss.us-east-1-elb > netflixoss.us-east-1.zoneA.zuul0
-...
-2015/02/20 09:48:22 Link netflixoss.us-east-1-elb > netflixoss.us-east-1.zoneC.zuul8
-2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneA.zuul0 > netflixoss.us-east-1.zoneA.karyon0
-...
-2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneC.zuul8 > netflixoss.us-east-1.zoneC.karyon26
-2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneA.karyon0 > netflixoss.us-east-1.zoneA.staash0
-...
-2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneC.karyon26 > netflixoss.us-east-1.zoneC.staash5
-2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneA.staash0 > netflixoss.us-east-1.zoneA.priamCassandra0
-...
-2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneC.staash5 > netflixoss.us-east-1.zoneC.priamCassandra11
-2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneA.priamCassandra0 > netflixoss.us-east-1.zoneB.priamCassandra1
-...
-2015/02/20 09:48:22 Link netflixoss.us-east-1.zoneC.priamCassandra11 > netflixoss.us-east-1.zoneB.priamCassandra1
-2015/02/20 09:48:24 netflixoss: Shutdown
-2015/02/20 09:48:24 netflixoss.eureka: closing
-2015/02/20 09:48:24 netflixoss: Exit
-2015/02/20 09:48:24 spigo: netflixoss complete
+$ $ ./spigo -d 2 -j -c -a fsm
+2015/05/22 17:06:15 fsm: population 100 pirates
+2015/05/22 17:06:15 HTTP metrics now available at localhost:8123/debug/vars
+2015/05/22 17:06:15 fsm.edda: starting
+2015/05/22 17:06:15 fsm: Talk amongst yourselves for 2s
+2015/05/22 17:06:15 fsm: Delivered 600 messages in 137.845423ms
+2015/05/22 17:06:17 fsm: Shutdown
+2015/05/22 17:06:18 fsm: Exit
+2015/05/22 17:06:18 spigo: complete
+2015/05/22 17:06:18 fsm.edda: closing
 ```
 
 Migration from LAMP to NetflixOSS
