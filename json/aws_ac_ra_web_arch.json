@@ -1,0 +1,76 @@
+{
+    "arch": "test",
+    "version": "arch-0.0",
+    "victim": "homepage-node",
+    "services": [
+        {
+            "name": "rds-mysql",
+            "count": 2,
+            "dependencies": [],
+            "package": "store",
+            "regions": 1
+        },
+        {
+            "name": "appserver",
+            "count": 6,
+            "dependencies": [
+                "rds-mysql"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "appserver-elb",
+            "count": 0,
+            "dependencies": [
+                "appserver"
+            ],
+            "package": "elb",
+            "regions": 1
+        },
+        {
+            "name": "webserver",
+            "count": 12,
+            "dependencies": [
+                "appserver-elb"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "webserver-elb",
+            "count": 0,
+            "dependencies": [
+                "webserver"
+            ],
+            "package": "elb",
+            "regions": 1
+        },
+        {
+            "name": "s3-content",
+            "count": 0,
+            "dependencies": [],
+            "package": "store",
+            "regions": 1
+        },
+        {
+            "name": "cloudfront",
+            "count": 0,
+            "dependencies": [
+		"s3-content",
+                "www-proxy"
+            ],
+            "package": "zuul",
+            "regions": 1
+        },
+        {
+            "name": "www",
+            "count": 0,
+            "dependencies": [
+                "cloudfront"
+            ],
+            "package": "denominator",
+            "regions": 0
+        }
+    ]
+}
