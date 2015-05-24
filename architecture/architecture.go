@@ -48,7 +48,7 @@ func Start(a *archV0r0) {
 
 // ReadArch parses archjson
 func ReadArch(arch string) *archV0r0 {
-	fn := "json/" + arch + "_arch.json"
+	fn := "json_arch/" + arch + "_arch.json"
 	log.Println("Loading architecture from " + fn)
 	data, err := ioutil.ReadFile(fn)
 	if err != nil {

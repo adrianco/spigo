@@ -33,7 +33,7 @@ func Measure(h *metrics.Histogram, d time.Duration) {
 
 func Save() {
 	if archaius.Conf.Collect {
-		file, _ := os.Create("json/" + archaius.Conf.Arch + "_metrics.json")
+		file, _ := os.Create("json_metrics/" + archaius.Conf.Arch + "_metrics.json")
 		counters, gauges := metrics.Snapshot()
 		cj, _ := json.Marshal(counters)
 		gj, _ := json.Marshal(gauges)
