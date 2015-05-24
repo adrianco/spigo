@@ -11,9 +11,7 @@ import (
 	"github.com/adrianco/spigo/edda"         // log configuration state
 	"github.com/adrianco/spigo/fsm"          // fsm and pirates
 	"github.com/adrianco/spigo/gotocol"      // message protocol spec
-	"github.com/adrianco/spigo/lamp"         // typical LAMP stack
 	"github.com/adrianco/spigo/migration"    // migration from LAMP to netflixoss
-	"github.com/adrianco/spigo/netflixoss"   // start the netflix opensource microservices
 	"log"
 	"os"
 	"runtime"
@@ -71,12 +69,12 @@ func main() {
 		switch archaius.Conf.Arch {
 		case "fsm":
 			fsm.Start()
-		case "netflixoss":
-			netflixoss.Start()
-		case "lamp":
-			lamp.Start()
+		//case "netflixoss":  replaced by json_arch/netflixoss_arch.json
+		//	netflixoss.Start()
+		//case "lamp":  replaced by json_arch/lamp_arch.json
+		//	lamp.Start()
 		case "migration":
-			migration.Start() // from lamp to netflixoss
+			migration.Start() // step by step from lamp to netflixoss
 		default:
 			a := architecture.ReadArch(archaius.Conf.Arch)
 			if a == nil {

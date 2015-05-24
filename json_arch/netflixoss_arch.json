@@ -1,0 +1,81 @@
+{
+    "arch": "netflixoss",
+    "description":"A very simple Netflix service. See http://netflix.github.io/ to decode the package names",
+    "version": "arch-0.0",
+    "victim": "homepage",
+    "services": [
+        {
+            "name": "cassSubscriber",
+            "count": 6,
+            "dependencies": [
+	      "cassTurtle"
+	      ],
+            "package": "priamCassandra",
+            "regions": 1
+        },
+        {
+            "name": "evcacheSubscriber",
+            "count": 3,
+            "dependencies": [],
+            "package": "store",
+            "regions": 1
+        },
+        {
+            "name": "subscriber",
+            "count": 6,
+            "dependencies": [
+                "cassSubscriber",
+		"evcacheSubscriber"
+            ],
+            "package": "staash",
+            "regions": 1
+        },
+        {
+            "name": "login",
+            "count": 18,
+            "dependencies": [
+                "subscriber"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "homepage",
+            "count": 24,
+            "dependencies": [
+                "subscriber"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "wwwproxy",
+            "count": 6,
+            "dependencies": [
+		"login",
+		"homepage"
+            ],
+            "package": "zuul",
+            "regions": 1
+        },
+        {
+            "name": "www-elb",
+            "count": 0,
+            "dependencies": [
+                "wwwproxy"
+            ],
+            "package": "elb",
+            "regions": 1
+        },
+        {
+            "name": "www",
+            "count": 0,
+            "dependencies": [
+                "www-elb"
+            ],
+            "package": "denominator",
+            "regions": 0
+        }
+    ]
+}
+

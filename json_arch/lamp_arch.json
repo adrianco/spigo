@@ -1,0 +1,50 @@
+{
+    "arch": "lamp",
+    "description":"Simple LAMP stack",
+    "version": "arch-0.0",
+    "victim": "webserver",
+    "services": [
+        {
+            "name": "rds-mysql",
+            "count": 2,
+            "dependencies": [],
+            "package": "store",
+            "regions": 1
+        },
+	{
+            "name": "memcached",
+            "count": 1,
+            "dependencies": [],
+            "package": "store",
+            "regions": 1
+        },
+        {
+            "name": "webserver",
+            "count": 18,
+            "dependencies": [
+                "rds-mysql",
+		"memcached"
+            ],
+            "package": "monolith",
+            "regions": 1
+        },
+        {
+            "name": "webserver-elb",
+            "count": 0,
+            "dependencies": [
+                "webserver"
+            ],
+            "package": "elb",
+            "regions": 1
+        },
+        {
+            "name": "www",
+            "count": 0,
+            "dependencies": [
+                "webserver-elb"
+            ],
+            "package": "denominator",
+            "regions": 0
+        }
+    ]
+}

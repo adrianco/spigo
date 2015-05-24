@@ -1,0 +1,206 @@
+{
+    "arch": "netflix",
+    "description":"A simplified Netflix service. See http://netflix.github.io/ to decode the package names",
+    "version": "arch-0.0",
+    "victim": "homepage",
+    "services": [
+        {
+            "name": "cassSubscriber",
+            "count": 3,
+            "dependencies": [
+	      "cassTurtle"
+	      ],
+            "package": "priamCassandra",
+            "regions": 1
+        },
+        {
+            "name": "evcacheSubscriber",
+            "count": 3,
+            "dependencies": [],
+            "package": "store",
+            "regions": 1
+        },
+        {
+            "name": "subscriber",
+            "count": 3,
+            "dependencies": [
+                "cassSubscriber",
+		"evcacheSubscriber"
+            ],
+            "package": "staash",
+            "regions": 1
+        },
+        {
+            "name": "cassPersonalization",
+            "count": 3,
+            "dependencies": [
+	      "cassPersonalization"
+	      ],
+            "package": "priamCassandra",
+            "regions": 1
+        },
+        {
+            "name": "personalizationData",
+            "count": 3,
+            "dependencies": [
+                "cassPersonalization"
+            ],
+            "package": "staash",
+            "regions": 1
+        },
+        {
+            "name": "cassHistory",
+            "count": 3,
+            "dependencies": [
+	      "cassHistory"
+	      ],
+            "package": "priamCassandra",
+            "regions": 1
+        },
+        {
+            "name": "historyData",
+            "count": 3,
+            "dependencies": [
+	      "cassHistory"
+	      ],
+            "package": "staash",
+            "regions": 1
+        },
+	{
+            "name": "contentMetadataS3",
+            "count": 0,
+            "dependencies": [],
+            "package": "store",
+            "regions": 1
+        },
+        {
+            "name": "personalize",
+            "count": 3,
+            "dependencies": [
+		"contentMetadataS3",
+                "subscriber",
+		"historyData",
+		"personalizationData"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "login",
+            "count": 3,
+            "dependencies": [
+                "subscriber"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "home",
+            "count": 3,
+            "dependencies": [
+		"contentMetadataS3",
+                "subscriber",
+		"personalization"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "play",
+            "count": 3,
+            "dependencies": [
+		"contentMetadataS3",
+		"historyData",
+                "subscriber"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "loginpage",
+            "count": 3,
+            "dependencies": [
+                "login"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "homepage",
+            "count": 3,
+            "dependencies": [
+                "home"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "playpage",
+            "count": 3,
+            "dependencies": [
+                "play"
+            ],
+            "package": "karyon",
+            "regions": 1
+        },
+        {
+            "name": "wwwproxy",
+            "count": 3,
+            "dependencies": [
+		"loginpage",
+		"homepage",
+                "playpage"
+            ],
+            "package": "zuul",
+            "regions": 1
+        },
+        {
+            "name": "apiproxy",
+            "count": 3,
+            "dependencies": [
+		"login",
+		"home",
+                "play"
+            ],
+            "package": "zuul",
+            "regions": 1
+        },
+        {
+            "name": "www-elb",
+            "count": 0,
+            "dependencies": [
+                "wwwproxy"
+            ],
+            "package": "elb",
+            "regions": 1
+        },
+        {
+            "name": "api-elb",
+            "count": 0,
+            "dependencies": [
+                "apiproxy"
+            ],
+            "package": "elb",
+            "regions": 1
+        },
+        {
+            "name": "api",
+            "count": 0,
+            "dependencies": [
+                "api-elb"
+            ],
+            "package": "denominator",
+            "regions": 0
+        },
+        {
+            "name": "www",
+            "count": 0,
+            "dependencies": [
+                "www-elb"
+            ],
+            "package": "denominator",
+            "regions": 0
+        }
+    ]
+}
+
