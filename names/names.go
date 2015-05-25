@@ -28,7 +28,6 @@ func Splitter(name string, offset hier) string {
 	}
 }
 
-
 func Make(a, r, z, s, p string, i int) string {
 	return fmt.Sprintf("%v.%v.%v.%v.%v.%v%v", a, r, z, s, p, s, i)
 }
@@ -70,7 +69,7 @@ func OtherRegions(name string, rnames []string) []string {
 }
 
 func RegionZone(name string) string {
-	return Splitter(name, region) + ". "+ Splitter(name, zone)
+	return Splitter(name, region) + ". " + Splitter(name, zone)
 }
 
 func Service(name string) string {

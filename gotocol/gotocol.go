@@ -114,6 +114,7 @@ func NameDropHandler(dependencies *map[string]time.Time, microservices *map[stri
 	if msg.ResponseChan == nil { // dependency by service name, needs to be looked up in eureka
 		(*dependencies)[msg.Intention] = msg.Sent // remember it for later
 		for _, ch := range eureka {
+			//log.Println(name + " looking up " + msg.Intention)
 			Send(ch, Message{GetRequest, listener, time.Now(), msg.Intention})
 		}
 	} else { // update dependency with full name and listener channel

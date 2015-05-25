@@ -15,14 +15,21 @@ import (
 
 var Wg sync.WaitGroup
 
+// metadata about a registered service
 type meta struct {
 	online     bool
 	registered time.Time
 }
 
+// interest in a specific service
+type callback struct {
+	lookup string
+	who    chan gotocol.Message
+}
+
 // Start eureka discovery service and set name directly
 func Start(listener chan gotocol.Message, name string) {
-	// use a waitgroup so whoever starts eureka can tell the logs have been flushed
+	// use a waitgroup so whoever starts eureka can tell it's ready and when stopping that the logs have been flushed
 	Wg.Add(1)
 	defer Wg.Done()
 	var msg gotocol.Message
@@ -31,7 +38,7 @@ func Start(listener chan gotocol.Message, name string) {
 	microservices := make(map[string]chan gotocol.Message, archaius.Conf.Dunbar)
 	eurekaservices := make(map[string]chan gotocol.Message, 2)
 	metadata := make(map[string]meta, archaius.Conf.Dunbar)
-	lastrequest := make(map[chan gotocol.Message]time.Time) // remember time of last request from this requestor
+	lastrequest := make(map[callback]time.Time) // remember time of last request for a service from this requestor
 	log.Println(name + ": starting")
 	for {
 		msg, ok = <-listener
@@ -53,9 +60,9 @@ func Start(listener chan gotocol.Message, name string) {
 			if microservices[msg.Intention] == nil { // ignore duplicate requests
 				microservices[msg.Intention] = msg.ResponseChan
 				metadata[msg.Intention] = meta{true, msg.Sent}
-				// replicate request
+				// replicate request, everyone ends up with the same timestamp for state change of this service
 				for _, c := range eurekaservices {
-					gotocol.Message{gotocol.Replicate, msg.ResponseChan, time.Now(), msg.Intention}.GoSend(c)
+					gotocol.Message{gotocol.Replicate, msg.ResponseChan, msg.Sent, msg.Intention}.GoSend(c)
 				}
 				if edda.Logchan != nil {
 					edda.Logchan <- msg
@@ -64,7 +71,7 @@ func Start(listener chan gotocol.Message, name string) {
 		case gotocol.Replicate:
 			if microservices[msg.Intention] == nil { // ignore multiple requests
 				microservices[msg.Intention] = msg.ResponseChan
-				metadata[msg.Intention] = meta{true, time.Now()}
+				metadata[msg.Intention] = meta{true, msg.Sent}
 			}
 		case gotocol.Inform:
 			// don't store edges in discovery but do log them
@@ -80,20 +87,21 @@ func Start(listener chan gotocol.Message, name string) {
 				break
 			}
 			for n, ch := range microservices { // respond with all the online names that match the service component
-				// log.Printf("%v: matching %v with %v\n", name, n, msg.Intention)
 				if names.Service(n) == msg.Intention {
 					// if there was an update for the looked up service since last check
-					if metadata[n].registered.After(lastrequest[msg.ResponseChan]) {
+					// log.Printf("%v: matching %v with %v, last: %v metadata: %v\n", name, n, msg.Intention, lastrequest[callback{n, msg.ResponseChan}], metadata[n].registered)
+					if metadata[n].registered.After(lastrequest[callback{n, msg.ResponseChan}]) {
 						if metadata[n].online {
 							gotocol.Message{gotocol.NameDrop, ch, time.Now(), n}.GoSend(msg.ResponseChan)
 						} else {
+							log.Printf("%v:Forget %v\n", name, n)
 							gotocol.Message{gotocol.Forget, ch, time.Now(), n}.GoSend(msg.ResponseChan)
 						}
 					}
+					// remember for next time
+					lastrequest[callback{n, msg.ResponseChan}] = msg.Sent
 				}
 			}
-			// remember for next time
-			lastrequest[msg.ResponseChan] = time.Now()
 		case gotocol.Delete: // remove a node
 			if microservices[msg.Intention] != nil { // matched a unique full name
 				metadata[msg.Intention] = meta{false, time.Now()}

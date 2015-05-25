@@ -1,0 +1,16 @@
+                {
+                "arch":"test",
+                "version":"arch-0.0",
+                "args":"[spigo -j -d=0 -a netflixoss]",
+		"description":"test structure",
+		"victim":"homepage-node",
+                "date":"2015-04-26T23:52:45.959905585+12:00",
+                "services":[
+                { "name":"mysql", "package":"store", "regions":1, "count":2, "dependencies":[] },
+                { "name":"homepage-node", "package":"karyon", "regions":1, "count":9, "dependencies":["mysql"] },
+                { "name":"signup-node", "package":"unknown", "regions":1, "count":3, "dependencies":["mysql"] },
+                { "name":"www-proxy", "package":"zuul", "regions":1, "count":3, "dependencies":["signup-node", "homepage-node"] },
+                { "name":"www-elb", "package":"elb", "regions":1, "count":0, "dependencies":["www-proxy"] },
+                { "name":"www", "package":"denominator", "regions":0, "count":0, "dependencies":["www-elb"] }
+                ]
+                }

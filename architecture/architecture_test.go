@@ -54,6 +54,9 @@ func TestGraph(t *testing.T) {
 	//archaius.Conf.StopStep = 0
 	archaius.Conf.EurekaPoll = "1s"
 	try(testJSONarchV0r0)
+	//ReadArch("testDuplicate") // these three are designed to fail, uncomment one at a time to check
+	//ReadArch("testMissingDep")
+	//ReadArch("testBadPackage")
 	a := ReadArch("test")
 	fmt.Println(a)
 	Start(a)

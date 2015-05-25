@@ -17,11 +17,11 @@ func Start(listener chan gotocol.Message) {
 	// remember the channel to talk to microservices
 	microservices := make(map[string]chan gotocol.Message, dunbar)
 	microindex := make([]chan gotocol.Message, dunbar)
-	dependencies := make(map[string]time.Time, dunbar) // dependent services and time last updated
-	var netflixoss chan gotocol.Message                // remember how to talk back to creator
-	var name string                                    // remember my name
-	hist := collect.NewHist("")                        // don't know name yet
-	eureka := make(map[string]chan gotocol.Message, 3 * archaius.Conf.Regions) // service registry per zone and region
+	dependencies := make(map[string]time.Time, dunbar)                       // dependent services and time last updated
+	var netflixoss chan gotocol.Message                                      // remember how to talk back to creator
+	var name string                                                          // remember my name
+	hist := collect.NewHist("")                                              // don't know name yet
+	eureka := make(map[string]chan gotocol.Message, 3*archaius.Conf.Regions) // service registry per zone and region
 	var chatrate time.Duration
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
 	eurekaTicker := time.NewTicker(ep)

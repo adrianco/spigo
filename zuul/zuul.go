@@ -18,8 +18,8 @@ func Start(listener chan gotocol.Message) {
 	microservices := make(map[string]chan gotocol.Message, dunbar)
 	microindex := make(map[int]chan gotocol.Message, dunbar)
 	dependencies := make(map[string]time.Time, dunbar) // dependent services and time last updated
-	var netflixoss, requestor chan gotocol.Message // remember creator and how to talk back to incoming requests
-	var name string                                // remember my name
+	var netflixoss, requestor chan gotocol.Message     // remember creator and how to talk back to incoming requests
+	var name string                                    // remember my name
 	eureka := make(map[string]chan gotocol.Message, 1) // service registry
 	var chatrate time.Duration
 	hist := collect.NewHist("")

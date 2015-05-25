@@ -7,7 +7,7 @@
         {
             "name": "rds-mysql",
             "count": 2,
-            "dependencies": [],
+            "dependencies": ["rds-mysql"],
             "package": "store",
             "regions": 1
         },
@@ -17,7 +17,7 @@
             "dependencies": [
                 "rds-mysql"
             ],
-            "package": "karyon",
+            "package": "monolith",
             "regions": 1
         },
         {
@@ -35,7 +35,7 @@
             "dependencies": [
                 "appserver-elb"
             ],
-            "package": "karyon",
+            "package": "monolith",
             "regions": 1
         },
         {
@@ -51,7 +51,7 @@
             "name": "s3-content",
             "count": 0,
             "dependencies": [],
-            "package": "store",
+            "package": "elb",
             "regions": 1
         },
         {
@@ -59,9 +59,9 @@
             "count": 0,
             "dependencies": [
 		"s3-content",
-                "www-proxy"
+                "webserver-elb"
             ],
-            "package": "zuul",
+            "package": "monolith",
             "regions": 1
         },
         {

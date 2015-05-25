@@ -57,9 +57,41 @@ func ReadArch(arch string) *archV0r0 {
 	a := new(archV0r0)
 	e := json.Unmarshal(data, a)
 	if e == nil {
+		names := make(map[string]bool, 10)
+		names[asgard.EurekaPkg] = true // special case to allow cross region references
+		packs := make(map[string]bool, 10)
+		for _, p := range asgard.Packages {
+			packs[p] = true
+		}
+		// map all the service names and check packages exist
+		for _, s := range a.Services {
+			if names[s.Name] == true {
+				log.Println(names)
+				log.Println(s)
+				log.Fatal("Duplicate service name in architecture: " + s.Name)
+			} else {
+				names[s.Name] = true
+			}
+			if packs[s.Package] != true {
+				log.Println(packs)
+				log.Println(s)
+				log.Fatal("Unknown package name in architecture: " + s.Package)
+			}
+		}
+		// check all the dependencies
+		for _, s := range a.Services {
+			for _, d := range s.Dependencies {
+				if names[d] == false {
+					log.Println(names)
+					log.Println(s)
+					log.Fatal("Unknown dependency name in architecture: " + d)
+				}
+			}
+		}
 		log.Printf("Architecture: %v %v\n", a.Arch, a.Description)
 		return a
 	} else {
+		log.Fatal(e)
 		return nil
 	}
 }

@@ -12,7 +12,7 @@
             "regions": 1
         },
 	{
-            "name": "memcached",
+            "name": "memcache",
             "count": 1,
             "dependencies": [],
             "package": "store",
@@ -22,8 +22,8 @@
             "name": "webserver",
             "count": 18,
             "dependencies": [
-                "rds-mysql",
-		"memcached"
+                "memcache",
+		"rds-mysql"	
             ],
             "package": "monolith",
             "regions": 1

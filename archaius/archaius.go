@@ -36,7 +36,7 @@ type Configuration struct {
 	RegionNames [6]string `json:"regionnames,omitempty"`
 
 	// ZoneNames is the default names of the zones
-	ZoneNames   [3]string `json:"zonenames,omitempty"`
+	ZoneNames [3]string `json:"zonenames,omitempty"`
 
 	// Collect turns on Metrics collection
 	Collect bool `json:"collect,omitempty"`
@@ -50,7 +50,7 @@ type Configuration struct {
 
 var Conf = Configuration{
 	RegionNames: [...]string{"us-east-1", "us-west-2", "eu-west-1", "eu-east-1", "ap-south-1", "ap-south-2"},
-	ZoneNames: [...]string{"zoneA", "zoneB", "zoneC"},
+	ZoneNames:   [...]string{"zoneA", "zoneB", "zoneC"},
 }
 
 // return current config as json

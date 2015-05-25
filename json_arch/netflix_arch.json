@@ -4,203 +4,27 @@
     "version": "arch-0.0",
     "victim": "homepage",
     "services": [
-        {
-            "name": "cassSubscriber",
-            "count": 3,
-            "dependencies": [
-	      "cassTurtle"
-	      ],
-            "package": "priamCassandra",
-            "regions": 1
-        },
-        {
-            "name": "evcacheSubscriber",
-            "count": 3,
-            "dependencies": [],
-            "package": "store",
-            "regions": 1
-        },
-        {
-            "name": "subscriber",
-            "count": 3,
-            "dependencies": [
-                "cassSubscriber",
-		"evcacheSubscriber"
-            ],
-            "package": "staash",
-            "regions": 1
-        },
-        {
-            "name": "cassPersonalization",
-            "count": 3,
-            "dependencies": [
-	      "cassPersonalization"
-	      ],
-            "package": "priamCassandra",
-            "regions": 1
-        },
-        {
-            "name": "personalizationData",
-            "count": 3,
-            "dependencies": [
-                "cassPersonalization"
-            ],
-            "package": "staash",
-            "regions": 1
-        },
-        {
-            "name": "cassHistory",
-            "count": 3,
-            "dependencies": [
-	      "cassHistory"
-	      ],
-            "package": "priamCassandra",
-            "regions": 1
-        },
-        {
-            "name": "historyData",
-            "count": 3,
-            "dependencies": [
-	      "cassHistory"
-	      ],
-            "package": "staash",
-            "regions": 1
-        },
-	{
-            "name": "contentMetadataS3",
-            "count": 0,
-            "dependencies": [],
-            "package": "store",
-            "regions": 1
-        },
-        {
-            "name": "personalize",
-            "count": 3,
-            "dependencies": [
-		"contentMetadataS3",
-                "subscriber",
-		"historyData",
-		"personalizationData"
-            ],
-            "package": "karyon",
-            "regions": 1
-        },
-        {
-            "name": "login",
-            "count": 3,
-            "dependencies": [
-                "subscriber"
-            ],
-            "package": "karyon",
-            "regions": 1
-        },
-        {
-            "name": "home",
-            "count": 3,
-            "dependencies": [
-		"contentMetadataS3",
-                "subscriber",
-		"personalization"
-            ],
-            "package": "karyon",
-            "regions": 1
-        },
-        {
-            "name": "play",
-            "count": 3,
-            "dependencies": [
-		"contentMetadataS3",
-		"historyData",
-                "subscriber"
-            ],
-            "package": "karyon",
-            "regions": 1
-        },
-        {
-            "name": "loginpage",
-            "count": 3,
-            "dependencies": [
-                "login"
-            ],
-            "package": "karyon",
-            "regions": 1
-        },
-        {
-            "name": "homepage",
-            "count": 3,
-            "dependencies": [
-                "home"
-            ],
-            "package": "karyon",
-            "regions": 1
-        },
-        {
-            "name": "playpage",
-            "count": 3,
-            "dependencies": [
-                "play"
-            ],
-            "package": "karyon",
-            "regions": 1
-        },
-        {
-            "name": "wwwproxy",
-            "count": 3,
-            "dependencies": [
-		"loginpage",
-		"homepage",
-                "playpage"
-            ],
-            "package": "zuul",
-            "regions": 1
-        },
-        {
-            "name": "apiproxy",
-            "count": 3,
-            "dependencies": [
-		"login",
-		"home",
-                "play"
-            ],
-            "package": "zuul",
-            "regions": 1
-        },
-        {
-            "name": "www-elb",
-            "count": 0,
-            "dependencies": [
-                "wwwproxy"
-            ],
-            "package": "elb",
-            "regions": 1
-        },
-        {
-            "name": "api-elb",
-            "count": 0,
-            "dependencies": [
-                "apiproxy"
-            ],
-            "package": "elb",
-            "regions": 1
-        },
-        {
-            "name": "api",
-            "count": 0,
-            "dependencies": [
-                "api-elb"
-            ],
-            "package": "denominator",
-            "regions": 0
-        },
-        {
-            "name": "www",
-            "count": 0,
-            "dependencies": [
-                "www-elb"
-            ],
-            "package": "denominator",
-            "regions": 0
-        }
+        { "name": "cassSubscriber",     "package": "priamCassandra", "count": 6, "regions": 1, "dependencies": ["cassSubscriber", "eureka"]},
+        { "name": "evcacheSubscriber",  "package": "store",          "count": 3, "regions": 1, "dependencies": []},
+        { "name": "subscriber",         "package": "staash",         "count": 3, "regions": 1, "dependencies": ["cassSubscriber","evcacheSubscriber"]},
+        { "name": "cassPersonalization","package": "priamCassandra", "count": 6, "regions": 1, "dependencies": ["cassPersonalization", "eureka"]},
+        { "name": "personalizationData","package": "staash",         "count": 3, "regions": 1, "dependencies": ["cassPersonalization"]},
+        { "name": "cassHistory",        "package": "priamCassandra", "count": 6, "regions": 1, "dependencies": ["cassHistory", "eureka"]},
+        { "name": "historyData",        "package": "staash",         "count": 3, "regions": 1, "dependencies": ["cassHistory"]},
+	{ "name": "contentMetadataS3",  "package": "store",          "count": 1, "regions": 1, "dependencies": []},
+        { "name": "personalize",        "package": "karyon",         "count": 9, "regions": 1, "dependencies": ["contentMetadataS3", "subscriber", "historyData", "personalizationData"]},
+        { "name": "login",              "package": "karyon",         "count": 6, "regions": 1, "dependencies": ["subscriber"]},
+        { "name": "home",               "package": "karyon",         "count": 9, "regions": 1, "dependencies": ["contentMetadataS3", "subscriber", "personalize"]},
+        { "name": "play",               "package": "karyon",         "count": 9, "regions": 1, "dependencies": ["contentMetadataS3", "historyData", "subscriber"]},
+        { "name": "loginpage",          "package": "karyon",         "count": 6, "regions": 1, "dependencies": ["login"]},
+        { "name": "homepage",           "package": "karyon",         "count": 9, "regions": 1, "dependencies": ["home"]},
+        { "name": "playpage",           "package": "karyon",         "count": 9, "regions": 1, "dependencies": ["play"]},
+        { "name": "wwwproxy",           "package": "zuul",           "count": 3, "regions": 1, "dependencies": ["loginpage", "homepage", "playpage"]},
+        { "name": "apiproxy",           "package": "zuul",           "count": 3, "regions": 1, "dependencies": ["login", "home", "play"]},
+        { "name": "www-elb",            "package": "elb",            "count": 0, "regions": 1, "dependencies": ["wwwproxy"]},
+        { "name": "api-elb",            "package": "elb",            "count": 0, "regions": 1, "dependencies": ["apiproxy"]},
+        { "name": "www",                "package": "denominator",    "count": 0, "regions": 0, "dependencies": ["www-elb"]},
+        { "name": "api",                "package": "denominator",    "count": 0, "regions": 0, "dependencies": ["api-elb"]}
     ]
 }
 

@@ -40,12 +40,13 @@ var (
 	listener   chan gotocol.Message            // asgard listener
 	eurekachan map[string]chan gotocol.Message // eureka for each region and zone
 	// noodles channels mapped by microservice name connects netflixoss to everyone
-	noodles map[string]chan gotocol.Message
+	noodles  map[string]chan gotocol.Message
+	Packages = []string{EurekaPkg, PiratePkg, ElbPkg, DenominatorPkg, ZuulPkg, KaryonPkg, MonolithPkg, StaashPkg, PriamCassandraPkg, StorePkg}
 )
 
 // Create the maps of channels
 func CreateChannels() {
-	listener = make(chan gotocol.Message) // listener for netflixoss
+	listener = make(chan gotocol.Message) // listener for architecture
 	noodles = make(map[string]chan gotocol.Message, archaius.Conf.Population)
 	eurekachan = make(map[string]chan gotocol.Message, 3*archaius.Conf.Regions)
 }
@@ -59,18 +60,19 @@ func Create(servicename, packagename string, regions, count int, dependencies ..
 	if regions == 0 { // for dns that isn't in a region or zone
 		//log.Printf("Create cross region: " + servicename)
 		name = names.Make(arch, "*", "*", servicename, packagename, 0)
-		StartNode(name, dependencies)
+		StartNode(name, dependencies...)
 	}
 	for r := 0; r < regions; r++ {
-		if count == 0 { // for AWS services that are cross zone like elb
+		if count == 0 { // for AWS services that are cross zone like elb and S3
 			//log.Printf("Create cross zone: " + servicename)
 			name = names.Make(arch, rnames[r], "*", servicename, packagename, 0)
-			StartNode(name, dependencies)
+			StartNode(name, dependencies...)
 		} else {
 			//log.Printf("Create service: " + servicename)
 			for i := r * count; i < (r+1)*count; i++ {
 				name = names.Make(arch, rnames[r], znames[i%3], servicename, packagename, i)
-				StartNode(name, dependencies)
+				//log.Println(dependencies)
+				StartNode(name, dependencies...)
 			}
 		}
 	}
@@ -95,7 +97,7 @@ func Reload(arch string) string {
 	for _, element := range g.Graph {
 		if element.Node != "" {
 			name := element.Node
-			StartNode(name, nil)
+			StartNode(name, "")
 			if names.Package(name) == DenominatorPkg {
 				root = name
 			}
@@ -134,7 +136,7 @@ func SendToName(name string, msg gotocol.Message) {
 }
 
 // Start a node using the named package, and connect it to any dependencies
-func StartNode(name string, dependencies []string) {
+func StartNode(name string, dependencies ...string) {
 	if names.Package(name) == "eureka" {
 		eurekachan[name] = make(chan gotocol.Message, archaius.Conf.Population)
 		go eureka.Start(eurekachan[name], name)
@@ -169,6 +171,7 @@ func StartNode(name string, dependencies []string) {
 	// there is a eureka service registry in each zone, so in-zone services just get to talk to their local registry
 	// elb are cross zone, so need to see all registries in a region
 	// denominator are cross region so need to see all registries globally
+	// priamCassandra depends explicitly on eureka for cross region clusters
 	crossregion := false
 	for _, d := range dependencies {
 		if d == "eureka" {
@@ -191,9 +194,11 @@ func StartNode(name string, dependencies []string) {
 			}
 		}
 	}
+	//log.Println(dependencies)
 	// pass on symbolic dependencies without channels that will be looked up in Eureka later
 	for _, dep := range dependencies {
 		if dep != "" && dep != "eureka" { // ignore special case of eureka in dependency list
+			//log.Println(name + " depends on " + dep)
 			gotocol.Send(noodles[name], gotocol.Message{gotocol.NameDrop, nil, time.Now(), dep})
 		}
 	}
@@ -241,9 +246,9 @@ func Run(rootservice, victim string) {
 	SendToName(rootservice, gotocol.Message{gotocol.Chat, nil, time.Now(), delay})
 	// wait until the delay has finished
 	if archaius.Conf.RunDuration >= time.Millisecond {
-		time.Sleep(archaius.Conf.RunDuration/2)
+		time.Sleep(archaius.Conf.RunDuration / 2)
 		chaosmonkey.Delete(&noodles, victim) // kill a random victim half way through
-		time.Sleep(archaius.Conf.RunDuration/2)	
+		time.Sleep(archaius.Conf.RunDuration / 2)
 	}
 	log.Println("asgard: Shutdown")
 	ShutdownNodes()

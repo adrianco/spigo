@@ -8,7 +8,7 @@
             "name": "cassSubscriber",
             "count": 6,
             "dependencies": [
-	      "cassTurtle"
+		"cassSubscriber", "eureka"
 	      ],
             "package": "priamCassandra",
             "regions": 1
