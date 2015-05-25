@@ -23,66 +23,25 @@ Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI
 
 ```
 {
-    "arch": "test",
+    "arch": "netflixoss",
+    "description":"A very simple Netflix service. See http://netflix.github.io/ to decode the package names",
     "version": "arch-0.0",
-    "victim": "homepage-node",
+    "victim": "homepage",
     "services": [
-        {
-            "name": "mysql",
-            "count": 2,
-            "dependencies": [],
-            "package": "store",
-            "regions": 1
-        },
-        {
-            "name": "homepage-node",
-            "count": 9,
-            "dependencies": [
-                "mysql"
-            ],
-            "package": "karyon",
-            "regions": 1
-        },
-        {
-            "name": "signup-node",
-            "count": 3,
-            "dependencies": [
-                "mysql"
-            ],
-            "package": "karyon",
-            "regions": 1
-        },
-        {
-            "name": "www-proxy",
-            "count": 3,
-            "dependencies": [
-                "signup-node",
-                "homepage-node"
-            ],
-            "package": "zuul",
-            "regions": 1
-        },
-        {
-            "name": "www-elb",
-            "count": 0,
-            "dependencies": [
-                "www-proxy"
-            ],
-            "package": "elb",
-            "regions": 1
-        },
-        {
-            "name": "www",
-            "count": 0,
-            "dependencies": [
-                "www-elb"
-            ],
-            "package": "denominator",
-            "regions": 0
-        }
+        { "name": "cassSubscriber",   "package": "priamCassandra", "count": 6, "regions": 1, "dependencies": ["cassSubscriber", "eureka"]},
+        { "name": "evcacheSubscriber","package": "store",          "count": 3, "regions": 1, "dependencies": []},
+        { "name": "subscriber",       "package": "staash",         "count": 6, "regions": 1, "dependencies": ["cassSubscriber", "evcacheSubscriber"]},
+        { "name": "login",            "package": "karyon",        "count": 18, "regions": 1, "dependencies": ["subscriber"]},
+        { "name": "homepage",         "package": "karyon",        "count": 24, "regions": 1, "dependencies": ["subscriber"]},
+        { "name": "wwwproxy",         "package": "zuul",           "count": 6, "regions": 1, "dependencies": ["login", "homepage"]},
+        { "name": "www-elb",          "package": "elb",            "count": 0, "regions": 1, "dependencies": ["wwwproxy"]},
+        { "name": "www",              "package": "denominator",    "count": 0, "regions": 0, "dependencies": ["www-elb"]}
     ]
 }
 ```
+
+For a single unscaled region, the above architecture looks like this
+![Netflixoss](png/netflixoss.png)
 
 ```
 $ ./spigo -h
