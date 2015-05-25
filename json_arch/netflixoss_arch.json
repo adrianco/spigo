@@ -4,78 +4,14 @@
     "version": "arch-0.0",
     "victim": "homepage",
     "services": [
-        {
-            "name": "cassSubscriber",
-            "count": 6,
-            "dependencies": [
-		"cassSubscriber", "eureka"
-	      ],
-            "package": "priamCassandra",
-            "regions": 1
-        },
-        {
-            "name": "evcacheSubscriber",
-            "count": 3,
-            "dependencies": [],
-            "package": "store",
-            "regions": 1
-        },
-        {
-            "name": "subscriber",
-            "count": 6,
-            "dependencies": [
-                "cassSubscriber",
-		"evcacheSubscriber"
-            ],
-            "package": "staash",
-            "regions": 1
-        },
-        {
-            "name": "login",
-            "count": 18,
-            "dependencies": [
-                "subscriber"
-            ],
-            "package": "karyon",
-            "regions": 1
-        },
-        {
-            "name": "homepage",
-            "count": 24,
-            "dependencies": [
-                "subscriber"
-            ],
-            "package": "karyon",
-            "regions": 1
-        },
-        {
-            "name": "wwwproxy",
-            "count": 6,
-            "dependencies": [
-		"login",
-		"homepage"
-            ],
-            "package": "zuul",
-            "regions": 1
-        },
-        {
-            "name": "www-elb",
-            "count": 0,
-            "dependencies": [
-                "wwwproxy"
-            ],
-            "package": "elb",
-            "regions": 1
-        },
-        {
-            "name": "www",
-            "count": 0,
-            "dependencies": [
-                "www-elb"
-            ],
-            "package": "denominator",
-            "regions": 0
-        }
+        { "name": "cassSubscriber",   "package": "priamCassandra", "count": 6, "regions": 1, "dependencies": ["cassSubscriber", "eureka"]},
+        { "name": "evcacheSubscriber","package": "store",          "count": 3, "regions": 1, "dependencies": []},
+        { "name": "subscriber",       "package": "staash",         "count": 6, "regions": 1, "dependencies": ["cassSubscriber", "evcacheSubscriber"]},
+        { "name": "login",            "package": "karyon",        "count": 18, "regions": 1, "dependencies": ["subscriber"]},
+        { "name": "homepage",         "package": "karyon",        "count": 24, "regions": 1, "dependencies": ["subscriber"]},
+        { "name": "wwwproxy",         "package": "zuul",           "count": 6, "regions": 1, "dependencies": ["login", "homepage"]},
+        { "name": "www-elb",          "package": "elb",            "count": 0, "regions": 1, "dependencies": ["wwwproxy"]},
+        { "name": "www",              "package": "denominator",    "count": 0, "regions": 0, "dependencies": ["www-elb"]}
     ]
 }
 
