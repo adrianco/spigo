@@ -15,7 +15,7 @@ Suitable for fairly large scale simulations, runs well up to 100,000 independent
 
 Each nanoservice actor is a goroutine. to create 100,000 pirates, deliver 700,000 messages and wait to shut them all down again takes about 4 seconds. The resulting graph can be visualized via GraphML or rendered by saving to Graph JSON and viewing in a web browser via D3.
 
-A few lines of code or a simple json definition file can be used to create an interesting architecture. See json/test_arch.json (shown below) to see how to define an architecture without making code changes. The migration.go architecture is more complex as it steps through a sequence. If you figure out your own architecture in the form shown below it's going to be easy to carry forward as Spigo evolves. A big thanks is due to [Kurtis Kemple](https://github.com/kkemple) for cleaning up my initial javascript/D3 UI code and building simianviz as a single page app.
+A few lines of code or a simple json definition file can be used to create an interesting architecture. See json/netflixoss_arch.json (shown below) to see how to define an architecture without making code changes. The migration.go architecture is more complex as it steps through a sequence. If you figure out your own architecture in the form shown below it's going to be easy to carry forward as Spigo evolves. A big thanks is due to [Kurtis Kemple](https://github.com/kkemple) for cleaning up my initial javascript/D3 UI code and building simianviz as a single page app.
 
 Keynote presentation at the O'Reilly Software Architecture Conference: Monitoring Microservices - A Challenge
 http://www.slideshare.net/adriancockcroft/software-architecture-monitoring-microservices-a-challenge
@@ -40,7 +40,8 @@ Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI
 }
 ```
 
-For a single unscaled region, the above architecture looks like this
+For a single unscaled region, the above architecture is processed using spigo to produce a json/netflixoss.json which is rendered using the single page app linked above or via a simpler local page local-d3-simianviz.html which can be used offline for queck tests with a local copy of d3:
+
 ![Netflixoss](png/netflixoss.png)
 
 ```
@@ -60,35 +61,33 @@ Usage of ./spigo:
   -u="1s":  Polling interval for Eureka name service
   -w=1:     Wide area regions
 
-$ $ ./spigo -a migration -d 2 -j
-2015/05/22 17:04:34 migration: scaling to 100%
-2015/05/22 17:04:34 migration.edda: starting
-2015/05/22 17:04:34 migration.us-east-1.zoneC.eureka.eureka.eureka2: starting
-2015/05/22 17:04:34 migration.us-east-1.zoneA.eureka.eureka.eureka0: starting
-2015/05/22 17:04:34 migration.us-east-1.zoneB.eureka.eureka.eureka1: starting
-2015/05/22 17:04:34 migration.*.*.www.denominator.www0 activity rate  10ms
-2015/05/22 17:04:36 asgard: Shutdown
-2015/05/22 17:04:36 migration.us-east-1.zoneA.eureka.eureka.eureka0: closing
-2015/05/22 17:04:36 migration.us-east-1.zoneC.eureka.eureka.eureka2: closing
-2015/05/22 17:04:36 migration.us-east-1.zoneB.eureka.eureka.eureka1: closing
-2015/05/22 17:04:36 spigo: complete
-2015/05/22 17:04:36 migration.edda: closing
+$ spigo -a netflixoss -d 5 -j
+2015/05/25 12:16:12 Loading architecture from json_arch/netflixoss_arch.json
+2015/05/25 12:16:12 netflixoss.edda: starting
+2015/05/25 12:16:12 Architecture: netflixoss A very simple Netflix service. See http://netflix.github.io/ to decode the package names
+2015/05/25 12:16:12 architecture: scaling to 100%
+2015/05/25 12:16:12 Starting: {cassSubscriber priamCassandra 1 6 [cassSubscriber eureka]}
+2015/05/25 12:16:12 netflixoss.us-east-1.zoneC.eureka.eureka.eureka2: starting
+2015/05/25 12:16:12 netflixoss.us-east-1.zoneB.eureka.eureka.eureka1: starting
+2015/05/25 12:16:12 netflixoss.us-east-1.zoneA.eureka.eureka.eureka0: starting
+2015/05/25 12:16:12 Starting: {evcacheSubscriber store 1 3 []}
+2015/05/25 12:16:12 Starting: {subscriber staash 1 6 [cassSubscriber evcacheSubscriber]}
+2015/05/25 12:16:12 Starting: {login karyon 1 18 [subscriber]}
+2015/05/25 12:16:12 Starting: {homepage karyon 1 24 [subscriber]}
+2015/05/25 12:16:12 Starting: {wwwproxy zuul 1 6 [login homepage]}
+2015/05/25 12:16:12 Starting: {www-elb elb 1 0 [wwwproxy]}
+2015/05/25 12:16:12 Starting: {www denominator 0 0 [www-elb]}
+2015/05/25 12:16:12 netflixoss.*.*.www.denominator.www0 activity rate  10ms
+2015/05/25 12:16:14 chaosmonkey delete: netflixoss.us-east-1.zoneB.homepage.karyon.homepage4
+2015/05/25 12:16:15 netflixoss.us-east-1.zoneB.eureka.eureka.eureka1:Forget netflixoss.us-east-1.zoneB.homepage.karyon.homepage4
+2015/05/25 12:16:15 netflixoss.us-east-1.zoneB.eureka.eureka.eureka1:Forget netflixoss.us-east-1.zoneB.homepage.karyon.homepage4
+2015/05/25 12:16:17 asgard: Shutdown
+2015/05/25 12:16:17 netflixoss.us-east-1.zoneA.eureka.eureka.eureka0: closing
+2015/05/25 12:16:17 netflixoss.us-east-1.zoneB.eureka.eureka.eureka1: closing
+2015/05/25 12:16:17 netflixoss.us-east-1.zoneC.eureka.eureka.eureka2: closing
+2015/05/25 12:16:17 spigo: complete
+2015/05/25 12:16:17 netflixoss.edda: closing
 
-$ $ ./spigo -d 2 -j -c
-2015/05/22 17:05:15 netflixoss: scaling to 100%
-2015/05/22 17:05:15 HTTP metrics now available at localhost:8123/debug/vars
-2015/05/22 17:05:15 netflixoss.edda: starting
-2015/05/22 17:05:15 netflixoss.us-east-1.zoneA.eureka.eureka.eureka0: starting
-2015/05/22 17:05:15 netflixoss.us-east-1.zoneB.eureka.eureka.eureka1: starting
-2015/05/22 17:05:15 netflixoss.us-east-1.zoneC.eureka.eureka.eureka2: starting
-2015/05/22 17:05:15 netflixoss.*.*.www.denominator.www0 activity rate  10ms
-2015/05/22 17:05:16 chaosmonkey delete: netflixoss.us-east-1.zoneC.javaweb.karyon.javaweb17
-2015/05/22 17:05:17 asgard: Shutdown
-2015/05/22 17:05:17 netflixoss.us-east-1.zoneA.eureka.eureka.eureka0: closing
-2015/05/22 17:05:17 netflixoss.us-east-1.zoneC.eureka.eureka.eureka2: closing
-2015/05/22 17:05:17 netflixoss.us-east-1.zoneB.eureka.eureka.eureka1: closing
-2015/05/22 17:05:18 spigo: complete
-2015/05/22 17:05:18 netflixoss.edda: closing
 
 $ $ ./spigo -d 2 -j -c -a fsm
 2015/05/22 17:06:15 fsm: population 100 pirates
@@ -152,26 +151,15 @@ To create a starting point for architecture transitions, an AWS hosted LAMP stac
 
 ![LAMP stack](png/lamp.png)
 
-NetflixOSS Architecture
+Simple NetflixOSS Architecture and more complex Netflix Architecture
 -----------
 Simple simulations of the following AWS and NetflixOSS services are implemented. Edda collects the configuration and writes it to Json or Graphml. Eureka implements a service registry. Archaius contains global configuration data. Denominator simulates a global DNS endpoint. ELB generates traffic that is split across three availability zones. Zuul takes requests and routes it to the Karyon business logic layer. Karyon calls into the Staash data access layer, which calls PriamCassandra, which provides cross zone and cross region connections.
 
 Each microservice is based on Karyon as the prototype to copy when creating a new microservice. The simulation passes get and put requests down the tree one at a time from Denominator. Get requests lookup the key in PriamCassandra and respond back up the tree. Put requests go down the tree only, and PriamCassandra replicates the put across all zones and regions.
 
-Scaled to 200% with one ELB in the center, three zones with six Zuul and 18 Karyon each zone, rendered using GraphJSON and D3.
+There is a more complex architecture defined in json_arch/netflix_arch.json, which has two separate DNS endpoints for www and api, and three cassandra clusters. It provides a more realistic challenge for visualization.
 
-![200% scale NetflixOSS](png/netflixoss-200-json.png)
-
-Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon and two staash in each zone, rendered using GraphJSON and D3.
-
-![100% scale NetflixOSS](png/netflixoss-staash-100.png)
-
-Scaled 100% With one ELB at the top, three zones with three Zuul, nine Karyon, two Staash and four Priam-Cassandra in each zone, rendered using GraphJSON and D3.
-
-![100% scale NetflixOSS](png/netflixoss-priamCassandra-100.png)
-
-Scaled 100% with Denominator connected to an ELB in two different regions, and cross region Priam-Cassandra connections, showing a tooltip and the charge increase option.
-[Run this simulation in your browser](http://simianviz.divshot.io/netflixoss)
+[Run the netflixoss simulation in your browser](http://simianviz.divshot.io/netflixoss)
 
 ![Two Region NetflixOSS](png/netflixoss-w2-tooltip.png)
 
