@@ -40,7 +40,7 @@ Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI
 }
 ```
 
-For a single unscaled region, the above architecture is processed using spigo to produce a json/netflixoss.json which is rendered using the single page app linked above or via a simpler local page local-d3-simianviz.html which can be used offline for queck tests with a local copy of d3:
+For a single unscaled region, the above architecture is processed using spigo to produce json/netflixoss.json which is rendered using the single page app linked above or via a simpler local page local-d3-simianviz.html which can be used offline for queck tests with a local copy of d3:
 
 ![Netflixoss](png/netflixoss.png)
 
