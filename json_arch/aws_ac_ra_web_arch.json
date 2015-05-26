@@ -4,74 +4,13 @@
     "version": "arch-0.0",
     "victim": "webserver",
     "services": [
-        {
-            "name": "rds-mysql",
-            "count": 2,
-            "dependencies": ["rds-mysql"],
-            "package": "store",
-            "regions": 1
-        },
-        {
-            "name": "appserver",
-            "count": 6,
-            "dependencies": [
-                "rds-mysql"
-            ],
-            "package": "monolith",
-            "regions": 1
-        },
-        {
-            "name": "appserver-elb",
-            "count": 0,
-            "dependencies": [
-                "appserver"
-            ],
-            "package": "elb",
-            "regions": 1
-        },
-        {
-            "name": "webserver",
-            "count": 12,
-            "dependencies": [
-                "appserver-elb"
-            ],
-            "package": "monolith",
-            "regions": 1
-        },
-        {
-            "name": "webserver-elb",
-            "count": 0,
-            "dependencies": [
-                "webserver"
-            ],
-            "package": "elb",
-            "regions": 1
-        },
-        {
-            "name": "s3-content",
-            "count": 0,
-            "dependencies": [],
-            "package": "elb",
-            "regions": 1
-        },
-        {
-            "name": "cloudfront",
-            "count": 0,
-            "dependencies": [
-		"s3-content",
-                "webserver-elb"
-            ],
-            "package": "monolith",
-            "regions": 1
-        },
-        {
-            "name": "www",
-            "count": 0,
-            "dependencies": [
-                "cloudfront"
-            ],
-            "package": "denominator",
-            "regions": 0
-        }
+        { "name":"rdsmysql",      "package":"store",       "count":2, "regions":1, "dependencies":["rdsmysql"]},
+        { "name":"appserver",     "package":"monolith",    "count":6, "regions":1, "dependencies":["rdsmysql"]},
+        { "name":"appserver-elb", "package":"elb",         "count":0, "regions":1, "dependencies":["appserver"]},
+        { "name":"webserver",     "package":"monolith",   "count":12, "regions":1, "dependencies":["appserver-elb"]},
+        { "name":"webserver-elb", "package":"elb",         "count":0, "regions":1, "dependencies":["webserver"]},
+        { "name":"content-s3",    "package":"store",       "count":0, "regions":1, "dependencies":[]},
+        { "name":"cloudfront",    "package":"monolith",    "count":0, "regions":1, "dependencies":["content-s3","webserver-elb"]},
+        { "name":"www",           "package":"denominator", "count":0, "regions":0, "dependencies":["cloudfront"]}
     ]
 }
