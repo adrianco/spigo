@@ -3,7 +3,7 @@ spigo and simianviz
 
 The name spigo is taken, but simianviz wasn't, so domains have been registered etc. and the name will transition over the coming months.
 
-[![GoDoc](https://godoc.org/github.com/adrianco/spigo?status.svg)](https://godoc.org/github.com/adrianco/spigo)
+[![GoDoc](https://godoc.org/github.com/adrianco/spigo?status.svg)](https://godoc.org/github.com/adrianco/spigo) [Wiki Instructions](https://github.com/adrianco/spigo/wiki)
 
 Simulate Protocol Interactions in Go using nanoservice actors - spigo
 
