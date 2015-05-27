@@ -89,30 +89,7 @@ $ spigo -a netflixoss -d 5 -j
 2015/05/25 12:16:17 netflixoss.edda: closing
 ```
 
-AWS Architecture Center Reference Architecture for Web
------------
-This architecture uses ELBs as intermediary steps, and cloudfront backed by S3 for cached static content. [The architecture is described here.](http://aws.amazon.com/architecture/) There are several other interesting architectures listed that could be created for simianviz.
 
-```
-{
-    "arch": "aws_ac_ra_web",
-    "description":"See http://media.amazonwebservices.com/architecturecenter/AWS_ac_ra_web_01.pdf",
-    "version": "arch-0.0",
-    "victim": "webserver",
-    "services": [
-        { "name":"rdsmysql",      "package":"store",       "count":2, "regions":1, "dependencies":["rdsmysql"]},
-        { "name":"appserver",     "package":"monolith",    "count":6, "regions":1, "dependencies":["rdsmysql"]},
-        { "name":"appserver-elb", "package":"elb",         "count":0, "regions":1, "dependencies":["appserver"]},
-        { "name":"webserver",     "package":"monolith",   "count":12, "regions":1, "dependencies":["appserver-elb"]},
-        { "name":"webserver-elb", "package":"elb",         "count":0, "regions":1, "dependencies":["webserver"]},
-        { "name":"content-s3",    "package":"store",       "count":0, "regions":1, "dependencies":[]},
-        { "name":"cloudfront",    "package":"monolith",    "count":0, "regions":1, "dependencies":["content-s3","webserver-elb"]},
-        { "name":"www",           "package":"denominator", "count":0, "regions":0, "dependencies":["cloudfront"]}
-    ]
-}
-```
-
-![aws_ac_ra_web](png/aws_ac_ra_web.png)
 
 Migration from LAMP to NetflixOSS
 -----------
