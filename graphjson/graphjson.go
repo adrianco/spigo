@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/adrianco/spigo/archaius"
+	"github.com/adrianco/spigo/dhcp"
 	"io/ioutil"
 	"log"
 	"os"
@@ -20,9 +21,10 @@ var edgemap map[string]string // remember which edge was which
 
 // NodeV0r4 defines a node for version 0.4, used to make json nodes for writing
 type NodeV0r4 struct {
-	Node    string `json:"node"`
-	Package string `json:"package"`             // name changed from 0.3 to 0.4
-	Tstamp  string `json:"timestamp,omitempty"` // 0.4
+	Node     string `json:"node"`
+	Package  string `json:"package"`             // name changed from 0.3 to 0.4
+	Tstamp   string `json:"timestamp,omitempty"` // 0.4
+	Metadata string `json:"metadata,omitempty"`  // added to 0.4
 }
 
 // EdgeV0r4 defines an edge for version 0.4, used to make json edges for writing
@@ -50,16 +52,17 @@ type DoneV0r4 struct {
 
 // ElementV0r4 defines a way to read either a node, edge or done in the graph for version 0.3 or 0.4
 type ElementV0r4 struct {
-	Node    string `json:"node,omitempty"`
-	Package string `json:"package,omitempty"`
-	Service string `json:"service,omitempty"` // name changed from service 0.3 to package 0.4
-	Edge    string `json:"edge,omitempty"`
-	Source  string `json:"source,omitempty"`
-	Target  string `json:"target,omitempty"`
-	Forget  string `json:"forget"`
-	Done    string `json:"target,omitempty"`
-	Exit    string `json:"exit,omitempty"`
-	Tstamp  string `json:"timestamp,omitempty"`
+	Node     string `json:"node,omitempty"`
+	Package  string `json:"package,omitempty"`
+	Service  string `json:"service,omitempty"` // name changed from service 0.3 to package 0.4
+	Edge     string `json:"edge,omitempty"`
+	Source   string `json:"source,omitempty"`
+	Target   string `json:"target,omitempty"`
+	Forget   string `json:"forget"`
+	Done     string `json:"target,omitempty"`
+	Exit     string `json:"exit,omitempty"`
+	Metadata string `json:"metadata,omitempty"` // added to 0.4
+	Tstamp   string `json:"timestamp,omitempty"`
 }
 
 // GraphV0r4 defines version 0.4 of the graphjson file format with an array of elements
@@ -115,6 +118,7 @@ func WriteNode(nameService string, t time.Time) {
 	fmt.Sscanf(nameService, "%s%s", &node.Node, &node.Package) // space delimited
 	node.Tstamp = t.Format(time.RFC3339Nano)
 	// node id should be unique and service indicates service type
+	node.Metadata = fmt.Sprintf("IP/%v", dhcp.Lookup(node.Node))
 	nodeJSON, _ := json.Marshal(node)
 	Write(fmt.Sprintf("%v    %v", commaNewline(), string(nodeJSON)))
 }
