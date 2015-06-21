@@ -28,6 +28,7 @@ func Start(name string) {
 	}
 	var msg gotocol.Message
 	microservices := make(map[string]bool, archaius.Conf.Dunbar)
+	edges := make(map[string]bool, archaius.Conf.Dunbar)
 	var ok bool
 	hist := collect.NewHist(name)
 	log.Println(name + ": starting")
@@ -49,13 +50,18 @@ func Start(name string) {
 		}
 		switch msg.Imposition {
 		case gotocol.Inform:
-			graphml.WriteEdge(msg.Intention)
-			graphjson.WriteEdge(msg.Intention, msg.Sent)
+			edge := names.FilterEdge(msg.Intention)
+			if edges[edge] == false { // only log an edge once
+				edges[edge] = true
+				graphml.WriteEdge(edge)
+				graphjson.WriteEdge(edge, msg.Sent)
+			}
 		case gotocol.Put:
-			if microservices[msg.Intention] == false { // only log a node once
-				microservices[msg.Intention] = true
-				graphml.WriteNode(msg.Intention + " " + names.Package(msg.Intention))
-				graphjson.WriteNode(msg.Intention+" "+names.Package(msg.Intention), msg.Sent)
+			node := names.FilterNode(msg.Intention)
+			if microservices[node] == false { // only log a node once
+				microservices[node] = true
+				graphml.WriteNode(node + " " + names.Package(msg.Intention))
+				graphjson.WriteNode(node+" "+names.Package(msg.Intention), msg.Sent)
 			}
 		case gotocol.Forget: // forget the edge
 			graphjson.WriteForget(msg.Intention, msg.Sent)

@@ -3,6 +3,7 @@
 package names
 
 import (
+	"github.com/adrianco/spigo/archaius"
 	"fmt"
 	"strings"
 )
@@ -30,6 +31,53 @@ func Splitter(name string, offset hier) string {
 	} else {
 		return ""
 	}
+}
+
+const (
+	FilterDefault = "*.*.*.*.*"
+	FilterReduce  = "*.*.*.*.."
+)
+
+// Filter a name to take out components. "a.b.c" filter "*.*" returns "a"
+func Filter(name, filter string) string {
+	n := strings.Split(name, ".")
+	nl := len(n) - 1
+	f := strings.Split(filter, ".")
+	fl := len(f) - 1
+	if fl < 0 || nl < 0 || fl > nl {
+		return name
+	}
+	fn := make([]string, len(n))
+	l := len(fn)
+	// from the end to the start
+	for {
+		if fl < 0 || f[fl] != "*" {
+			l--
+			fn[l] = n[nl]
+		}
+		fl--
+		nl--
+		if nl < 0 || l < 0 {
+			break
+		}
+	}
+	return strings.Join(fn[l:], ".")
+}
+
+// Filter a node
+func FilterNode(node string) string {
+	if archaius.Conf.Filter {
+		return Filter(node, FilterReduce)
+	} else {
+		return Filter(node, FilterDefault)
+	}
+}
+
+// Filter an edge - two space separated nodes
+func FilterEdge(fromTo string) string {
+	var source, target string
+	fmt.Sscanf(fromTo, "%s%s", &source, &target) // two space delimited names
+	return fmt.Sprintf("%v %v", FilterNode(source), FilterNode(target))
 }
 
 // Make a service name from components and an index

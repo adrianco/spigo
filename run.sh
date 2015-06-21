@@ -14,7 +14,7 @@
 ./spigo -a lamp -d 5 -j -p 200 -s 6 -w 4
 ./spigo -a lamp -d 5 -j -p 200 -s 7 -w 5
 ./spigo -a lamp -d 5 -j -p 200 -s 8 -w 6
-./spigo -a lamp -d 5 -j -p 100 -s 9 -w 6
+./spigo -a lamp -d 5 -j -p 100 -s 9 -w 6 -f
 ./spigo -a migration -d 5 -j
 ./spigo -a migration -d 5 -j -s 1
 ./spigo -a migration -d 3 -j -s 2
@@ -32,7 +32,7 @@
 ./spigo -a netflix -d 3 -j -p 100 -s 4 -w 3
 ./spigo -a netflix -d 10 -j -p 300 -s 5 -w 6
 ./spigo -a netflix -d 3 -j -p 100 -s 6 -w 6
-./spigo -a netflix -d 3 -j -p 200 -s 7 -w 6
+./spigo -a netflix -d 3 -j -p 200 -s 7 -w 6 -f
 ./spigo -a netflix -d 10 -j -p 300 -s 8 -w 6
 ./spigo -a netflix -d 60 -j -p 400 -s 9 -w 6 -u=10s
 ./spigo -d 5 -j

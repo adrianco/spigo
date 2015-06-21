@@ -49,6 +49,9 @@ type Configuration struct {
 
 	// EurekaPoll interval in seconds
 	EurekaPoll string `json:"eurekapoll,omitempty"`
+
+	// Filter spec for output names to simplify graph
+	Filter bool `json:"filter",omitempty"`
 }
 
 var Conf = Configuration{

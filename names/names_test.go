@@ -9,10 +9,18 @@ import (
 
 func TestNames(t *testing.T) {
 	name := Make("netflixoss", "us-east-1", "zoneA", "cassTurtle", "priamCassandra", 0)
-	if name != "netflixoss.us-east-1.zoneA.cassTurtle.priamCassandra.cassTurtle0" {
+	if name != "netflixoss.us-east-1.zoneA.cassTurtle0....cassTurtle.priamCassandra" {
 		t.Fail()
 	}
 	fmt.Println(name)
+	fmt.Println("*:           " + Filter(name, "*"))
+	fmt.Println("*.*:         " + Filter(name, "*.*"))
+	fmt.Println("*.:          " + Filter(name, "*."))
+	fmt.Println("*.*.:        " + Filter(name, "*.*.."))
+	fmt.Println(FilterDefault + ":   " + FilterNode(name))
+	archaius.Conf.Filter = true
+	fmt.Println(FilterReduce + ":   " + FilterNode(name))
+	fmt.Println("Edge:        " + FilterEdge(fmt.Sprintf("%v %v", name, name)))
 	fmt.Println("arch:        " + Arch(name))
 	fmt.Println("region:      " + Region(name))
 	fmt.Println("zone:        " + Zone(name))
