@@ -13,12 +13,13 @@ type hier int
 const (
 	arch      hier = iota // netflixoss - architecture or AWS account level
 	region                // us-east-1a - AWS region or equivalent
-	zone                  // zoneA      - AWS availability zone or equivalent
-	service               // cassTurtle - service type or application name
-	ami                   // priamCassandra - versioned package of code to implement service, like AMI
-	instance              // cassTurtle0 - specific instance of service, like EC2 instance
-	container             // docker container
-	process               // process id within container
+	zone                  // zoneA      - availability zone or datacenter
+	machine               // ecs        - container orchestrator or physical machine name
+	instance              // docker:0   - specific booted instance of service, or "docker:X"
+	container             // homepage:1 - container name:id within instance
+	process               // node:100   - process name/pid within container
+	service               // homepage   - service type or application name
+	gopackage             // karyon     - go package of code to implement service, like AMI or VM
 )
 
 // Split out a component of a name
@@ -32,13 +33,13 @@ func Splitter(name string, offset hier) string {
 }
 
 // Make a service name from components and an index
-func Make(a, r, z, s, p string, i int) string {
-	return fmt.Sprintf("%v.%v.%v.%v.%v.%v%v", a, r, z, s, p, s, i)
+func Make(a, r, z, s, g string, i int) string {
+	return MakeContainer(a, r, z, fmt.Sprintf("%v%v", s, i), "", "", "", s, g)
 }
 
 // Make a container name from components and an index
-func MakeContainer(a, r, z, s, p, c string, i int) string {
-	return fmt.Sprintf("%v.%v.%v.%v.%v.%v%v.%v.%v", a, r, z, s, p, s, i, c, i)
+func MakeContainer(a, r, z, m, i, c, p, s, g string) string {
+	return fmt.Sprintf("%v.%v.%v.%v.%v.%v.%v.%v.%v", a, r, z, m, i, c, p, s, g)
 }
 
 // Extract architecture from a name
@@ -49,6 +50,20 @@ func Arch(name string) string {
 // Extract region from a name
 func Region(name string) string {
 	return Splitter(name, region)
+}
+
+// Return the other regions given one
+func OtherRegions(name string, rnames []string) []string {
+	var nr []string
+	regions := len(rnames)
+	for i, r := range rnames {
+		if Region(name) == r {
+			for j := 1; j < regions; j++ {
+				nr = append(nr, rnames[(i+j)%regions])
+			}
+		}
+	}
+	return nr
 }
 
 // Extract zone from a name
@@ -68,38 +83,14 @@ func OtherZones(name string, znames [3]string) [2]string {
 	return nz
 }
 
-// Return the other regions given one
-func OtherRegions(name string, rnames []string) []string {
-	var nr []string
-	regions := len(rnames)
-	for i, r := range rnames {
-		if Region(name) == r {
-			for j := 1; j < regions; j++ {
-				nr = append(nr, rnames[(i+j)%regions])
-			}
-		}
-	}
-	return nr
-}
-
 // Extract the region and zone together
 func RegionZone(name string) string {
 	return Splitter(name, region) + ". " + Splitter(name, zone)
 }
 
-// Extract the service from a name
-func Service(name string) string {
-	return Splitter(name, service)
-}
-
-// Extract the AMI from a name
-func AMI(name string) string {
-	return Splitter(name, ami)
-}
-
-// Extract the package (same as AMI) from a name
-func Package(name string) string {
-	return AMI(name)
+// Extract the machine from a name
+func Machine(name string) string {
+	return Splitter(name, machine)
 }
 
 // Extract the instance from a name
@@ -115,4 +106,19 @@ func Container(name string) string {
 // Extract the process from a name
 func Process(name string) string {
 	return Splitter(name, process)
+}
+
+// Extract the service from a name
+func Service(name string) string {
+	return Splitter(name, service)
+}
+
+// Extract the AMI from a name
+func AMI(name string) string {
+	return Splitter(name, gopackage)
+}
+
+// Extract the package (same as AMI) from a name
+func Package(name string) string {
+	return AMI(name)
 }

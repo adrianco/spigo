@@ -165,7 +165,7 @@ func StartNode(name string, dependencies ...string) {
 	case "store":
 		go store.Start(noodles[name])
 	default:
-		log.Fatal("migration: unknown package: " + names.Package(name))
+		log.Fatal("asgard: unknown package: " + names.Package(name))
 	}
 	noodles[name] <- gotocol.Message{gotocol.Hello, listener, time.Now(), name}
 	// there is a eureka service registry in each zone, so in-zone services just get to talk to their local registry
