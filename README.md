@@ -9,7 +9,7 @@ Simulate Protocol Interactions in Go using nanoservice actors - spigo
 
 SIMulate Interactive Actor Network VIsualiZation - simianviz - also visualize the simian army in action (not yet implemented).
 
-Current work in progress adds containers to the naming hierarchy and adds configurable filters to hide the extra levels when they aren't being used. The new -f option turns up filtering to produce a graph of services rather than nodes.
+Current work in progress adds containers to the naming hierarchy and adds configurable filters to hide the extra levels when they aren't being used. The new -f option turns up filtering to produce a graph of services rather than nodes. Nodes also now have fake IP addresses.
 
 [Run the netflixoss simulation in your browser](http://simianviz.divshot.io/netflixoss)
 
