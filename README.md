@@ -7,7 +7,9 @@ The name spigo is taken, but simianviz wasn't, so domains have been registered e
 
 Simulate Protocol Interactions in Go using nanoservice actors - spigo
 
-SIMulate Interactive Actor Network VIsualiZation - simianviz - also visualize the simian army in action (not yet implemented), however current work in progress is adding features to allow edges and nodes to be removed from the simulation, and timestamps have been added to the output file format.
+SIMulate Interactive Actor Network VIsualiZation - simianviz - also visualize the simian army in action (not yet implemented).
+
+Current work in progress adds containers to the naming hierarchy and adds configurable filters to hide the extra levels when they aren't being used. The new -f option turns up filtering to produce a graph of services rather than nodes.
 
 [Run the netflixoss simulation in your browser](http://simianviz.divshot.io/netflixoss)
 
@@ -40,7 +42,7 @@ Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI
 }
 ```
 
-For a single unscaled region, the above architecture is processed using spigo to produce json/netflixoss.json which is rendered using the single page app linked above or via a simpler local page local-d3-simianviz.html which can be used offline for queck tests with a local copy of d3:
+For a single unscaled region, the above architecture is processed using spigo to produce json/netflixoss.json which is rendered using the single page app linked above or via a simpler local page local-d3-simianviz.html which can be used offline for quick tests with a local copy of d3:
 
 ![Netflixoss](png/netflixoss.png)
 
@@ -52,6 +54,7 @@ Usage of ./spigo:
   -cpuprofile="": Write cpu profile to file
   -cpus=4:  Number of CPUs for Go runtime
   -d=10:    Simulation duration in seconds
+  -f=false: Filter output names to simplify graph
   -g=false: Enable GraphML logging of nodes and edges to <arch>.graphml
   -j=false: Enable GraphJSON logging of nodes and edges to <arch>.json
   -m=false: Enable console logging of every message
