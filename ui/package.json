@@ -4,9 +4,10 @@
   "description": "spigo =====",
   "main": "",
   "scripts": {
-    "test": "gulp test",
-    "lint": "gulp lint",
-    "build:prod": "gulp build-prod"
+    "test": "node_modules/.bin/gulp test",
+    "lint": "node_modules/.bin/gulp lint",
+    "dev": "node_modules/.bin/gulp dev",
+    "build": "node_modules/.bin/gulp build-prod"
   },
   "repository": {
     "type": "git",
