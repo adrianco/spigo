@@ -1,6 +1,8 @@
 spigo and simianviz
 ===================
 
+[![Join the chat at https://gitter.im/adrianco/spigo](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/adrianco/spigo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 The name spigo is taken, but simianviz wasn't, so domains have been registered etc. and the name will transition over the coming months.
 
 [![GoDoc](https://godoc.org/github.com/adrianco/spigo?status.svg)](https://godoc.org/github.com/adrianco/spigo) [Wiki Instructions](https://github.com/adrianco/spigo/wiki)
