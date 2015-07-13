@@ -64,11 +64,19 @@ func Start(name string) {
 				graphjson.WriteNode(node+" "+names.Package(msg.Intention), msg.Sent)
 			}
 		case gotocol.Forget: // forget the edge
-			graphjson.WriteForget(msg.Intention, msg.Sent)
+			// problem here in that edges may be reported multiple times from several sources
+			// however after filtering all matching edges are reported as forgotten when the first is
+			// need to maintain the full model and a filtered model with counts
+			edge := names.FilterEdge(msg.Intention)
+			if edges[edge] == true { // only remove an edge once
+				edges[edge] = false
+				graphjson.WriteForget(edge, msg.Sent)
+			}
 		case gotocol.Delete: // remove the node
-			if microservices[msg.Intention] == true { // only remove nodes that exist, and only log it once
-				microservices[msg.Intention] = false
-				graphjson.WriteDone(msg.Intention, msg.Sent)
+			node := names.FilterNode(msg.Intention)
+			if microservices[node] == true { // only remove nodes that exist, and only log it once
+				microservices[node] = false
+				graphjson.WriteDone(node, msg.Sent)
 			}
 		}
 	}

@@ -10,14 +10,14 @@ import (
 	"log"
 )
 
-type archV0r0 struct {
-	Arch        string        `json:"arch"`
-	Version     string        `json:"version"`
-	Description string        `json:"description,omitempty"`
-	Args        string        `json:"args,omitempty"`
-	Date        string        `json:"date,omitempty"`
-	Victim      string        `json:"victim,omitempty"`
-	Services    []serviceV0r0 `json:"services"`
+type archV0r1 struct {
+	Arch        string          `json:"arch"`
+	Version     string          `json:"version"`
+	Description string          `json:"description,omitempty"`
+	Args        string          `json:"args,omitempty"`
+	Date        string          `json:"date,omitempty"`
+	Victim      string          `json:"victim,omitempty"`
+	Services    []containerV0r0 `json:"services"`
 }
 
 type serviceV0r0 struct {
@@ -28,8 +28,20 @@ type serviceV0r0 struct {
 	Dependencies []string `json:"dependencies"`
 }
 
+type containerV0r0 struct {
+	Name         string   `json:"name"`
+	Machine      string   `json:"machine,omitempty"`
+	Instance     string   `json:"instance,omitempty"`
+	Container    string   `json:"container,omitempty"`
+	Process      string   `json:"process,omitempty"`
+	Gopackage    string   `json:"package"`
+	Regions      int      `json:"regions,omitempty"`
+	Count        int      `json:"count"`
+	Dependencies []string `json:"dependencies"`
+}
+
 // Start architecture
-func Start(a *archV0r0) {
+func Start(a *archV0r1) {
 	var r string
 	if archaius.Conf.Population < 1 {
 		log.Fatal("architecture: can't create less than 1 microservice")
@@ -41,20 +53,20 @@ func Start(a *archV0r0) {
 
 	for _, s := range a.Services {
 		log.Printf("Starting: %v\n", s)
-		r = asgard.Create(s.Name, s.Package, s.Regions*archaius.Conf.Regions, s.Count*archaius.Conf.Population/100, s.Dependencies...)
+		r = asgard.Create(s.Name, s.Gopackage, s.Regions*archaius.Conf.Regions, s.Count*archaius.Conf.Population/100, s.Dependencies...)
 	}
 	asgard.Run(r, a.Victim) // run the last service in the list, and point chaos monkey at the victim
 }
 
 // ReadArch parses archjson
-func ReadArch(arch string) *archV0r0 {
+func ReadArch(arch string) *archV0r1 {
 	fn := "json_arch/" + arch + "_arch.json"
 	log.Println("Loading architecture from " + fn)
 	data, err := ioutil.ReadFile(fn)
 	if err != nil {
 		log.Fatal(err)
 	}
-	a := new(archV0r0)
+	a := new(archV0r1)
 	e := json.Unmarshal(data, a)
 	if e == nil {
 		names := make(map[string]bool, 10)
@@ -72,10 +84,10 @@ func ReadArch(arch string) *archV0r0 {
 			} else {
 				names[s.Name] = true
 			}
-			if packs[s.Package] != true {
+			if packs[s.Gopackage] != true {
 				log.Println(packs)
 				log.Println(s)
-				log.Fatal("Unknown package name in architecture: " + s.Package)
+				log.Fatal("Unknown package name in architecture: " + s.Gopackage)
 			}
 		}
 		// check all the dependencies

@@ -10,7 +10,7 @@ import (
 )
 
 func try(t string) {
-	a := new(archV0r0)
+	a := new(archV0r1)
 	err := json.Unmarshal([]byte(t), a)
 	if err != nil {
 		fmt.Println(err)
@@ -25,18 +25,19 @@ func try(t string) {
 
 // reader parses graphjson
 func TestGraph(t *testing.T) {
-	testJSONarchV0r0 := `
+	testJSONarchV0r1 := `
                 {
                 "arch":"netflixoss",
-                "version":"arch-0.0",
-                "args":"[spigo -j -d=0 -a netflixoss]",
+                "version":"arch-0.1",
+                "args":"[spigo -j -d=0 -a testContainer]",
 		"victim":"homepage-node",
 		"date":"2015-04-26T23:52:45.959905585+12:00",
                 "services":[
 		{ "name":"mysql", "package":"store", "regions":1, "count":2, "dependencies":[] },
-		{ "name":"homepage-node", "package":"karyon", "regions":1, "count":9, "dependencies":["mysql"] },
-		{ "name":"signup-node", "package":"karyon", "regions":1, "count":3, "dependencies":["mysql"] },
-		{ "name":"www-proxy", "package":"zuul", "regions":1, "count":3, "dependencies":["signup-node", "homepage-node"] },
+		{ "name":"homepage", "machine":"ecs:4", "container":"adrianco/homepage-node", "package":"karyon", "regions":1, "count":9, "dependencies":["mysql"] },
+		{ "name":"signup", "package":"karyon", "machine":"ecs:1", "container":"adrianco/signup-node", "process":"signup-node", "regions":1, "count":3, "dependencies":["mysql"] },
+		{ "name":"signup-waf", "package":"karyon", "machine":"ecs:1", "container":"adrianco/signup-node", "process":"waf", "regions":1, "count":3, "dependencies":["signup-node"] },
+		{ "name":"www-proxy", "package":"zuul", "regions":1, "count":3, "dependencies":["signup-waf", "homepage"] },
 		{ "name":"www-elb", "package":"elb", "regions":1, "count":0, "dependencies":["www-proxy"] },
 		{ "name":"www", "package":"denominator", "regions":0, "count":0, "dependencies":["www-elb"] }
                 ]
@@ -53,7 +54,7 @@ func TestGraph(t *testing.T) {
 	//archaius.Conf.Collect = false
 	//archaius.Conf.StopStep = 0
 	archaius.Conf.EurekaPoll = "1s"
-	try(testJSONarchV0r0)
+	try(testJSONarchV0r1)
 	//ReadArch("testDuplicate") // these three are designed to fail, uncomment one at a time to check
 	//ReadArch("testMissingDep")
 	//ReadArch("testBadPackage")

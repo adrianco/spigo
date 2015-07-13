@@ -3,8 +3,8 @@
 package names
 
 import (
-	"github.com/adrianco/spigo/archaius"
 	"fmt"
+	"github.com/adrianco/spigo/archaius"
 	"strings"
 )
 
@@ -34,8 +34,9 @@ func Splitter(name string, offset hier) string {
 }
 
 const (
-	FilterDefault = "*.*.*.*.*"
-	FilterReduce  = "*.*.*.*.."
+	FilterDefault   = "*.*.*.*.*"
+	FilterReduce    = "*.*.*.*.."
+	FilterContainer = "*.*."
 )
 
 // Filter a name to take out components. "a.b.c" filter "*.*" returns "a"
@@ -69,7 +70,11 @@ func FilterNode(node string) string {
 	if archaius.Conf.Filter {
 		return Filter(node, FilterReduce)
 	} else {
-		return Filter(node, FilterDefault)
+		if Container(node) == "" {
+			return Filter(node, FilterDefault)
+		} else {
+			return Filter(node, FilterContainer)
+		}
 	}
 }
 
