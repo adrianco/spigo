@@ -5,12 +5,12 @@ import (
 	//"encoding/json"
 	"fmt"
 	"github.com/adrianco/spigo/archaius" // global configuration
-	//"github.com/adrianco/spigo/architecture"
+	"github.com/adrianco/spigo/architecture"
 	"gopkg.in/yaml.v2"
+	"strings"
 	"testing"
 	"time"
 )
-
 
 func try(t string) {
 	var c ComposeYaml
@@ -18,11 +18,20 @@ func try(t string) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	//fmt.Println(*c)
-	for i, v := range c {
-		fmt.Println("Compose: ", i, v.Image, v.Build, v.Links)
+	a := architecture.MakeArch("test", "compose yaml")
+	for n, v := range c {
+		fmt.Println("Compose: ", n, v.Image, v.Build, v.Links)
+		c := v.Image
+		if c == "" {
+			c = v.Build
+		}
+		var links []string // change db:redis into db
+		for _, l := range v.Links {
+			links = append(links, strings.Split(l, ":")[0])
+		}
+		architecture.AddContainer(a, n, "machine", "instance", c, "process", "monolith", 1, 3, links)
 	}
-	
+	fmt.Println(*a)
 }
 
 // test based on https://github.com/b00giZm/docker-compose-nodejs-examples/blob/master/05-nginx-express-redis-nodemon/docker-compose.yml
@@ -66,7 +75,7 @@ db:
 	//archaius.Conf.StopStep = 0
 	archaius.Conf.EurekaPoll = "1s"
 	try(testyaml)
-	ReadCompose("test")
-	//fmt.Println(*a)
-	//Start(a)
+	c := ReadCompose("compose_yaml/test.yml")
+	fmt.Println(c)
+	ComposeArch("test", c)
 }

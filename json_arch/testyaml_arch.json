@@ -1,0 +1,11 @@
+{
+"arch":"../compose/compose_yaml/test.yml",
+"version":"arch-0.1",
+"description":"compose yaml",
+"args":"[./compose2arch -file ../compose/compose_yaml/test.yml]",
+"date":"2015-07-19T12:10:53.231674608-07:00",
+"services":[
+{"name":"web","machine":"machine","instance":"instance","container":"./app","process":"process","package":"monolith","regions":1,"count":3,"dependencies":["db"]},
+{"name":"nginx","machine":"machine","instance":"instance","container":"./nginx/","process":"process","package":"monolith","regions":1,"count":3,"dependencies":["web"]},
+{"name":"db","machine":"machine","instance":"instance","container":"redis","process":"process","package":"monolith","regions":1,"count":3,"dependencies":null}
+]}

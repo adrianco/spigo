@@ -4,10 +4,13 @@ package architecture
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/adrianco/spigo/archaius" // global configuration
 	"github.com/adrianco/spigo/asgard"   // tools to create an architecture
 	"io/ioutil"
 	"log"
+	"os"
+	"time"
 )
 
 type archV0r1 struct {
@@ -105,5 +108,40 @@ func ReadArch(arch string) *archV0r1 {
 	} else {
 		log.Fatal(e)
 		return nil
+	}
+}
+
+// Make a new architecture object
+func MakeArch(arch, des string) *archV0r1 {
+	a := new(archV0r1)
+	a.Arch = arch
+	a.Version = "arch-0.1"
+	a.Description = des
+	a.Args = fmt.Sprintf("%v", os.Args)
+	a.Date = time.Now().Format(time.RFC3339Nano)
+	a.Victim = ""
+	return a
+}
+
+func AddContainer(a *archV0r1, name, machine, instance, container, process, gopackage string, regions, count int, dependencies []string) {
+	var c containerV0r0
+	c.Name = name
+	c.Machine = machine
+	c.Instance = instance
+	c.Container = container
+	c.Process = process
+	c.Gopackage = gopackage
+	c.Regions = regions
+	c.Count = count
+	c.Dependencies = dependencies
+	a.Services = append(a.Services, c)
+}
+
+func Write(a *archV0r1) {
+	b, err := json.Marshal(a)
+	if err != nil {
+		fmt.Println("error:", err)
+	} else {
+		os.Stdout.Write(b)
 	}
 }
