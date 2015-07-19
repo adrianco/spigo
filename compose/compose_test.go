@@ -20,7 +20,7 @@ func try(t string) {
 	}
 	//fmt.Println(*c)
 	for i, v := range c {
-		fmt.Println("Compose: ", i, v.Build, v.Links)
+		fmt.Println("Compose: ", i, v.Image, v.Build, v.Links)
 	}
 	
 }

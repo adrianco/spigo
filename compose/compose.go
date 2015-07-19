@@ -10,6 +10,7 @@ import (
 // Compose Attribute maps to attributes of a microservice
 type ComposeAttributes struct {
 	Build string `yaml:"build,omitempty"`
+	Image string `yaml:"image,omitempty"`
 	Links []string `yaml:"links,omitempty"`
 }
 
@@ -17,15 +18,15 @@ type ComposeAttributes struct {
 type ComposeYaml map[string]ComposeAttributes
 
 // ReadCompose
-func ReadCompose(compose string) *yaml.MapSlice {
+func ReadCompose(compose string) ComposeYaml {
 	fn := "compose_yaml/" + compose + ".yml"
 	log.Println("Loading compose yaml from " + fn)
 	data, err := ioutil.ReadFile(fn)
 	if err != nil {
 		log.Fatal(err)
 	}
-	c := new(yaml.MapSlice)
-	e := yaml.Unmarshal(data, c)
+	var c ComposeYaml
+	e := yaml.Unmarshal(data, &c)
 	if e == nil {
 		return c
 	} else {
