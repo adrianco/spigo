@@ -27,14 +27,14 @@ export default function(nodes, links) {
 
 			nodes
 				.transition()
-				.duration(300)
+				.duration(100)
 				.style('opacity', (o) => {
 					return neighboring(d, o) | neighboring(o, d) ? 1 : 0.1;
 				});
 
 			links
 				.transition()
-				.duration(300)
+				.duration(100)
 				.style('opacity', function (o) {
 					return d.index === o.source.index | d.index === o.target.index ? 1 : 0.1;
 				});

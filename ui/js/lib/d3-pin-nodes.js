@@ -1,6 +1,6 @@
 'use strict';
 
-export default (d3, tick) => {
+export default (d3, force, tick) => {
   function dragstart(d, i) {
     force.stop(); // stops the force auto positioning before you start dragging
   };

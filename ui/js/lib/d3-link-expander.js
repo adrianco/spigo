@@ -16,7 +16,7 @@ export default function() {
 			const l = d3.select(this);
 
 			l.style('stroke-width', '1.5px')
-				.style('stroke', "#999");
+				.style('stroke', '#e6e6e6');
 		}
 	};
 };

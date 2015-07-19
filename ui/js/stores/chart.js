@@ -7,6 +7,7 @@ import each from 'lodash.foreach';
 import pluck from 'lodash.pluck';
 import filter from 'lodash.filter';
 import bind from 'lodash.bind';
+import sortBy from 'lodash.sortby';
 import apiClient from 'api-client';
 import Promise from 'bluebird';
 import dispatcher from 'dispatcher';
@@ -82,6 +83,9 @@ const ChartStore = assign({}, eventMixin, {
 
 		each(unprocessedNodes, (n) => addNode(n));
 		each(unprocessedEdges, (e) => addEdge(e.source, e.target));
+
+		nodes = sortBy(nodes, 'timestamp');
+		edges = sortBy(edges, 'timestamp');
 
 		this.cache[this.architecture + step] = {nodes, edges};
 	},

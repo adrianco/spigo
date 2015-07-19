@@ -6,7 +6,6 @@ import d3 from 'd3';
 import reduce from 'lodash.reduce';
 import each from 'lodash.foreach';
 import bind from 'lodash.bind';
-import sortBy from 'lodash.sortby';
 import tooltip from 'd3-tip';
 import dispatcher from 'dispatcher';
 import ChartStore from 'stores/chart';
@@ -24,10 +23,35 @@ const collide = collideFactory(d3);
 
 const HEADER_HEIGHT = 80;
 
+const colorList = [
+	'#1abc9c',
+	'#2ecc71',
+	'#3498db',
+	'#9b59b6',
+	'#34495e',
+	'#f1c40f',
+	'#e67e22',
+	'#e74c3c',
+	'#bdc3c7',
+	'#7f8c8d',
+	'#16a085'
+];
+
+const colors = (index) => {
+	if (index < 0 || index > 10) index = Math.floor(Math.random() * 11);
+	return colorList[index];
+};
+
+const pickColor = (d, i) => {
+	var names = d[0].node.split('.');
+
+	if (names.length < 4) return colors(0);
+	else return colors(names[3].length);
+};
+
 export default React.createClass({
 	getDefaultProps () {
 		return {
-			colors: d3.scale.category10(),
 			arch: 'migration',
 			step: 0
 		};
@@ -52,17 +76,12 @@ export default React.createClass({
 		const dataset = ChartStore.getChartDataset();
 		const {charge} = ChartStore.getStoreState();
 		const {width, height} = this.state;
-		const {colors} = this.props;
 
 		if (!dataset.nodes.length) return;
 
-		this.svg.selectAll('*')
+		this.svg
+			.selectAll('*')
 			.remove();
-
-		this.root = reduce(dataset.nodes, (current, next) => {
-			if (!current) return next;
-			return (current.size < next.size) ? current : next;
-		}, undefined);
 
 		this.force
 			.size([width, height])
@@ -73,25 +92,22 @@ export default React.createClass({
 			.on('tick', bind(this._onTick, this))
 			.start();
 
-		this.links = this.svg.selectAll('.link')
+		this.links = this.svg
+			.selectAll('.link')
 			.data(dataset.edges)
 			.enter()
 			.append('line')
 			.attr('class', 'link');
 
-		this.nodes = this.svg.selectAll('.nodes')
+		this.nodes = this.svg
+			.selectAll('.nodes')
 			.data(dataset.nodes)
 			.enter()
 			.append('circle')
 			.attr('class', 'node')
-			.attr('r', (d) => Math.sqrt(d.size) * 2)
-			.style('fill', (d, i) => {
-				var names = d[0].node.split('.');
-
-				if (names.length < 4) return colors(0);
-				else return colors(names[3].length);
-			})
-			.call(pinNodes(d3, this._onTick));
+			.attr('r', (d) => Math.sqrt(d.size) * 2.6)
+			.style('fill', pickColor)
+			.call(pinNodes(d3, this.force, this._onTick));
 
 		const {mouseover, mouseout} = connectedNodesFactory(this.nodes, this.links);
 		const removableNodes = removableNodesFactory(this.nodes, this.links);
@@ -140,7 +156,7 @@ export default React.createClass({
 				.each(d => { d.fisheye = this.fisheye(d); })
 				.attr('cx', d => d.fisheye.x)
 				.attr('cy', d => d.fisheye.y)
-				.attr('r', d => Math.sqrt(d.size) * 2.3);
+				.attr('r', d => Math.sqrt(d.size) * 3);
 
 			this.links
 				.attr('x1', d => d.source.fisheye.x)
@@ -150,7 +166,7 @@ export default React.createClass({
 		});
 
 		this.svg.on('mouseout', () => {
-			this.force.start();
+			this.force.resume();
 
 			this.links
 				.attr('x1', d => d.source.x)
@@ -161,21 +177,17 @@ export default React.createClass({
 			this.nodes
 				.attr('cx', (d) => d.x)
 				.attr('cy', (d) => d.y)
-				.attr('r', d => Math.sqrt(d.size) * 2);
+				.attr('r', d => Math.sqrt(d.size) * 2.6);
 		});
 
-		ChartStore.addChangeListener(bind(this._onChange), this);
+		ChartStore.addChangeListener(bind(this.updateChart), this);
 		ChartStore.fetch(arch, step);
 		window.addEventListener('resize', this.boundUpdateSvgDims);
 	},
 
 	componentDidUnmount () {
-		ChartStore.removeChangeListener(bind(this._onChange), this);
+		ChartStore.removeChangeListener(bind(this.updateChart), this);
 		window.removeEventListener('resize', this.boundUpdateSvgDims);
-	},
-
-	_onChange () {
-		this.updateChart();
 	},
 
 	_onTick (d) {
@@ -192,9 +204,6 @@ export default React.createClass({
 			.attr('cx', (d) => d.x)
 			.attr('cy', (d) => d.y)
 			.each(collide(0.3, dataset.nodes));
-
-		this.root.x = width / 2;
-		this.root.y = height / 2;
 	},
 
 	render () {
