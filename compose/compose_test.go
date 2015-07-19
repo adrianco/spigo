@@ -11,13 +11,18 @@ import (
 	"time"
 )
 
+
 func try(t string) {
-	c := new(yaml.MapSlice)
-	err := yaml.Unmarshal([]byte(t), c)
+	var c ComposeYaml
+	err := yaml.Unmarshal([]byte(t), &c)
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("yaml.MapSlice: ", c)
+	//fmt.Println(*c)
+	for i, v := range c {
+		fmt.Println("Compose: ", i, v.Build, v.Links)
+	}
+	
 }
 
 // test based on https://github.com/b00giZm/docker-compose-nodejs-examples/blob/master/05-nginx-express-redis-nodemon/docker-compose.yml
@@ -61,7 +66,7 @@ db:
 	//archaius.Conf.StopStep = 0
 	archaius.Conf.EurekaPoll = "1s"
 	try(testyaml)
-	a := ReadCompose("test")
-	fmt.Println(a)
+	ReadCompose("test")
+	//fmt.Println(*a)
 	//Start(a)
 }

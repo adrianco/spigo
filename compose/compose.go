@@ -7,6 +7,15 @@ import (
 	"log"
 )
 
+// Compose Attribute maps to attributes of a microservice
+type ComposeAttributes struct {
+	Build string `yaml:"build,omitempty"`
+	Links []string `yaml:"links,omitempty"`
+}
+
+// Compose type to extract interesting data from compose yaml
+type ComposeYaml map[string]ComposeAttributes
+
 // ReadCompose
 func ReadCompose(compose string) *yaml.MapSlice {
 	fn := "compose_yaml/" + compose + ".yml"
