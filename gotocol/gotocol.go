@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/adrianco/spigo/names"
 	"log"
-	"math/rand"
+	//"math/rand"
 	"time"
 )
 
@@ -84,12 +84,14 @@ func (ctx Context) String() string {
 }
 
 // fast hack for generating unique-enough contexts
-var spanner uint32
+var spanner, requester uint32
 
 // new request happens less often so use random for request, and increment span
 func NewRequest() Context {
 	var ctx Context
-	ctx.request = rand.Uint32()
+	//ctx.request = rand.Uint32()
+	requester++
+	ctx.request = requester // NilContext is 0:0, so first real Context is 1:0
 	ctx.span = spanner
 	spanner++
 	return ctx
@@ -104,7 +106,7 @@ func (ctx Context) NewSpan() Context {
 
 // make an empty context
 func NilContext() Context {
-	return Context{ 0, 0}
+	return Context{0, 0}
 }
 
 // Message structure used for all messages, includes a channel of itself
