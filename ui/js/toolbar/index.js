@@ -114,6 +114,8 @@ export default React.createClass({
 						<option value="netflixoss">Netflix OSS</option>
 						<option value="fsm">FSM</option>
 						<option value="migration">Migration</option>
+						<option value="container">Container</option>
+						<option value="aws_ac_ra_web">AWS</option>
 					</select>
 				</span>
 			</section>
