@@ -63,13 +63,13 @@ func Start(listener chan gotocol.Message) {
 				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away, was chatting every %v\n", name, chatrate)
 				}
-				gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(netflixoss)
+				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext(), name}.GoSend(netflixoss)
 				return
 			}
 		case <-eurekaTicker.C: // check to see if any new dependencies have appeared
 			for dep, _ := range dependencies {
 				for _, ch := range eureka {
-					ch <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), dep}
+					ch <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NilContext(), dep}
 				}
 			}
 		case <-chatTicker.C:
@@ -85,9 +85,9 @@ func Start(listener chan gotocol.Message) {
 				m := rand.Intn(len(microservices))
 				// start a request to a random member of this denominator
 				if rand.Intn(2) == 0 {
-					gotocol.Message{gotocol.GetRequest, listener, time.Now(), "why?"}.GoSend(microindex[m])
+					gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NewRequest(), "why?"}.GoSend(microindex[m])
 				} else {
-					gotocol.Message{gotocol.Put, listener, time.Now(), "remember me"}.GoSend(microindex[m])
+					gotocol.Message{gotocol.Put, listener, time.Now(), gotocol.NewRequest(), "remember me"}.GoSend(microindex[m])
 				}
 			}
 		}

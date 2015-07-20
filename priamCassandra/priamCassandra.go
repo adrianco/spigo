@@ -1,5 +1,5 @@
-// Package priamCassandra simulates a generic business logic microservice
-// Takes incoming traffic and calls into dependent microservices in a single zone
+// Package priamCassandra simulates a cassandra cluster with NetflixOSS Priam
+// Takes incoming traffic and calls into cross zone and cross region nodes
 package priamCassandra
 
 import (
@@ -60,11 +60,11 @@ func Start(listener chan gotocol.Message) {
 				}
 			case gotocol.GetRequest:
 				// return any stored value for this key (Cassandra READ.ONE behavior)
-				gotocol.Message{gotocol.GetResponse, listener, time.Now(), store[msg.Intention]}.GoSend(msg.ResponseChan)
+				gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Ctx.NewSpan(), store[msg.Intention]}.GoSend(msg.ResponseChan)
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up (not currently used)
 				if requestor != nil {
-					gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Intention}.GoSend(requestor)
+					gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(requestor)
 				}
 			case gotocol.Put:
 				requestor = msg.ResponseChan
@@ -78,7 +78,7 @@ func Start(listener chan gotocol.Message) {
 						// replicate request
 						for n, c := range microservices {
 							if names.Region(n) == names.Region(name) && names.Zone(n) == z {
-								gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Intention}.GoSend(c)
+								gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(c)
 								break // only need to send it to one node in each zone, no tokens yet
 							}
 						}
@@ -86,7 +86,7 @@ func Start(listener chan gotocol.Message) {
 					for _, r := range names.OtherRegions(name, archaius.Conf.RegionNames[0:archaius.Conf.Regions]) {
 						for n, c := range microservices {
 							if names.Region(n) == r {
-								gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Intention}.GoSend(c)
+								gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(c)
 								break // only need to send it to one node in each region, no tokens yet
 							}
 						}
@@ -113,7 +113,7 @@ func Start(listener chan gotocol.Message) {
 							// replicate request
 							for n, c := range microservices {
 								if names.Region(n) == myregion && names.Zone(n) == z {
-									gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Intention}.GoSend(c)
+									gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(c)
 									break // only need to send it to one node in each zone, no tokens yet
 								}
 							}
@@ -125,13 +125,13 @@ func Start(listener chan gotocol.Message) {
 				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away, zone: %v\n", name, store["zone"])
 				}
-				gotocol.Message{gotocol.Goodbye, nil, time.Now(), name}.GoSend(netflixoss)
+				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext(), name}.GoSend(netflixoss)
 				return
 			}
 		case <-eurekaTicker.C: // check to see if any new dependencies have appeared
 			for dep, _ := range dependencies {
 				for _, ch := range eureka {
-					ch <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), dep}
+					ch <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NilContext(), dep}
 				}
 			}
 		case <-chatTicker.C:
