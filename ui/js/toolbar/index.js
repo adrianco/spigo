@@ -115,7 +115,8 @@ export default React.createClass({
 						<option value="fsm">FSM</option>
 						<option value="migration">Migration</option>
 						<option value="container">Container</option>
-						<option value="aws_ac_ra_web">AWS</option>
+			                        <option value="aws_ac_ra_web">AWS Reference Arch</option>
+			                        <option value="netflix">More complex Netflix</option>
 					</select>
 				</span>
 			</section>
