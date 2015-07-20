@@ -11,16 +11,16 @@
 		"document": true
 	},
 	"rules": {
-		"complexity": 5,
+		"complexity": [1, 5],
 		"max-len": [1, 120, 4],
-		"quotes": "single",
+		"quotes": [1, "single"],
 		"curly": [2, "multi"],
 		"strict": [2, "global"],
 		"global-strict": [2, "always"],
-		"no-shadow": false,
-		"no-underscore-dangle": false,
-		"no-unused-vars": false,
-		"no-unused-expressions": false,
-		"no-console": false
+		"no-shadow": [0],
+		"no-underscore-dangle": [0],
+		"no-unused-vars": [0],
+		"no-unused-expressions": [0],
+		"no-console": [0]
 	}
 }

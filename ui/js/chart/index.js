@@ -6,15 +6,17 @@ import d3 from 'd3';
 import reduce from 'lodash.reduce';
 import each from 'lodash.foreach';
 import bind from 'lodash.bind';
+import sortBy from 'lodash.sortby';
+import tooltip from 'd3-tip';
 import dispatcher from 'dispatcher';
 import ChartStore from 'stores/chart';
 import fisheye from 'lib/d3-fisheye';
-import tooltip from 'd3-tip';
 import collideFactory from 'lib/d3-collision-detection';
 import connectedNodesFactory from 'lib/d3-connected-nodes';
 import removableNodesFactory from 'lib/d3-removable-nodes';
 import removableLinksFactory from 'lib/d3-removable-links';
 import linkExpanderFactory from 'lib/d3-link-expander';
+import pinNodes from 'lib/d3-pin-nodes';
 
 d3 = fisheye(d3);
 
@@ -89,7 +91,7 @@ export default React.createClass({
 				if (names.length < 4) return colors(0);
 				else return colors(names[3].length);
 			})
-			.call(this.force.drag);
+			.call(pinNodes(d3, this._onTick));
 
 		const {mouseover, mouseout} = connectedNodesFactory(this.nodes, this.links);
 		const removableNodes = removableNodesFactory(this.nodes, this.links);

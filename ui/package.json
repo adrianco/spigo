@@ -30,6 +30,7 @@
     "bluebird": "^2.9.25",
     "d3": "^3.5.5",
     "d3-tip": "^0.6.7",
+    "eslint": "^0.24.1",
     "flux": "^2.0.3",
     "font-awesome": "^4.3.0",
     "jquery": "^2.1.3",
@@ -41,6 +42,7 @@
     "lodash.indexof": "^3.0.2",
     "lodash.pluck": "^3.1.1",
     "lodash.reduce": "^3.1.1",
+    "lodash.sortby": "^3.1.5",
     "react": "^0.13.2",
     "superagent": "^0.21.0"
   },
