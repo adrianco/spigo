@@ -19,7 +19,7 @@ module.exports = function(gulp) {
 		return gulp
 			.src(src)
 			.pipe(plumber({
-				errorHandler: notify.onError("Build Error: <%= error.message %>")
+				errorHandler: notify.onError('Build Error: <%= error.message %>')
 			}))
 			.pipe(eslint())
 			.pipe(eslint.format())

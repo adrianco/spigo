@@ -13,7 +13,7 @@ module.exports = function(gulp) {
 
 		return gulp.src(src)
 			.pipe(plumber({
-				errorHandler: notify.onError("Build Error: <%= error.message %>")
+				errorHandler: notify.onError('Build Error: <%= error.message %>')
 			}))
 			.pipe(minifyCss())
 			.pipe(rename(config.styles.outputFileName + '.min.css'))

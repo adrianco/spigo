@@ -13,7 +13,7 @@ module.exports = function(gulp) {
 
 		return gulp.src(src, { base: config.dist + '/js' })
 			.pipe(plumber({
-				errorHandler: notify.onError("Build Error: <%= error.message %>")
+				errorHandler: notify.onError('Build Error: <%= error.message %>')
 			}))
 			.pipe(uglify())
 			.pipe(rename(config.js.outputFileName + '.min.js'))

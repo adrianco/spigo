@@ -22,7 +22,7 @@ module.exports = function(gulp) {
 				console.log(err.message);
 			})
 			.pipe(plumber({
-				errorHandler: notify.onError("Build Error: <%= error.message %>")
+				errorHandler: notify.onError('Build Error: <%= error.message %>')
 			}))
 			.pipe(source(config.js.outputFileName + '.js'))
 			.pipe(gulp.dest(config.dist + '/js'))

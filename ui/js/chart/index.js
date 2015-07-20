@@ -107,7 +107,7 @@ export default React.createClass({
 			.attr('class', 'node')
 			.attr('r', (d) => Math.sqrt(d.size) * 2.6)
 			.style('fill', pickColor)
-			.call(pinNodes(d3, this.force, this._onTick));
+			.call(pinNodes(d3, this.force, bind(this._onTick, this)));
 
 		const {mouseover, mouseout} = connectedNodesFactory(this.nodes, this.links);
 		const removableNodes = removableNodesFactory(this.nodes, this.links);
@@ -191,8 +191,7 @@ export default React.createClass({
 	},
 
 	_onTick (d) {
-		const dataset = ChartStore.getChartDataset();
-		const {width, height} = this.state;
+		const {nodes} = ChartStore.getChartDataset();
 
 		this.links
 			.attr('x1', d => d.source.x)
@@ -203,7 +202,7 @@ export default React.createClass({
 		this.nodes
 			.attr('cx', (d) => d.x)
 			.attr('cy', (d) => d.y)
-			.each(collide(0.3, dataset.nodes));
+			.each(collide(0.3, nodes));
 	},
 
 	render () {

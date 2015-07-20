@@ -1,20 +1,20 @@
 'use strict';
 
 export default (d3, force, tick) => {
-  function dragstart(d, i) {
-    force.stop(); // stops the force auto positioning before you start dragging
+  const dragstart = (d, i) => {
+    force.stop();
   };
 
-  function dragmove(d, i) {
+  const dragmove = (d, i) => {
     d.px += d3.event.dx;
     d.py += d3.event.dy;
     d.x += d3.event.dx;
     d.y += d3.event.dy;
-    tick(); // this is the key to make it work together with updating both px,py,x,y on d !
+    tick();
   };
 
-  function dragend(d, i) {
-      d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
+  const dragend = (d, i) => {
+      d.fixed = true;
       tick();
       force.resume();
   };

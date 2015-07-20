@@ -11,7 +11,7 @@ module.exports = function(gulp) {
 	gulp.task('styles', function() {
 		return gulp.src(config.styles.entryFile )
 			.pipe(plumber({
-				errorHandler: notify.onError("Build Error: <%= error.message %>")
+				errorHandler: notify.onError('Build Error: <%= error.message %>')
 			}))
 			.pipe(less())
 			.pipe(rename(config.styles.outputFileName + '.css'))
