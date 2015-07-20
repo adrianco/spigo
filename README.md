@@ -11,13 +11,18 @@ Simulate Protocol Interactions in Go using nanoservice actors - spigo
 
 SIMulate Interactive Actor Network VIsualiZation - simianviz - also visualize the simian army in action (not yet implemented).
 
-Current work in progress adds containers to the naming hierarchy and adds configurable filters to hide the extra levels when they aren't being used. The new -f option turns up filtering to produce a graph of services rather than nodes. Nodes also now have fake IP addresses.
+Current work in progress adds context to each message for request tracing, adds containers to the naming hierarchy and adds configurable filters to hide the extra levels when they aren't being used. The new -f option turns up filtering to produce a graph of services rather than nodes. Nodes also now have fake IP addresses. Docker compose yaml files can be converted to architecture json using
+```
+$ ./compose2arch -file compose.yaml > arch.json
+```
 
+Recent UI changes include pinning nodes so graphs can be stretched out and deleting nodes and edges by double-clicking on them.
 [Run the netflixoss simulation in your browser](http://simianviz.divshot.io/netflixoss)
 
 For a local installation of spigo, with no network dependencies, you can start the service and browse localhost:8000 using:
 ```
 $ cd ui
+$ npm install
 $ npm run dev
 ```
 
