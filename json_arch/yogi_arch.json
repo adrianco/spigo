@@ -1,0 +1,21 @@
+{
+    "arch": "yogi",
+    "description":"Yogi architecture from OSCON",
+    "version": "arch-0.1",
+    "victim": "cass",
+    "services": [
+        { "name": "cass",               "package": "priamCassandra", "count": 6, "regions": 1, "dependencies": [ "cass", "eureka" ]  },
+        { "name": "kafka",              "package": "store",          "count": 3, "regions": 1, "dependencies": [ "kafka" ]  },
+        { "name": "zookeeper",          "package": "store",          "count": 3, "regions": 1, "dependencies": [ "zookeeper" ]  },
+        { "name": "dmz",                "package": "monolith",       "count": 3, "regions": 1, "dependencies": [ "zookeeper", "ext-dmz-elb", "int-dmz-elb" ] },
+        { "name": "consumer-ranger",    "package": "monolith",       "count": 3, "regions": 1, "dependencies": [ "zookeeper", "kafka" ] },
+        { "name": "consumer-cindy",     "package": "monolith",       "count": 3, "regions": 1, "dependencies": [ "zookeeper", "kafka" ]  },
+        { "name": "legacyAPI",          "package": "monolith",       "count": 3, "regions": 1, "dependencies": [ "zookeeper", "legacyAPI-elb", "cass" ] },
+        { "name": "yogi",               "package": "monolith",       "count": 3, "regions": 1, "dependencies": [ "zookeeper", "int-dmz-elb", "cass" ] },
+        { "name": "boobo",              "package": "monolith",       "count": 3, "regions": 1, "dependencies": [ "kafka", "int-dmz-elb" ]  },
+        { "name": "ext-dmz-elb",        "package": "elb",            "count": 0, "regions": 1, "dependencies": [  ]},
+        { "name": "legacyAPI-elb",      "package": "elb",            "count": 0, "regions": 1, "dependencies": [  ]},
+        { "name": "int-dmz-elb",        "package": "elb",            "count": 0, "regions": 1, "dependencies": [  ]},
+        { "name": "www",                "package": "denominator",    "count": 0, "regions": 0, "dependencies": [ "ext-dmz-elb" ]}
+    ]
+}
