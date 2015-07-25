@@ -5,6 +5,7 @@ package elb
 import (
 	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/collect"
+	"github.com/adrianco/spigo/flow"
 	"github.com/adrianco/spigo/gotocol"
 	"log"
 	"math/rand"
@@ -17,10 +18,11 @@ func Start(listener chan gotocol.Message) {
 	// remember the channel to talk to microservices
 	microservices := make(map[string]chan gotocol.Message, dunbar)
 	microindex := make([]chan gotocol.Message, dunbar)
-	dependencies := make(map[string]time.Time, dunbar) // dependent services and time last updated
-	var netflixoss, requestor chan gotocol.Message     // remember how to talk back to creator
-	var name string                                    // remember my name
-	eureka := make(map[string]chan gotocol.Message, 3) // service registry per zone
+	dependencies := make(map[string]time.Time, dunbar)                           // dependent services and time last updated
+	var parent chan gotocol.Message                                              // remember how to talk back to creator
+	requestor := make(map[gotocol.TraceContextType]chan gotocol.Message, dunbar) // remember where requests came from
+	var name string                                                              // remember my name
+	eureka := make(map[string]chan gotocol.Message, 3)                           // service registry per zone
 	var chatrate time.Duration
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
 	eurekaTicker := time.NewTicker(ep)
@@ -38,8 +40,8 @@ func Start(listener chan gotocol.Message) {
 			case gotocol.Hello:
 				if name == "" {
 					// if I don't have a name yet remember what I've been named
-					netflixoss = msg.ResponseChan // remember how to talk to my namer
-					name = msg.Intention          // message body is my name
+					parent = msg.ResponseChan // remember how to talk to my namer
+					name = msg.Intention      // message body is my name
 					hist = collect.NewHist(name)
 				}
 			case gotocol.Inform:
@@ -58,7 +60,7 @@ func Start(listener chan gotocol.Message) {
 				}
 			case gotocol.GetRequest:
 				// route the request on to microservices
-				requestor = msg.ResponseChan
+				requestor[msg.Ctx.Trace] = msg.ResponseChan
 				// Intention body indicates which service to route to or which key to get
 				// need to lookup service by type rather than randomly call one day
 				if len(microservices) > 0 {
@@ -72,12 +74,17 @@ func Start(listener chan gotocol.Message) {
 					}
 					m := rand.Intn(len(microservices))
 					// pass on request to a random service
-					gotocol.Message{gotocol.GetRequest, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(microindex[m])
+					span := msg.Ctx.NewSpan()
+					flow.Update(span, name)
+					gotocol.Message{gotocol.GetRequest, listener, time.Now(), span, msg.Intention}.GoSend(microindex[m])
 				}
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up
-				if requestor != nil {
-					gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(requestor)
+				if requestor[msg.Ctx.Trace] != nil {
+					span := msg.Ctx.NewSpan()
+					flow.Update(span, name)
+					gotocol.Message{gotocol.GetResponse, listener, time.Now(), span, msg.Intention}.GoSend(requestor[msg.Ctx.Trace])
+					delete(requestor, msg.Ctx.Trace)
 				}
 			case gotocol.Put:
 				// route the request on to a random dependency
@@ -92,19 +99,21 @@ func Start(listener chan gotocol.Message) {
 					}
 					m := rand.Intn(len(microservices))
 					// pass on request to a random service
-					gotocol.Message{gotocol.Put, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(microindex[m])
+					span := msg.Ctx.NewSpan()
+					flow.Update(span, name)
+					gotocol.Message{gotocol.Put, listener, time.Now(), span, msg.Intention}.GoSend(microindex[m])
 				}
 			case gotocol.Goodbye:
 				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away, chatting every %v\n", name, chatrate)
 				}
-				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext(), name}.GoSend(netflixoss)
+				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext, name}.GoSend(parent)
 				return
 			}
 		case <-eurekaTicker.C: // check to see if any new dependencies have appeared
 			for dep, _ := range dependencies {
 				for _, ch := range eureka {
-					ch <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NilContext(), dep}
+					ch <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NilContext, dep}
 				}
 			}
 		case <-chatTicker.C:
@@ -119,7 +128,7 @@ func Start(listener chan gotocol.Message) {
 				}
 				m := rand.Intn(len(microservices))
 				// start a request to a random member of this elb
-				gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NewRequest(), name}.GoSend(microindex[m])
+				gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NewTrace(), name}.GoSend(microindex[m])
 			}
 		}
 	}

@@ -73,41 +73,42 @@ func (imps Impositions) String() string {
 	return "Unknown"
 }
 
+// trace type needs to be exported for flow package map. For production scale use this should be 64bit, for spigo it seems ok with 32.
+type TraceContextType uint32
+
 // context for capturing dapper/zipkin style traces
 type Context struct {
-	request, span uint32
+	Trace, Span TraceContextType
 }
 
 // string formatter for context
 func (ctx Context) String() string {
-	return fmt.Sprintf("%v:%v", ctx.request, ctx.span)
+	return fmt.Sprintf("%v:%v", ctx.Trace, ctx.Span)
 }
 
 // fast hack for generating unique-enough contexts
-var spanner, requester uint32
+var spanner, tracer TraceContextType
 
 // new request happens less often so use random for request, and increment span
-func NewRequest() Context {
+func NewTrace() Context {
 	var ctx Context
-	//ctx.request = rand.Uint32()
-	requester++
-	ctx.request = requester // NilContext is 0:0, so first real Context is 1:0
-	ctx.span = spanner
+	//ctx.Trace = rand.Uint32()
+	tracer++
+	ctx.Trace = tracer // NilContext is 0:0, so first real Context is 1:0
+	ctx.Span = spanner
 	spanner++
 	return ctx
 }
 
 // updating to get a new span for an existing request
 func (ctx Context) NewSpan() Context {
-	ctx.span = spanner
+	ctx.Span = spanner
 	spanner++
 	return ctx
 }
 
-// make an empty context
-func NilContext() Context {
-	return Context{0, 0}
-}
+// make an empty context, can't figure out how to make this a const
+var NilContext Context
 
 // Message structure used for all messages, includes a channel of itself
 type Message struct {
@@ -144,7 +145,7 @@ func InformHandler(msg Message, name string, listener chan Message) chan Message
 		log.Fatal(name + "Inform message received before Hello message")
 	}
 	// service registry channel is buffered so don't use GoSend to tell Eureka we exist
-	msg.ResponseChan <- Message{Put, listener, time.Now(), NilContext(), name}
+	msg.ResponseChan <- Message{Put, listener, time.Now(), NilContext, name}
 	return msg.ResponseChan
 }
 
@@ -153,7 +154,7 @@ func NameDropHandler(dependencies *map[string]time.Time, microservices *map[stri
 		(*dependencies)[msg.Intention] = msg.Sent // remember it for later
 		for _, ch := range eureka {
 			//log.Println(name + " looking up " + msg.Intention)
-			Send(ch, Message{GetRequest, listener, time.Now(), NilContext(), msg.Intention})
+			Send(ch, Message{GetRequest, listener, time.Now(), NilContext, msg.Intention})
 		}
 	} else { // update dependency with full name and listener channel
 		microservice := msg.Intention // message body is buddy name
@@ -164,7 +165,7 @@ func NameDropHandler(dependencies *map[string]time.Time, microservices *map[stri
 				(*dependencies)[names.Service(microservice)] = msg.Sent
 				for _, ch := range eureka {
 					// tell one of the service registries I have a new buddy to talk to so it doesn't get logged more than once
-					Send(ch, Message{Inform, listener, time.Now(), NilContext(), name + " " + microservice})
+					Send(ch, Message{Inform, listener, time.Now(), NilContext, name + " " + microservice})
 					return
 				}
 			}

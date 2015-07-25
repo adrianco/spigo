@@ -25,7 +25,7 @@ func pirateListen(listener chan Message) {
 		case Chat:
 			// send  a Request if we have a buddy
 			if buddy != nil {
-				go Send(buddy, Message{GetRequest, listener, time.Now(), NewRequest(), "Yo ho ho"})
+				go Send(buddy, Message{GetRequest, listener, time.Now(), NewTrace(), "Yo ho ho"})
 			}
 		case GoldCoin:
 		case Inform:
@@ -45,17 +45,17 @@ func pirateListen(listener chan Message) {
 
 func TestImpose(t *testing.T) {
 	var ctx, ctx4 Context
-	ctx2 := NewRequest()
+	ctx2 := NewTrace()
 	ctx3 := ctx2.NewSpan()
-	ctx4 = NilContext()
-	fmt.Println("Context: ", ctx, ctx2, ctx3, ctx4, NewRequest())
+	ctx4 = NilContext
+	fmt.Println("Context: ", ctx, ctx2, ctx3, ctx4, NewTrace())
 	imp := Message{Hello, nil, time.Now(), ctx2, "world"}
 	noodle := make(chan Message)
 	p2p := make(chan Message)
 	go pirateListen(noodle) // pirate to be controlled directly by noodly touch
 	go pirateListen(p2p)    // pirate that will get messages via the other one
 	// test p2p by telling first pirate about the other
-	Message{NameDrop, p2p, time.Now(), NilContext(), "Mate"}.GoSend(noodle)
+	Message{NameDrop, p2p, time.Now(), NilContext, "Mate"}.GoSend(noodle)
 	// test all options including namedrop nil and goodbye
 	for i := 0; i < int(numOfImpositions); i++ {
 		imp.Imposition = Impositions(i)
@@ -63,7 +63,7 @@ func TestImpose(t *testing.T) {
 		noodle <- imp
 	}
 	// shut down second pirate, which will have said hello twice
-	p2p <- Message{Goodbye, nil, time.Now(), NilContext(), "Pasta la vista"}
+	p2p <- Message{Goodbye, nil, time.Now(), NilContext, "Pasta la vista"}
 	fmt.Println("len(p2p): ", len(p2p))
 	close(p2p)
 	fmt.Println("closed len(p2p): ", len(p2p))

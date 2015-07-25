@@ -62,7 +62,7 @@ func Start(listener chan gotocol.Message, name string) {
 				metadata[msg.Intention] = meta{true, msg.Sent}
 				// replicate request, everyone ends up with the same timestamp for state change of this service
 				for _, c := range eurekaservices {
-					gotocol.Message{gotocol.Replicate, msg.ResponseChan, msg.Sent, gotocol.NilContext(), msg.Intention}.GoSend(c)
+					gotocol.Message{gotocol.Replicate, msg.ResponseChan, msg.Sent, gotocol.NilContext, msg.Intention}.GoSend(c)
 				}
 				if edda.Logchan != nil {
 					edda.Logchan <- msg
@@ -83,7 +83,7 @@ func Start(listener chan gotocol.Message, name string) {
 				log.Fatal(name + ": empty GetRequest")
 			}
 			if microservices[msg.Intention] != nil { // matched a unique full name
-				gotocol.Message{gotocol.NameDrop, microservices[msg.Intention], time.Now(), gotocol.NilContext(), msg.Intention}.GoSend(msg.ResponseChan)
+				gotocol.Message{gotocol.NameDrop, microservices[msg.Intention], time.Now(), gotocol.NilContext, msg.Intention}.GoSend(msg.ResponseChan)
 				break
 			}
 			for n, ch := range microservices { // respond with all the online names that match the service component
@@ -92,10 +92,10 @@ func Start(listener chan gotocol.Message, name string) {
 					// log.Printf("%v: matching %v with %v, last: %v metadata: %v\n", name, n, msg.Intention, lastrequest[callback{n, msg.ResponseChan}], metadata[n].registered)
 					if metadata[n].registered.After(lastrequest[callback{n, msg.ResponseChan}]) {
 						if metadata[n].online {
-							gotocol.Message{gotocol.NameDrop, ch, time.Now(), gotocol.NilContext(), n}.GoSend(msg.ResponseChan)
+							gotocol.Message{gotocol.NameDrop, ch, time.Now(), gotocol.NilContext, n}.GoSend(msg.ResponseChan)
 						} else {
 							log.Printf("%v:Forget %v\n", name, n)
-							gotocol.Message{gotocol.Forget, ch, time.Now(), gotocol.NilContext(), n}.GoSend(msg.ResponseChan)
+							gotocol.Message{gotocol.Forget, ch, time.Now(), gotocol.NilContext, n}.GoSend(msg.ResponseChan)
 						}
 					}
 					// remember for next time
@@ -107,14 +107,14 @@ func Start(listener chan gotocol.Message, name string) {
 				metadata[msg.Intention] = meta{false, time.Now()}
 				// replicate request
 				for _, c := range eurekaservices {
-					gotocol.Message{gotocol.Replicate, nil, time.Now(), gotocol.NilContext(), msg.Intention}.GoSend(c)
+					gotocol.Message{gotocol.Replicate, nil, time.Now(), gotocol.NilContext, msg.Intention}.GoSend(c)
 				}
 				if edda.Logchan != nil {
 					edda.Logchan <- msg
 				}
 			}
 		case gotocol.Goodbye:
-			gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext(), name}.GoSend(msg.ResponseChan)
+			gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext, name}.GoSend(msg.ResponseChan)
 			log.Println(name + ": closing")
 			return
 		}

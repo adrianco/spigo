@@ -53,7 +53,7 @@ func Start(listener chan gotocol.Message) {
 					buddies[buddy] = msg.ResponseChan // message channel is buddy's listener
 					if logger != nil {
 						// if it's setup, tell the logger I have a new buddy to talk to
-						logger <- gotocol.Message{gotocol.Inform, listener, time.Now(), gotocol.NilContext(), name + " " + buddy}
+						logger <- gotocol.Message{gotocol.Inform, listener, time.Now(), gotocol.NilContext, name + " " + buddy}
 					}
 				}
 			case gotocol.Chat:
@@ -80,7 +80,7 @@ func Start(listener chan gotocol.Message) {
 				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away with %v gold coins, chatting every %v\n", name, booty, chatrate)
 				}
-				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext(), name}.GoSend(fsm)
+				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext, name}.GoSend(fsm)
 				return
 			}
 		case <-chatTicker.C:
@@ -96,7 +96,7 @@ func Start(listener chan gotocol.Message) {
 						} else {
 							lastBuddyChan = ch
 						}
-						gotocol.Message{gotocol.NameDrop, firstBuddyChan, time.Now(), gotocol.NewRequest(), firstBuddyName}.GoSend(lastBuddyChan)
+						gotocol.Message{gotocol.NameDrop, firstBuddyChan, time.Now(), gotocol.NewTrace(), firstBuddyName}.GoSend(lastBuddyChan)
 					}
 				}
 			} else {
@@ -107,7 +107,7 @@ func Start(listener chan gotocol.Message) {
 					if donation > 0 {
 						for _, ch := range buddies {
 							if luckyNumber == 0 {
-								gotocol.Message{gotocol.GoldCoin, listener, time.Now(), gotocol.NewRequest(), fmt.Sprintf("%d", donation)}.GoSend(ch)
+								gotocol.Message{gotocol.GoldCoin, listener, time.Now(), gotocol.NewTrace(), fmt.Sprintf("%d", donation)}.GoSend(ch)
 								booty -= donation
 								break
 							} else {

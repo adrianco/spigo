@@ -9,6 +9,7 @@ import (
 	"github.com/adrianco/spigo/asgard"       // tools to create an architecture
 	"github.com/adrianco/spigo/collect"      // metrics to extvar
 	"github.com/adrianco/spigo/edda"         // log configuration state
+	"github.com/adrianco/spigo/flow"         // flow logging
 	"github.com/adrianco/spigo/fsm"          // fsm and pirates
 	"github.com/adrianco/spigo/gotocol"      // message protocol spec
 	"github.com/adrianco/spigo/migration"    // migration from LAMP to netflixoss
@@ -91,4 +92,5 @@ func main() {
 		close(edda.Logchan)
 	}
 	edda.Wg.Wait()
+	flow.Shutdown()
 }
