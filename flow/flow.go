@@ -32,8 +32,7 @@ func Begin(ctx gotocol.Context, s string) {
 	if flowmap[ctx.Trace] == nil {
 		flowmap[ctx.Trace] = make(flowmaptype, archaius.Conf.Population)
 	}
-	span := flowmap[ctx.Trace].(flowmaptype)
-	span[ctx.Span] = s
+	flowmap[ctx.Trace].(flowmaptype)[ctx.Span] = ctx.String() + ":" + s
 }
 
 // Update a flow, creating it if we need to Begin a new flow
@@ -41,8 +40,7 @@ func Update(ctx gotocol.Context, s string) {
 	if flowmap[ctx.Trace] == nil {
 		Begin(ctx, s)
 	} else {
-		span := flowmap[ctx.Trace].(flowmaptype)
-		span[ctx.Span] = s
+		flowmap[ctx.Trace].(flowmaptype)[ctx.Span] = ctx.String() + ":" + s
 	}
 }
 

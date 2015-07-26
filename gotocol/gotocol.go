@@ -78,12 +78,12 @@ type TraceContextType uint32
 
 // context for capturing dapper/zipkin style traces
 type Context struct {
-	Trace, Span TraceContextType
+	Trace, Parent, Span TraceContextType
 }
 
 // string formatter for context
 func (ctx Context) String() string {
-	return fmt.Sprintf("%v:%v", ctx.Trace, ctx.Span)
+	return fmt.Sprintf("%v:%v:%v", ctx.Trace, ctx.Parent, ctx.Span)
 }
 
 // fast hack for generating unique-enough contexts
@@ -94,14 +94,15 @@ func NewTrace() Context {
 	var ctx Context
 	//ctx.Trace = rand.Uint32()
 	tracer++
-	ctx.Trace = tracer // NilContext is 0:0, so first real Context is 1:0
-	ctx.Span = spanner
+	ctx.Trace = tracer // NilContext is 0:0, so first real Context is 1:1
 	spanner++
+	ctx.Span = spanner
 	return ctx
 }
 
 // updating to get a new span for an existing request
 func (ctx Context) NewSpan() Context {
+	ctx.Parent = ctx.Span
 	ctx.Span = spanner
 	spanner++
 	return ctx
