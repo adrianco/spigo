@@ -1,3 +1,3 @@
-Trace:  1:1:3:une 1:0:1:one
-Trace:  2:0:2:two 2:2:4:deux
-Trace:  3:3:5:trois 3:0:3:three
+Trace: map[0:map[1:t1p0s1-one] 1:map[3:t1p1s3-une]]
+Trace: map[0:map[3:t3p0s3-three] 3:map[5:t3p3s5-trois]]
+Trace: map[0:map[2:t2p0s2-two] 2:map[4:t2p2s4-deux]]

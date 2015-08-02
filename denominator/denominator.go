@@ -86,7 +86,7 @@ func Start(listener chan gotocol.Message) {
 				m := rand.Intn(len(microservices))
 				// start a request to a random member of this denominator
 				ctx := gotocol.NewTrace()
-				flow.Begin(ctx, name)
+				flow.Update(ctx, name)
 				if rand.Intn(2) == 0 {
 					gotocol.Message{gotocol.GetRequest, listener, time.Now(), ctx, "why?"}.GoSend(microindex[m])
 				} else {

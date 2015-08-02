@@ -83,7 +83,7 @@ type Context struct {
 
 // string formatter for context
 func (ctx Context) String() string {
-	return fmt.Sprintf("%v:%v:%v", ctx.Trace, ctx.Parent, ctx.Span)
+	return fmt.Sprintf("t%vp%vs%v", ctx.Trace, ctx.Parent, ctx.Span)
 }
 
 // fast hack for generating unique-enough contexts
