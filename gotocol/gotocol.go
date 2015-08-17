@@ -7,6 +7,7 @@ import (
 	"github.com/adrianco/spigo/names"
 	"log"
 	//"math/rand"
+	"sync/atomic"
 	"time"
 )
 
@@ -89,22 +90,25 @@ func (ctx Context) String() string {
 // fast hack for generating unique-enough contexts
 var spanner, tracer TraceContextType
 
-// new request happens less often so use random for request, and increment span
+// return uniquely incremented TraceContextType
+func increment(tc *TraceContextType) TraceContextType {
+	return TraceContextType(atomic.AddUint32((*uint32)(tc), 1))
+}
+
+// Start a new trace using atomic increment
 func NewTrace() Context {
 	var ctx Context
 	//ctx.Trace = rand.Uint32()
-	tracer++
-	ctx.Trace = tracer // NilContext is 0:0, so first real Context is 1:1
-	spanner++
-	ctx.Span = spanner
+	// NilContext is 0:0:0, so first real Context:Parent:Span is 1:0:1
+	ctx.Trace = increment(&tracer)
+	ctx.Span = increment(&spanner)
 	return ctx
 }
 
-// updating to get a new span for an existing request
+// Updating to get a new span for an existing request
 func (ctx Context) NewSpan() Context {
 	ctx.Parent = ctx.Span
-	ctx.Span = spanner
-	spanner++
+	ctx.Span = increment(&spanner)
 	return ctx
 }
 
