@@ -16,7 +16,7 @@ Current work in progress adds context to each message for request tracing, adds 
 $ ./compose2arch -file compose.yaml > arch.json
 ```
 
-Recent UI changes include pinning nodes so graphs can be stretched out and deleting nodes and edges by double-clicking on them.
+Recent UI changes include pinning nodes so graphs can be stretched out and deleting nodes and edges by double-clicking on them. To add new entries to the architecture menu, add a line to ui/js/header/index.js
 [Run the netflixoss simulation in your browser](http://simianviz.divshot.io/netflixoss)
 
 For a local installation of spigo, with no network dependencies, you can start the service and browse localhost:8000 using:
