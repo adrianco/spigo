@@ -22,5 +22,7 @@ func TestFlow(t *testing.T) {
 	Update(r3.NewSpan(), "trois")
 	fmt.Println(flowmap)
 	End(r1)
+	fmt.Println("Walk")
+	Walk(flowmap)
 	Shutdown()
 }

@@ -75,7 +75,7 @@ func (imps Impositions) String() string {
 }
 
 // trace type needs to be exported for flow package map. For production scale use this should be 64bit, for spigo it seems ok with 32.
-type TraceContextType uint32
+type TraceContextType uint32 // needs to match type conversions in func increment below
 
 // context for capturing dapper/zipkin style traces
 type Context struct {
@@ -99,7 +99,7 @@ func increment(tc *TraceContextType) TraceContextType {
 func NewTrace() Context {
 	var ctx Context
 	//ctx.Trace = rand.Uint32()
-	// NilContext is 0:0:0, so first real Context:Parent:Span is 1:0:1
+	// NilContext is t0p0s0, so first real Trace,Parent,Span is t1p0s1
 	ctx.Trace = increment(&tracer)
 	ctx.Span = increment(&spanner)
 	return ctx

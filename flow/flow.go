@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-// flowmap is a map of requests of stuff, the next level of stuff is a map of spans, holding a summary
+// flowmap is a map of requests of stuff, the next level of stuff is a map of parents, then a map of spans, holding a summary
 type flowmaptype map[gotocol.TraceContextType]interface{}
 
 var flowmap flowmaptype
@@ -80,4 +80,16 @@ func Flush(trace flowmaptype) {
 	//	log.Fatal(err)
 	//}
 	file.WriteString(fmt.Sprintf("Trace: %v\n", trace))
+}
+
+// Walk through the trace in order, start with parent[0]
+func Walk(flow flowmaptype) {
+	for _, f := range flow {
+		switch x := f.(type) {
+		case string:
+			fmt.Println(x)
+		case flowmaptype:
+			Walk(x)
+		}
+	}
 }
