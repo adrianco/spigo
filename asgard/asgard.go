@@ -69,10 +69,17 @@ func Create(servicename, packagename string, regions, count int, dependencies ..
 			StartNode(name, dependencies...)
 		} else {
 			//log.Printf("Create service: " + servicename)
+			cass := make(map[string]chan gotocol.Message, regions*count) // for token distribution
 			for i := r * count; i < (r+1)*count; i++ {
 				name = names.Make(arch, rnames[r], znames[i%3], servicename, packagename, i)
 				//log.Println(dependencies)
 				StartNode(name, dependencies...)
+				if packagename == "priamCassandra" {
+					cass[name] = noodles[name] // remember the nodes
+				}
+			}
+			if packagename == "priamCassandra" {
+				priamCassandra.Distribute(cass)
 			}
 		}
 	}
@@ -238,7 +245,7 @@ func ConnectEveryEureka(name string) {
 	}
 }
 
-// Run migration for a while then shut down
+// Run architecture for a while then shut down
 func Run(rootservice, victim string) {
 	// tell denominator to start chatting with microservices every 0.01 secs
 	delay := fmt.Sprintf("%dms", 10)

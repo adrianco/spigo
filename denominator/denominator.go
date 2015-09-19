@@ -3,6 +3,7 @@
 package denominator
 
 import (
+	"fmt"
 	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/flow"
@@ -28,6 +29,7 @@ func Start(listener chan gotocol.Message) {
 	eurekaTicker := time.NewTicker(ep)
 	chatTicker := time.NewTicker(time.Hour)
 	chatTicker.Stop()
+	w := 1 // counter for random messages
 	for {
 		select {
 		case msg := <-listener:
@@ -87,10 +89,15 @@ func Start(listener chan gotocol.Message) {
 				// start a request to a random member of this denominator
 				ctx := gotocol.NewTrace()
 				flow.Update(ctx, name)
-				if rand.Intn(2) == 0 {
+				switch rand.Intn(3) {
+				case 0:
 					gotocol.Message{gotocol.GetRequest, listener, time.Now(), ctx, "why?"}.GoSend(microindex[m])
-				} else {
-					gotocol.Message{gotocol.Put, listener, time.Now(), ctx, "remember me"}.GoSend(microindex[m])
+				case 1:
+					q := rand.Intn(w)
+					gotocol.Message{gotocol.GetRequest, listener, time.Now(), ctx, fmt.Sprintf("Why%v%v", q, q*q)}.GoSend(microindex[m])
+				case 2:
+					gotocol.Message{gotocol.Put, listener, time.Now(), ctx, fmt.Sprintf("Why%v%v me", w, w*w)}.GoSend(microindex[m])
+					w++
 				}
 			}
 		}

@@ -46,9 +46,10 @@ func Start(listener chan gotocol.Message, name string) {
 		if !ok {
 			break // channel was closed
 		}
-		if archaius.Conf.Msglog {
-			log.Printf("%v(backlog %v): %v\n", name, len(listener), msg)
-		}
+		//commented out because name service traffic is too much noise in the log
+		//if archaius.Conf.Msglog {
+		//	log.Printf("%v(backlog %v): %v\n", name, len(listener), msg)
+		//}
 		switch msg.Imposition {
 		// used to wire up connections to other eureka nodes only
 		case gotocol.NameDrop:
