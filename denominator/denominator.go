@@ -93,11 +93,11 @@ func Start(listener chan gotocol.Message) {
 				case 0:
 					gotocol.Message{gotocol.GetRequest, listener, time.Now(), ctx, "why?"}.GoSend(microindex[m])
 				case 1:
-					q := rand.Intn(w)
+					q := rand.Intn(w) // pick a random key that has already been put
 					gotocol.Message{gotocol.GetRequest, listener, time.Now(), ctx, fmt.Sprintf("Why%v%v", q, q*q)}.GoSend(microindex[m])
 				case 2:
 					gotocol.Message{gotocol.Put, listener, time.Now(), ctx, fmt.Sprintf("Why%v%v me", w, w*w)}.GoSend(microindex[m])
-					w++
+					w++ // put a new key each time
 				}
 			}
 		}

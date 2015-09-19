@@ -79,7 +79,7 @@ func Create(servicename, packagename string, regions, count int, dependencies ..
 				}
 			}
 			if packagename == "priamCassandra" {
-				priamCassandra.Distribute(cass)
+				priamCassandra.Distribute(cass) // returns a string if it needs logging
 			}
 		}
 	}
@@ -101,6 +101,7 @@ func Reload(arch string) string {
 	CreateEureka()
 	// eureka and edda aren't recorded in the json file to simplify the graph
 	// Start all the services
+	cass := make(map[string]chan gotocol.Message) // for token distribution
 	for _, element := range g.Graph {
 		if element.Node != "" {
 			name := element.Node
@@ -108,7 +109,13 @@ func Reload(arch string) string {
 			if names.Package(name) == DenominatorPkg {
 				root = name
 			}
+			if names.Package(name) == "priamCassandra" {
+				cass[name] = noodles[name] // remember the nodes
+			}
 		}
+	}
+	if len(cass) > 0 { // currently doesn't handle multiple priamCassandra per arch
+		priamCassandra.Distribute(cass) // returns a string if it needs logging
 	}
 	// Make all the connections
 	for _, element := range g.Graph {
