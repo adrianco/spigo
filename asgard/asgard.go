@@ -51,6 +51,8 @@ func CreateChannels() {
 	eurekachan = make(map[string]chan gotocol.Message, 3*archaius.Conf.Regions)
 }
 
+type mapchan map[string]chan gotocol.Message
+
 // Create a tier and specify any dependencies, return the full name of the last node created
 func Create(servicename, packagename string, regions, count int, dependencies ...string) string {
 	var name string
@@ -69,17 +71,24 @@ func Create(servicename, packagename string, regions, count int, dependencies ..
 			StartNode(name, dependencies...)
 		} else {
 			//log.Printf("Create service: " + servicename)
-			cass := make(map[string]chan gotocol.Message, regions*count) // for token distribution
+			cass := make(map[string]mapchan) // for token distribution
 			for i := r * count; i < (r+1)*count; i++ {
 				name = names.Make(arch, rnames[r], znames[i%3], servicename, packagename, i)
 				//log.Println(dependencies)
 				StartNode(name, dependencies...)
 				if packagename == "priamCassandra" {
-					cass[name] = noodles[name] // remember the nodes
+					rz := names.RegionZone(name)
+					if cass[rz] == nil {
+						cass[rz] = make(mapchan)
+					}
+					cass[rz][name] = noodles[name] // remember the nodes
 				}
 			}
 			if packagename == "priamCassandra" {
-				priamCassandra.Distribute(cass) // returns a string if it needs logging
+				// split by zone
+				for _, v := range cass {
+					priamCassandra.Distribute(v) // returns a string if it needs logging
+				}
 			}
 		}
 	}

@@ -46,7 +46,7 @@ func (a ByToken) Find(h uint32) int {
 	return r
 }
 
-// distribute tokens to a cassandra cluster, this doesn't yet allow for clusters to grow or replace nodes
+// distribute tokens to one zone of a cassandra cluster, this doesn't yet allow for clusters to grow or replace nodes
 func Distribute(cass map[string]chan gotocol.Message) string {
 	size := len(cass)
 	// each node owns a share of the full range
@@ -178,7 +178,13 @@ func Start(listener chan gotocol.Message) {
 				fmt.Sscanf(msg.Intention, "%s%s", &key, &value)
 				// log.Printf("priamCassandra: %v:%v", key, value)
 				if key != "" && value != "" {
-					store[key] = value
+					i := ring.Find(ringHash(key))
+					if len(ring) == 0 || ring[i].name == name { // ring is setup so only store if this is the right place
+						store[key] = value
+					} else {
+						// send the message to the right place, but don't change the ResponseChan
+						gotocol.Message{gotocol.Replicate, msg.ResponseChan, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(microservices[ring[i].name])
+					}
 				}
 				// name looks like: netflixoss.us-east-1.zoneC.cassTurtle.priamCassandra.cassTurtle11
 				myregion := names.Region(name)
