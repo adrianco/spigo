@@ -1,0 +1,15 @@
+{
+    "arch": "cassandra",
+    "description":"Simple Cassandra model for the Cassandra Summit 2015 paper",
+    "version": "arch-0.0",
+    "victim": "",
+    "services": [
+        { "name": "cassandra",  "package": "priamCassandra", "count": 6, "regions": 1, "dependencies": ["cassandra", "eureka"]},
+        { "name": "restdata",   "package": "staash",         "count": 6, "regions": 1, "dependencies": ["cassandra"]},
+        { "name": "app",        "package": "karyon",        "count": 12, "regions": 1, "dependencies": ["restdata"]},
+        { "name": "proxy",      "package": "zuul",           "count": 6, "regions": 1, "dependencies": ["app"]},
+        { "name": "www-elb",    "package": "elb",            "count": 0, "regions": 1, "dependencies": ["proxy"]},
+        { "name": "www",        "package": "denominator",    "count": 0, "regions": 0, "dependencies": ["www-elb"]}
+    ]
+}
+
