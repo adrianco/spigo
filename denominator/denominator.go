@@ -61,6 +61,7 @@ func Start(listener chan gotocol.Message) {
 				}
 			case gotocol.GetResponse:
 				// return path from a request, terminate and log
+				flow.Update(msg.Ctx, name)
 				flow.End(msg.Ctx)
 			case gotocol.Goodbye:
 				if archaius.Conf.Msglog {

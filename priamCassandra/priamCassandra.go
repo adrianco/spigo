@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/collect"
+	"github.com/adrianco/spigo/flow"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/names"
 	"hash/crc32"
@@ -92,7 +93,7 @@ func Start(listener chan gotocol.Message) {
 	dependencies := make(map[string]time.Time, dunbar) // dependent services and time last updated
 	store := make(map[string]string, 4)                // key value store
 	store["why?"] = "because..."
-	var netflixoss, requestor chan gotocol.Message                           // remember creator and how to talk back to incoming requests
+	var parent chan gotocol.Message                                          // remember how to talk back to creator
 	var name string                                                          // remember my name
 	eureka := make(map[string]chan gotocol.Message, 3*archaius.Conf.Regions) // service registry per zone and region
 	hist := collect.NewHist("")
@@ -102,15 +103,15 @@ func Start(listener chan gotocol.Message) {
 		select {
 		case msg := <-listener:
 			collect.Measure(hist, time.Since(msg.Sent))
-			//if archaius.Conf.Msglog {
-			log.Printf("%v: %v\n", name, msg)
-			//}
+			if archaius.Conf.Msglog {
+				log.Printf("%v: %v\n", name, msg)
+			}
 			switch msg.Imposition {
 			case gotocol.Hello:
 				if name == "" {
 					// if I don't have a name yet remember what I've been named
-					netflixoss = msg.ResponseChan // remember how to talk to my namer
-					name = msg.Intention          // message body is my name
+					parent = msg.ResponseChan // remember how to talk to my namer
+					name = msg.Intention      // message body is my name
 					hist = collect.NewHist(name)
 				}
 			case gotocol.Inform:
@@ -127,22 +128,22 @@ func Start(listener chan gotocol.Message) {
 				// see if the data is stored on this node
 				i := ring.Find(ringHash(msg.Intention))
 				//log.Printf("%v: %v %v\n", name, i, ringHash(msg.Intention))
+				span := msg.Ctx.NewSpan()
+				flow.Update(span, name)
 				if len(ring) == 0 || ring[i].name == name { // ring is setup so only respond if this is the right place
 					// return any stored value for this key (Cassandra READ.ONE behavior)
-					gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Ctx.NewSpan(), store[msg.Intention]}.GoSend(msg.ResponseChan)
+					gotocol.Message{gotocol.GetResponse, listener, time.Now(), span, store[msg.Intention]}.GoSend(msg.ResponseChan)
 				} else {
 					// send the message to the right place, but don't change the ResponseChan
-					gotocol.Message{gotocol.GetRequest, msg.ResponseChan, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(microservices[ring[i].name])
+					gotocol.Message{gotocol.GetRequest, msg.ResponseChan, time.Now(), span, msg.Intention}.GoSend(microservices[ring[i].name])
 				}
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up, not used by priamCassandra currently
-				if requestor != nil {
-					gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(requestor)
-				}
 			case gotocol.Put:
-				requestor = msg.ResponseChan
 				// set a key value pair and replicate globally
 				var key, value string
+				span := msg.Ctx.NewSpan()
+				flow.Update(span, name)
 				fmt.Sscanf(msg.Intention, "%s%s", &key, &value)
 				if key != "" && value != "" {
 					i := ring.Find(ringHash(key))
@@ -150,14 +151,14 @@ func Start(listener chan gotocol.Message) {
 						store[key] = value
 					} else {
 						// send the message to the right place, but don't change the ResponseChan
-						gotocol.Message{gotocol.Put, msg.ResponseChan, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(microservices[ring[i].name])
+						gotocol.Message{gotocol.Put, msg.ResponseChan, time.Now(), span, msg.Intention}.GoSend(microservices[ring[i].name])
 					}
 					// duplicate the request on to priamCassandra nodes in each zone and one in each region
 					for _, z := range names.OtherZones(name, archaius.Conf.ZoneNames) {
 						// replicate request
 						for n, c := range microservices {
 							if names.Region(n) == names.Region(name) && names.Zone(n) == z {
-								gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(c)
+								gotocol.Message{gotocol.Replicate, listener, time.Now(), span, msg.Intention}.GoSend(c)
 								break // only need to send it to one node in each zone, no tokens yet
 							}
 						}
@@ -165,7 +166,7 @@ func Start(listener chan gotocol.Message) {
 					for _, r := range names.OtherRegions(name, archaius.Conf.RegionNames[0:archaius.Conf.Regions]) {
 						for n, c := range microservices {
 							if names.Region(n) == r {
-								gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(c)
+								gotocol.Message{gotocol.Replicate, listener, time.Now(), span, msg.Intention}.GoSend(c)
 								break // only need to send it to one node in each region, no tokens yet
 							}
 						}
@@ -175,6 +176,8 @@ func Start(listener chan gotocol.Message) {
 				// Replicate is only used between priamCassandra nodes
 				// end point for a request
 				var key, value string
+				span := msg.Ctx.NewSpan()
+				flow.Update(span, name)
 				fmt.Sscanf(msg.Intention, "%s%s", &key, &value)
 				// log.Printf("priamCassandra: %v:%v", key, value)
 				if key != "" && value != "" {
@@ -183,7 +186,7 @@ func Start(listener chan gotocol.Message) {
 						store[key] = value
 					} else {
 						// send the message to the right place, but don't change the ResponseChan
-						gotocol.Message{gotocol.Replicate, msg.ResponseChan, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(microservices[ring[i].name])
+						gotocol.Message{gotocol.Replicate, msg.ResponseChan, time.Now(), span, msg.Intention}.GoSend(microservices[ring[i].name])
 					}
 				}
 				// name looks like: netflixoss.us-east-1.zoneC.cassTurtle.priamCassandra.cassTurtle11
@@ -198,7 +201,7 @@ func Start(listener chan gotocol.Message) {
 							// replicate request
 							for n, c := range microservices {
 								if names.Region(n) == myregion && names.Zone(n) == z {
-									gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(c)
+									gotocol.Message{gotocol.Replicate, listener, time.Now(), span, msg.Intention}.GoSend(c)
 									break // only need to send it to one node in each zone, no tokens yet
 								}
 							}
@@ -210,7 +213,7 @@ func Start(listener chan gotocol.Message) {
 				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away, zone: %v\n", name, store["zone"])
 				}
-				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext, name}.GoSend(netflixoss)
+				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext, name}.GoSend(parent)
 				return
 			}
 		case <-eurekaTicker.C: // check to see if any new dependencies have appeared

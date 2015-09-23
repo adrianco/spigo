@@ -1,26 +1,28 @@
-// Package zuul simulates a generic business logic microservice
+// Package zuul simulates a api proxy microservice
 // Takes incoming traffic and calls into dependent microservices in a single zone
 package zuul
 
 import (
 	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/collect"
+	"github.com/adrianco/spigo/flow"
 	"github.com/adrianco/spigo/gotocol"
 	"log"
 	"math/rand"
 	"time"
 )
 
-// Start zuul, all configuration and state is sent via messages
+// Start - all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
 	dunbar := archaius.Conf.Population // starting point for how many nodes to remember
 	// remember the channel to talk to microservices
 	microservices := make(map[string]chan gotocol.Message, dunbar)
 	microindex := make(map[int]chan gotocol.Message, dunbar)
-	dependencies := make(map[string]time.Time, dunbar) // dependent services and time last updated
-	var parent, requestor chan gotocol.Message         // remember creator and how to talk back to incoming requests
-	var name string                                    // remember my name
-	eureka := make(map[string]chan gotocol.Message, 1) // service registry
+	dependencies := make(map[string]time.Time, dunbar)                   // dependent services and time last updated
+	var parent chan gotocol.Message                                      // remember how to talk back to creator
+	requestor := make(map[gotocol.TraceContextType]chan gotocol.Message) // remember where requests came from
+	var name string                                                      // remember my name
+	eureka := make(map[string]chan gotocol.Message, 1)                   // service registry
 	var chatrate time.Duration
 	hist := collect.NewHist("")
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
@@ -58,7 +60,7 @@ func Start(listener chan gotocol.Message) {
 				}
 			case gotocol.GetRequest:
 				// route the request on to microservices
-				requestor = msg.ResponseChan
+				requestor[msg.Ctx.Trace] = msg.ResponseChan
 				// Intention body indicates which service to route to or which key to get
 				// need to lookup service by type rather than randomly call one day
 				if len(microservices) > 0 {
@@ -71,13 +73,18 @@ func Start(listener chan gotocol.Message) {
 						}
 					}
 					m := rand.Intn(len(microservices))
+					span := msg.Ctx.NewSpan()
+					flow.Update(span, name)
 					// start a request to a random service
-					gotocol.Message{gotocol.GetRequest, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(microindex[m])
+					gotocol.Message{gotocol.GetRequest, listener, time.Now(), span, msg.Intention}.GoSend(microindex[m])
 				}
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up
-				if requestor != nil {
-					gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(requestor)
+				if requestor[msg.Ctx.Trace] != nil {
+					span := msg.Ctx.NewSpan()
+					flow.Update(span, name)
+					gotocol.Message{gotocol.GetResponse, listener, time.Now(), span, msg.Intention}.GoSend(requestor[msg.Ctx.Trace])
+					delete(requestor, msg.Ctx.Trace)
 				}
 			case gotocol.Put:
 				// route the request on to a random dependency
@@ -91,12 +98,17 @@ func Start(listener chan gotocol.Message) {
 						}
 					}
 					m := rand.Intn(len(microservices))
+					span := msg.Ctx.NewSpan()
+					flow.Update(span, name)
 					// pass on request to a random service
-					gotocol.Message{gotocol.Put, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(microindex[m])
+					gotocol.Message{gotocol.Put, listener, time.Now(), span, msg.Intention}.GoSend(microindex[m])
 				}
 			case gotocol.Goodbye:
 				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away\n", name)
+				}
+				for _, ch := range eureka { // tell name service I'm not going to be here
+					ch <- gotocol.Message{gotocol.Delete, nil, time.Now(), gotocol.NilContext, name}
 				}
 				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext, name}.GoSend(parent)
 				return
@@ -118,7 +130,7 @@ func Start(listener chan gotocol.Message) {
 					}
 				}
 				m := rand.Intn(len(microservices))
-				// start a request to a random dependency
+				// start a request to a random member of this elb
 				gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NewTrace(), name}.GoSend(microindex[m])
 			}
 		}
