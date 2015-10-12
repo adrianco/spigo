@@ -33,10 +33,7 @@ func Start(listener chan gotocol.Message) {
 	for {
 		select {
 		case msg := <-listener:
-			collect.Measure(hist, time.Since(msg.Sent))
-			if archaius.Conf.Msglog {
-				log.Printf("%v: %v\n", name, msg)
-			}
+			flow.Instrument(msg, name, hist)
 			switch msg.Imposition {
 			case gotocol.Hello:
 				if name == "" {
@@ -61,7 +58,6 @@ func Start(listener chan gotocol.Message) {
 				}
 			case gotocol.GetResponse:
 				// return path from a request, terminate and log
-				flow.Update(msg.Ctx, name)
 				flow.End(msg.Ctx)
 			case gotocol.Goodbye:
 				if archaius.Conf.Msglog {
@@ -89,17 +85,20 @@ func Start(listener chan gotocol.Message) {
 				m := rand.Intn(len(microservices))
 				// start a request to a random member of this denominator
 				ctx := gotocol.NewTrace()
-				flow.Update(ctx, name)
+				now := time.Now()
+				var sm gotocol.Message
 				switch rand.Intn(3) {
 				case 0:
-					gotocol.Message{gotocol.GetRequest, listener, time.Now(), ctx, "why?"}.GoSend(microindex[m])
+					sm = gotocol.Message{gotocol.GetRequest, listener, now, ctx, "why?"}
 				case 1:
 					q := rand.Intn(w) // pick a random key that has already been put
-					gotocol.Message{gotocol.GetRequest, listener, time.Now(), ctx, fmt.Sprintf("Why%v%v", q, q*q)}.GoSend(microindex[m])
+					sm = gotocol.Message{gotocol.GetRequest, listener, now, ctx, fmt.Sprintf("Why%v%v", q, q*q)}
 				case 2:
-					gotocol.Message{gotocol.Put, listener, time.Now(), ctx, fmt.Sprintf("Why%v%v me", w, w*w)}.GoSend(microindex[m])
+					sm = gotocol.Message{gotocol.Put, listener, now, ctx, fmt.Sprintf("Why%v%v me", w, w*w)}
 					w++ // put a new key each time
 				}
+				flow.Annotate(sm, "ss", name, now) // service send logs creation time for this flow
+				sm.GoSend(microindex[m])
 			}
 		}
 	}

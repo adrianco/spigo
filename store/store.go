@@ -6,36 +6,29 @@ import (
 	"fmt"
 	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/collect"
+	"github.com/adrianco/spigo/flow"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/names"
-	"log"
 	"time"
 )
 
 // Start store, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
-	dunbar := 30 // starting point for how many nodes to remember
 	// remember the channel to talk to microservices
-	microservices := make(map[string]chan gotocol.Message, dunbar)
-	dependencies := make(map[string]time.Time, dunbar) // dependent services and time last updated
-	store := make(map[string]string, 4)                // key value store
+	microservices := make(map[string]chan gotocol.Message)
+	dependencies := make(map[string]time.Time) // dependent services and time last updated
+	store := make(map[string]string, 4)        // key value store
 	store["why?"] = "because..."
 	var netflixoss, requestor chan gotocol.Message     // remember creator and how to talk back to incoming requests
 	var name string                                    // remember my name
 	eureka := make(map[string]chan gotocol.Message, 3) // service registry per zone
-	var chatrate time.Duration
 	hist := collect.NewHist("")
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
 	eurekaTicker := time.NewTicker(ep)
-	chatTicker := time.NewTicker(time.Hour)
-	chatTicker.Stop()
 	for {
 		select {
 		case msg := <-listener:
-			collect.Measure(hist, time.Since(msg.Sent))
-			if archaius.Conf.Msglog {
-				log.Printf("%v: %v\n", name, msg)
-			}
+			annotation, span := flow.Instrument(msg, name, hist)
 			switch msg.Imposition {
 			case gotocol.Hello:
 				if name == "" {
@@ -51,20 +44,13 @@ func Start(listener chan gotocol.Message) {
 			case gotocol.Forget:
 				// forget a buddy
 				gotocol.ForgetHandler(&dependencies, &microservices, msg)
-			case gotocol.Chat:
-				// setup the ticker to run at the specified rate
-				d, e := time.ParseDuration(msg.Intention)
-				if e == nil && d >= time.Millisecond && d <= time.Hour {
-					chatrate = d
-					chatTicker = time.NewTicker(chatrate)
-				}
 			case gotocol.GetRequest:
 				// return any stored value for this key (Cassandra READ.ONE behavior)
-				gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Ctx.NewSpan(), store[msg.Intention]}.GoSend(msg.ResponseChan)
+				gotocol.Message{gotocol.GetResponse, listener, flow.AnnotateSend(annotation, span), span, store[msg.Intention]}.GoSend(msg.ResponseChan)
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up (not currently used)
 				if requestor != nil {
-					gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(requestor)
+					gotocol.Message{gotocol.GetResponse, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(requestor)
 				}
 			case gotocol.Put:
 				requestor = msg.ResponseChan
@@ -77,7 +63,7 @@ func Start(listener chan gotocol.Message) {
 					if len(microservices) > 0 {
 						// replicate request
 						for _, c := range microservices {
-							gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(c)
+							gotocol.Message{gotocol.Replicate, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(c)
 						}
 					}
 				}
@@ -102,16 +88,14 @@ func Start(listener chan gotocol.Message) {
 							for nz, cz := range microservices {
 								if myregion == names.Region(nz) {
 									//log.Printf("%v rep to: %v\n", name, nz)
-									gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewSpan(), msg.Intention}.GoSend(cz)
+									span = span.AddSpan() // increment span since multiple messages could be sent
+									gotocol.Message{gotocol.Replicate, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(cz)
 								}
 							}
 						}
 					}
 				}
 			case gotocol.Goodbye:
-				if archaius.Conf.Msglog {
-					log.Printf("%v: Going away, zone: %v\n", name, store["zone"])
-				}
 				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext, name}.GoSend(netflixoss)
 				return
 			}
@@ -121,8 +105,6 @@ func Start(listener chan gotocol.Message) {
 					ch <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NilContext, dep}
 				}
 			}
-		case <-chatTicker.C:
-			// nothing to do here at the moment
 		}
 	}
 }

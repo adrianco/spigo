@@ -10,7 +10,6 @@ import (
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/names"
 	"hash/crc32"
-	"log"
 	"sort"
 	"strings"
 	"time"
@@ -102,10 +101,7 @@ func Start(listener chan gotocol.Message) {
 	for {
 		select {
 		case msg := <-listener:
-			collect.Measure(hist, time.Since(msg.Sent))
-			if archaius.Conf.Msglog {
-				log.Printf("%v: %v\n", name, msg)
-			}
+			annotation, span := flow.Instrument(msg, name, hist)
 			switch msg.Imposition {
 			case gotocol.Hello:
 				if name == "" {
@@ -128,22 +124,18 @@ func Start(listener chan gotocol.Message) {
 				// see if the data is stored on this node
 				i := ring.Find(ringHash(msg.Intention))
 				//log.Printf("%v: %v %v\n", name, i, ringHash(msg.Intention))
-				span := msg.Ctx.NewSpan()
-				flow.Update(span, name)
 				if len(ring) == 0 || ring[i].name == name { // ring is setup so only respond if this is the right place
 					// return any stored value for this key (Cassandra READ.ONE behavior)
-					gotocol.Message{gotocol.GetResponse, listener, time.Now(), span, store[msg.Intention]}.GoSend(msg.ResponseChan)
+					gotocol.Message{gotocol.GetResponse, listener, flow.AnnotateSend(annotation, span), span, store[msg.Intention]}.GoSend(msg.ResponseChan)
 				} else {
 					// send the message to the right place, but don't change the ResponseChan
-					gotocol.Message{gotocol.GetRequest, msg.ResponseChan, time.Now(), span, msg.Intention}.GoSend(microservices[ring[i].name])
+					gotocol.Message{gotocol.GetRequest, msg.ResponseChan, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(microservices[ring[i].name])
 				}
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up, not used by priamCassandra currently
 			case gotocol.Put:
 				// set a key value pair and replicate globally
 				var key, value string
-				span := msg.Ctx.NewSpan()
-				flow.Update(span, name)
 				fmt.Sscanf(msg.Intention, "%s%s", &key, &value)
 				if key != "" && value != "" {
 					i := ring.Find(ringHash(key))
@@ -151,23 +143,25 @@ func Start(listener chan gotocol.Message) {
 						store[key] = value
 					} else {
 						// send the message to the right place, but don't change the ResponseChan
-						gotocol.Message{gotocol.Put, msg.ResponseChan, time.Now(), span, msg.Intention}.GoSend(microservices[ring[i].name])
+						gotocol.Message{gotocol.Put, msg.ResponseChan, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(microservices[ring[i].name])
 					}
 					// duplicate the request on to priamCassandra nodes in each zone and one in each region
 					for _, z := range names.OtherZones(name, archaius.Conf.ZoneNames) {
 						// replicate request
 						for n, c := range microservices {
 							if names.Region(n) == names.Region(name) && names.Zone(n) == z {
-								gotocol.Message{gotocol.Replicate, listener, time.Now(), span, msg.Intention}.GoSend(c)
-								break // only need to send it to one node in each zone, no tokens yet
+								span = span.AddSpan() // increment span since multiple messages could be sent
+								gotocol.Message{gotocol.Replicate, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(c)
+								break // only need to send it to one node in each zone
 							}
 						}
 					}
 					for _, r := range names.OtherRegions(name, archaius.Conf.RegionNames[0:archaius.Conf.Regions]) {
 						for n, c := range microservices {
 							if names.Region(n) == r {
-								gotocol.Message{gotocol.Replicate, listener, time.Now(), span, msg.Intention}.GoSend(c)
-								break // only need to send it to one node in each region, no tokens yet
+								span = span.AddSpan() // increment span since multiple messages could be sent
+								gotocol.Message{gotocol.Replicate, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(c)
+								break // only need to send it to one node in each region
 							}
 						}
 					}
@@ -176,8 +170,6 @@ func Start(listener chan gotocol.Message) {
 				// Replicate is only used between priamCassandra nodes
 				// end point for a request
 				var key, value string
-				span := msg.Ctx.NewSpan()
-				flow.Update(span, name)
 				fmt.Sscanf(msg.Intention, "%s%s", &key, &value)
 				// log.Printf("priamCassandra: %v:%v", key, value)
 				if key != "" && value != "" {
@@ -186,7 +178,7 @@ func Start(listener chan gotocol.Message) {
 						store[key] = value
 					} else {
 						// send the message to the right place, but don't change the ResponseChan
-						gotocol.Message{gotocol.Replicate, msg.ResponseChan, time.Now(), span, msg.Intention}.GoSend(microservices[ring[i].name])
+						gotocol.Message{gotocol.Replicate, msg.ResponseChan, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(microservices[ring[i].name])
 					}
 				}
 				// name looks like: netflixoss.us-east-1.zoneC.cassTurtle.priamCassandra.cassTurtle11
@@ -201,8 +193,9 @@ func Start(listener chan gotocol.Message) {
 							// replicate request
 							for n, c := range microservices {
 								if names.Region(n) == myregion && names.Zone(n) == z {
+									span = span.AddSpan() // increment span since multiple messages could be sent
 									gotocol.Message{gotocol.Replicate, listener, time.Now(), span, msg.Intention}.GoSend(c)
-									break // only need to send it to one node in each zone, no tokens yet
+									break // only need to send it to one node in each zone
 								}
 							}
 						}
@@ -210,9 +203,6 @@ func Start(listener chan gotocol.Message) {
 					}
 				}
 			case gotocol.Goodbye:
-				if archaius.Conf.Msglog {
-					log.Printf("%v: Going away, zone: %v\n", name, store["zone"])
-				}
 				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext, name}.GoSend(parent)
 				return
 			}

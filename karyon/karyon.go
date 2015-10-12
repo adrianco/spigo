@@ -7,7 +7,6 @@ import (
 	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/flow"
 	"github.com/adrianco/spigo/gotocol"
-	"log"
 	"math/rand"
 	"time"
 )
@@ -23,19 +22,13 @@ func Start(listener chan gotocol.Message) {
 	requestor := make(map[gotocol.TraceContextType]chan gotocol.Message) // remember where requests came from
 	var name string                                                      // remember my name
 	eureka := make(map[string]chan gotocol.Message, 1)                   // service registry
-	var chatrate time.Duration
 	hist := collect.NewHist("")
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
 	eurekaTicker := time.NewTicker(ep)
-	chatTicker := time.NewTicker(time.Hour)
-	chatTicker.Stop()
 	for {
 		select {
 		case msg := <-listener:
-			collect.Measure(hist, time.Since(msg.Sent))
-			if archaius.Conf.Msglog {
-				log.Printf("%v: %v\n", name, msg)
-			}
+			annotation, span := flow.Instrument(msg, name, hist)
 			switch msg.Imposition {
 			case gotocol.Hello:
 				if name == "" {
@@ -51,13 +44,6 @@ func Start(listener chan gotocol.Message) {
 			case gotocol.Forget:
 				// forget a buddy
 				gotocol.ForgetHandler(&dependencies, &microservices, msg)
-			case gotocol.Chat:
-				// setup the ticker to run at the specified rate
-				d, e := time.ParseDuration(msg.Intention)
-				if e == nil && d >= time.Millisecond && d <= time.Hour {
-					chatrate = d
-					chatTicker = time.NewTicker(chatrate)
-				}
 			case gotocol.GetRequest:
 				// route the request on to microservices
 				requestor[msg.Ctx.Trace] = msg.ResponseChan
@@ -73,17 +59,13 @@ func Start(listener chan gotocol.Message) {
 						}
 					}
 					m := rand.Intn(len(microservices))
-					span := msg.Ctx.NewSpan()
-					flow.Update(span, name)
 					// start a request to a random service
-					gotocol.Message{gotocol.GetRequest, listener, time.Now(), span, msg.Intention}.GoSend(microindex[m])
+					gotocol.Message{gotocol.GetRequest, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(microindex[m])
 				}
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up
 				if requestor[msg.Ctx.Trace] != nil {
-					span := msg.Ctx.NewSpan()
-					flow.Update(span, name)
-					gotocol.Message{gotocol.GetResponse, listener, time.Now(), span, msg.Intention}.GoSend(requestor[msg.Ctx.Trace])
+					gotocol.Message{gotocol.GetResponse, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(requestor[msg.Ctx.Trace])
 					delete(requestor, msg.Ctx.Trace)
 				}
 			case gotocol.Put:
@@ -98,15 +80,10 @@ func Start(listener chan gotocol.Message) {
 						}
 					}
 					m := rand.Intn(len(microservices))
-					span := msg.Ctx.NewSpan()
-					flow.Update(span, name)
 					// pass on request to a random service
-					gotocol.Message{gotocol.Put, listener, time.Now(), span, msg.Intention}.GoSend(microindex[m])
+					gotocol.Message{gotocol.Put, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(microindex[m])
 				}
 			case gotocol.Goodbye:
-				if archaius.Conf.Msglog {
-					log.Printf("%v: Going away\n", name)
-				}
 				for _, ch := range eureka { // tell name service I'm not going to be here
 					ch <- gotocol.Message{gotocol.Delete, nil, time.Now(), gotocol.NilContext, name}
 				}
@@ -119,21 +96,6 @@ func Start(listener chan gotocol.Message) {
 					ch <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NilContext, dep}
 				}
 			}
-		case <-chatTicker.C:
-			if len(microservices) > 0 {
-				if len(microservices) != len(microindex) {
-					// rebuild index
-					i := 0
-					for _, ch := range microservices {
-						microindex[i] = ch
-						i++
-					}
-				}
-				m := rand.Intn(len(microservices))
-				// start a request to a random member of this elb
-				gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NewTrace(), name}.GoSend(microindex[m])
-			}
-			//default:
 		}
 	}
 }

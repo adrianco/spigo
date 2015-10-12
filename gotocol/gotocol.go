@@ -105,11 +105,16 @@ func NewTrace() Context {
 	return ctx
 }
 
-// Updating to get a new span for an existing request
-func (ctx Context) NewSpan() Context {
-	ctx.Parent = ctx.Span
+// Updating to get a new span for an existing request and parent
+func (ctx Context) AddSpan() Context {
 	ctx.Span = increment(&spanner)
 	return ctx
+}
+
+// setup the parent by promoting incoming span id, and get a new spanid
+func (ctx Context) NewParent() Context {
+	ctx.Parent = ctx.Span
+	return ctx.AddSpan()
 }
 
 // make an empty context, can't figure out how to make this a const
