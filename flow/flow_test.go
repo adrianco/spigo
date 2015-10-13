@@ -42,7 +42,7 @@ func TestFlow(t *testing.T) {
 	fmt.Println(flowmap)
 	fmt.Println("\nWalk all remaining flows")
 	PrintWalk(flowmap)
-	fmt.Println("\nWalk all remaining flows in order to json_metrics/test_flow.json")
+	fmt.Println("\nWalk all remaining flows in order to file")
 	Walk(flowmap, 0)
 	fmt.Println("\nEnd trace 1")
 	End(m1.Ctx)

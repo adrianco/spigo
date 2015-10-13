@@ -1,6 +1,6 @@
-map[imposition:GetRequest intent:customer1 ss:1444603196882689282 sr:1444603196882850264 t1p1s2:1444603196882851568 t1p1s3:1444603196882853661 host:requestor ctx:t1p0s1]
-map[host:names ctx:t1p1s2 imposition:GetRequest intent:customer1 sr:1444603196882855301 t1p2s4:1444603196882858641]
-map[host:subscriber ctx:t1p2s4 imposition:GetResponse intent:name:Fred Flintstone sr:1444603196882864416]
-map[host:addresses ctx:t1p1s3 imposition:GetRequest intent:customer1 sr:1444603196882860242 t1p3s5:1444603196882862902]
-map[ctx:t1p3s5 imposition:GetResponse intent:address:Bedrock sr:1444603196882867422 t1p5s6:1444603196882870382 host:subscriber]
-map[intent:name:Fred Flintstone, address:Bedrock sr:1444603196882872062 host:requestor ctx:t1p5s6 imposition:GetResponse]
+{"ctx":"t1p0s1","host":"requestor","calls":["ss:1444700134960740869","sr:1444700134960862570","t1p1s2:1444700134960873103","t1p1s3:1444700134960876497"],"imposition":"GetRequest","intention":"customer1"}
+{"ctx":"t1p1s3","host":"addresses","calls":["sr:1444700134960891292","t1p3s5:1444700134960893057"],"imposition":"GetRequest","intention":"customer1"}
+{"ctx":"t1p3s5","host":"subscriber","calls":["sr:1444700134960896679","t1p5s6:1444700134960898757"],"imposition":"GetResponse","intention":"address:Bedrock"}
+{"ctx":"t1p5s6","host":"requestor","calls":["sr:1444700134960900166"],"imposition":"GetResponse","intention":"name:Fred Flintstone, address:Bedrock"}
+{"ctx":"t1p1s2","host":"names","calls":["sr:1444700134960877704","t1p2s4:1444700134960879834"],"imposition":"GetRequest","intention":"customer1"}
+{"ctx":"t1p2s4","host":"subscriber","calls":["sr:1444700134960894530"],"imposition":"GetResponse","intention":"name:Fred Flintstone"}
