@@ -7,28 +7,27 @@ import (
 	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/flow"
 	"github.com/adrianco/spigo/gotocol"
-	"math/rand"
+	"github.com/adrianco/spigo/handlers"
 	"time"
 )
 
 // Start the elb, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
-	dunbar := archaius.Conf.Population
 	// remember the channel to talk to microservices
-	microservices := make(map[string]chan gotocol.Message, dunbar)
-	microindex := make([]chan gotocol.Message, dunbar)
-	dependencies := make(map[string]time.Time, dunbar)                   // dependent services and time last updated
-	var parent chan gotocol.Message                                      // remember how to talk back to creator
-	requestor := make(map[gotocol.TraceContextType]chan gotocol.Message) // remember where requests came from
-	var name string                                                      // remember my name
-	eureka := make(map[string]chan gotocol.Message, 3)                   // service registry per zone
+	microservices := make(map[string]chan gotocol.Message)
+	microindex := make(map[int]chan gotocol.Message)   // three zones to route over
+	dependencies := make(map[string]time.Time)         // dependent services and time last updated
+	var parent chan gotocol.Message                    // remember how to talk back to creator
+	requestor := make(map[string]gotocol.Routetype)    // remember where requests came from when responding
+	var name string                                    // remember my name
+	eureka := make(map[string]chan gotocol.Message, 3) // service registry per zone
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
 	eurekaTicker := time.NewTicker(ep)
 	hist := collect.NewHist("")
 	for {
 		select {
 		case msg := <-listener:
-			annotation, span := flow.Instrument(msg, name, hist)
+			flow.Instrument(msg, name, hist)
 			switch msg.Imposition {
 			case gotocol.Hello:
 				if name == "" {
@@ -46,43 +45,13 @@ func Start(listener chan gotocol.Message) {
 				gotocol.ForgetHandler(&dependencies, &microservices, msg)
 			case gotocol.GetRequest:
 				// route the request on to microservices
-				requestor[msg.Ctx.Trace] = msg.ResponseChan
-				// Intention body indicates which service to route to or which key to get
-				// need to lookup service by type rather than randomly call one day
-				if len(microservices) > 0 {
-					if len(microindex) != len(microservices) {
-						// rebuild index
-						i := 0
-						for _, ch := range microservices {
-							microindex[i] = ch
-							i++
-						}
-					}
-					m := rand.Intn(len(microservices))
-					// pass on request to a random service
-					gotocol.Message{gotocol.GetRequest, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(microindex[m])
-				}
+				handlers.GetRequest(msg, name, listener, &requestor, &microservices, &microindex)
 			case gotocol.GetResponse:
-				// return path from a request, send payload back up
-				if requestor[msg.Ctx.Trace] != nil {
-					gotocol.Message{gotocol.GetResponse, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(requestor[msg.Ctx.Trace])
-					delete(requestor, msg.Ctx.Trace)
-				}
+				// return path from a request, send payload back up using saved span context - server send
+				handlers.GetResponse(msg, name, listener, &requestor)
 			case gotocol.Put:
 				// route the request on to a random dependency
-				if len(microservices) > 0 {
-					if len(microindex) != len(microservices) {
-						// rebuild index
-						i := 0
-						for _, ch := range microservices {
-							microindex[i] = ch
-							i++
-						}
-					}
-					m := rand.Intn(len(microservices))
-					// pass on request to a random service
-					gotocol.Message{gotocol.Put, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(microindex[m])
-				}
+				handlers.Put(msg, name, listener, &requestor, &microservices, &microindex)
 			case gotocol.Goodbye:
 				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext, name}.GoSend(parent)
 				return

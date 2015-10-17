@@ -97,7 +97,7 @@ func Start(listener chan gotocol.Message) {
 					sm = gotocol.Message{gotocol.Put, listener, now, ctx, fmt.Sprintf("Why%v%v me", w, w*w)}
 					w++ // put a new key each time
 				}
-				flow.Annotate(sm, "ss", name, now) // service send logs creation time for this flow
+				flow.AnnotateSend(sm, name) // service send logs creation time for this flow
 				sm.GoSend(microindex[m])
 			}
 		}

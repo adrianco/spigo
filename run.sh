@@ -1,4 +1,14 @@
 ./spigo -a aws_ac_ra_web -d 3 -j -p 100
+./spigo -d 2 -j -w 1 -c -a cassandra -p 100
+./spigo -a cassandra -d 2 -j -s 1
+./spigo -a cassandra -d 2 -j -s 2 -p 200
+./spigo -a cassandra -d 2 -j -s 3 -p 400
+./spigo -a cassandra -d 4 -j -s 4 -p 100 -w 2
+./spigo -a cassandra -d 4 -j -s 5 -p 100 -w 3
+./spigo -a cassandra -d 4 -j -s 6 -p 100 -w 4
+./spigo -a cassandra -d 4 -j -s 7 -p 100 -w 5
+./spigo -a cassandra -d 4 -j -s 8 -p 100 -w 6
+./spigo -a cassandra -d 4 -j -s 9 -p 200 -w 6
 ./spigo -a container -j -f
 ./spigo -a container -j -d 4 -s 1
 ./spigo -a container -j -d 4 -s 2 -p 200
@@ -39,7 +49,7 @@
 ./spigo -a netflix -d 3 -j -p 200 -s 7 -w 6 -f
 ./spigo -a netflix -d 10 -j -p 300 -s 8 -w 6
 ./spigo -a netflix -d 60 -j -p 400 -s 9 -w 6 -u=10s
-./spigo -j
+./spigo -d 2 -j -w 1 -a netflixoss -p 100 -cpus 4
 ./spigo -a netflixoss -d 5 -j -p 200 -s 1
 ./spigo -a netflixoss -d 5 -j -p 100 -s 2 -w 2
 ./spigo -a netflixoss -d 5 -j -p 100 -s 3 -w 3
@@ -50,3 +60,7 @@
 ./spigo -a netflixoss -d 5 -j -p 300 -s 8 -w 6
 ./spigo -a netflixoss -d 5 -j -p 400 -s 9 -w 6 -f=true
 ./spigo -a testyaml -d 2 -j
+./spigo -a yogi -d 2 -j -f -c
+./spigo -a yogi -d 5 -j -p 100 -s 1 -w 1
+./spigo -a yogi -d 5 -j -p 100 -s 2 -w 2
+./spigo -a yogi -d 5 -j -p 100 -s 3 -w 3

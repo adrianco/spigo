@@ -100,8 +100,8 @@ func NewTrace() Context {
 	var ctx Context
 	//ctx.Trace = rand.Uint32()
 	// NilContext is t0p0s0, so first real Trace,Parent,Span is t1p0s1
-	ctx.Trace = increment(&tracer)
 	ctx.Span = increment(&spanner)
+	ctx.Trace = ctx.Span
 	return ctx
 }
 
@@ -131,6 +131,20 @@ type Message struct {
 
 func (msg Message) String() string {
 	return fmt.Sprintf("gotocol: %v %v %v %v", time.Since(msg.Sent), msg.Ctx, msg.Imposition, msg.Intention)
+}
+
+// Routing information from a message
+type Routetype struct {
+	Ctx          Context
+	ResponseChan chan Message
+}
+
+// extract routing information from a message
+func (msg Message) Route() Routetype {
+	var r Routetype
+	r.Ctx = msg.Ctx
+	r.ResponseChan = msg.ResponseChan
+	return r
 }
 
 // Send a synchronous message
@@ -192,3 +206,4 @@ func ForgetHandler(dependencies *map[string]time.Time, microservices *map[string
 		delete(*microservices, microservice)
 	}
 }
+

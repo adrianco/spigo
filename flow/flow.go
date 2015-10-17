@@ -14,16 +14,44 @@ import (
 	"time"
 )
 
-// flowmap is a map of requests of stuff, the next level of stuff is a map of parents, then a map of spans, holding a map of annotations
-type flowmaptype map[gotocol.TraceContextType]interface{}
+// value for zipkin span direction
+type Values int
 
-// Annotation information for each step in the trace
-type annotationtype struct {
-	Ctx    string   `json:"ctx"`        // Context
-	Host   string   `json:"host"`       // host name
-	Calls  []string `json:"calls"`      // array of context:nanotimestamp
-	Imp    string   `json:"imposition"` // protocol request type
-	Intent string   `json:"intention"`  // request body
+const (
+	CS      Values = iota // client send
+	SR                    // server receive
+	SS                    // server send
+	CR                    // client receive
+	Unknown               // something went wrong
+)
+
+// pretty printer for Values
+func (v Values) String() string {
+	switch v {
+	case CS:
+		return "cs"
+	case SR:
+		return "sr"
+	case SS:
+		return "ss"
+	case CR:
+		return "cr"
+	default:
+		return "unknown"
+	}
+}
+
+// flowmap is a map by traceid of slices of pointers to spannotations
+type flowmaptype map[gotocol.TraceContextType][]*spannotype
+
+// Annotation information for each step in the span
+type spannotype struct {
+	Ctx       string `json:"ctx"`        // Context
+	Host      string `json:"host"`       // host name
+	Imp       string `json:"imposition"` // protocol request type
+	Intent    string `json:"intention"`  // request body
+	Timestamp int64  `json:"ts"`         // unix nanotimestamp
+	Value     string `json:"value"`      // direction of span
 }
 
 var flowmap flowmaptype
@@ -33,75 +61,70 @@ var flowlock sync.Mutex // lock changes to the maps
 // file to log flow data to
 var file *os.File
 
-// Begin a new request flow
-func begin(ctx gotocol.Context) {
-	if !archaius.Conf.Collect {
-		return
+// setup and initialize the flow log
+func setup() {
+	// do this here since Arch is not set in time for init()
+	f, err := os.Create("json_metrics/" + archaius.Conf.Arch + "_flow.json")
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		file = f
 	}
-	if file == nil {
-		// do this here since Arch is not set in time for init()
-		f, err := os.Create("json_metrics/" + archaius.Conf.Arch + "_flow.json")
-		if err != nil {
-			log.Fatal(err)
-		} else {
-			file = f
-		}
-		// Initialize the flow mapping system
-		flowmap = make(flowmaptype, archaius.Conf.Population)
-	}
-	if flowmap[ctx.Trace] == nil {
-		flowmap[ctx.Trace] = make(flowmaptype)
-	}
+	// Initialize the flow mapping system
+	flowmap = make(flowmaptype, archaius.Conf.Population)
 }
 
-// Annotate service activity on a flow and return the annotation for further use, tag = "sr" service receive, "ss" service send
-func Annotate(msg gotocol.Message, tag, name string, received time.Time) *annotationtype {
-	var annotation *annotationtype
-	if !archaius.Conf.Collect {
-		return nil
+// Common Annotation code
+func annotate(msg gotocol.Message, name string, t time.Time, resp, others Values) *spannotype {
+	if file == nil {
+		setup()
 	}
-	flowlock.Lock()
 	if flowmap[msg.Ctx.Trace] == nil {
-		begin(msg.Ctx)
+		flowmap[msg.Ctx.Trace] = make([]*spannotype, 0, 2) // reserve space for at least 2 annotations in a span
 	}
-	if flowmap[msg.Ctx.Trace].(flowmaptype)[msg.Ctx.Parent] == nil {
-		flowmap[msg.Ctx.Trace].(flowmaptype)[msg.Ctx.Parent] = make(flowmaptype)
-	}
-	a := (flowmap[msg.Ctx.Trace].(flowmaptype)[msg.Ctx.Parent].(flowmaptype)[msg.Ctx.Span])
-	if a == nil {
-		annotation = new(annotationtype)
-		annotation.Host = name
-		annotation.Ctx = msg.Ctx.String()
-		annotation.Imp = msg.Imposition.String()
-		annotation.Intent = msg.Intention
+	annotation := new(spannotype)
+	annotation.Host = name
+	annotation.Ctx = msg.Ctx.String()
+	annotation.Imp = msg.Imposition.String()
+	annotation.Intent = msg.Intention
+	annotation.Timestamp = t.UnixNano()
+	if msg.Imposition == gotocol.GetResponse {
+		annotation.Value = resp.String()
 	} else {
-		annotation = a.(*annotationtype)
+		annotation.Value = others.String()
 	}
-	(*annotation).Calls = append((*annotation).Calls, fmt.Sprintf("%v:%d", tag, received.UnixNano()))
-	flowmap[msg.Ctx.Trace].(flowmaptype)[msg.Ctx.Parent].(flowmaptype)[msg.Ctx.Span] = annotation
-	flowlock.Unlock()
 	return annotation
 }
 
-// Annotate service sends on a flow, using existing annotation map and the new span
-func AnnotateSend(annotation *annotationtype, span gotocol.Context) time.Time {
-	now := time.Now()
-	if annotation != nil {
-		flowlock.Lock()
-		(*annotation).Calls = append((*annotation).Calls, fmt.Sprintf("%v:%d", span.String(), now.UnixNano())) // send time
-		flowlock.Unlock()
-		//log.Println(*annotation)
+// Annotate service activity when receiving a message
+func AnnotateReceive(msg gotocol.Message, name string, received time.Time) {
+	if !archaius.Conf.Collect {
+		return
 	}
-	return now
+	flowlock.Lock()
+	flowmap[msg.Ctx.Trace] = append(flowmap[msg.Ctx.Trace], annotate(msg, name, received, CR, SR))
+	flowlock.Unlock()
+	return
 }
 
-// Terminate a flow, flushing output and freeing the request id for re-use
+// Annotate service sends on a flow
+func AnnotateSend(msg gotocol.Message, name string) {
+	if !archaius.Conf.Collect {
+		return
+	}
+	flowlock.Lock()
+	flowmap[msg.Ctx.Trace] = append(flowmap[msg.Ctx.Trace], annotate(msg, name, msg.Sent, SS, CS))
+	flowlock.Unlock()
+	return
+}
+
+// Terminate a flow, flushing output and freeing the request id to keep the map smaller
 func End(ctx gotocol.Context) {
 	if !archaius.Conf.Collect {
 		return
 	}
-	//	Flush(flowmap[ctx.Trace].(flowmaptype))
-	//	delete(flowmap, ctx.Trace)
+	Flush(flowmap[ctx.Trace])
+	delete(flowmap, ctx.Trace)
 }
 
 // Shutdown the flow mapping system and flush remaining flows
@@ -112,77 +135,32 @@ func Shutdown() {
 	flowlock.Lock()
 	log.Printf("Flushing flows to %v\n", file.Name())
 	for _, f := range flowmap {
-		Flush(f.(flowmaptype))
+		Flush(f)
 	}
 	file.Close()
 	flowlock.Unlock()
 }
 
-// Flush the spans for a request - map[parent]map[span]stuff
-func Flush(trace flowmaptype) {
-	//j, err := json.Marshal(trace)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//file.WriteString(fmt.Sprintf("Trace: %v\n", trace))
-	Walk(trace, 0)
-}
-
-// Walk through the trace and print results in map order
-func PrintWalk(flow flowmaptype) {
-	for _, f := range flow {
-		switch x := f.(type) {
-		case string:
-			fmt.Println(x)
-		case flowmaptype:
-			PrintWalk(x)
-		case *annotationtype:
-			j, _ := json.Marshal(*x)
-			fmt.Printf("%v\n", string(j))
-		default:
-			fmt.Printf("Unknown flowmap type: %T\n", x)
+// Flush the spans for a request
+func Flush(trace []*spannotype) {
+	for _, a := range trace {
+		j, err := json.Marshal(*a)
+		if err != nil {
+			log.Fatal(err)
 		}
-	}
-}
-
-// Walk through the trace and write results to file in trace order
-func Walk(flow flowmaptype, parent gotocol.TraceContextType) {
-	f := flow[parent] // chain through the spans in order
-	switch x := f.(type) {
-	case nil: // no more spans in this flow
-		return
-	case string:
-		file.WriteString(fmt.Sprintf("%v\n", x))
-	case flowmaptype:
-		for s, _ := range x { // for all the spans that have this parent
-			Walk(x, s)    // go in one level to print annotation
-			Walk(flow, s) // chain to the next span
-		}
-	case *annotationtype:
-		j, _ := json.Marshal(*x)
 		file.WriteString(fmt.Sprintf("%v\n", string(j)))
-	default:
-		file.WriteString(fmt.Sprintf("Unknown flowmap type: %T\n", x))
+		//log.Println(string(j))
 	}
 }
 
 // common code for instrumenting requests
-func Instrument(msg gotocol.Message, name string, hist *metrics.Histogram) (ann *annotationtype, span gotocol.Context) {
+func Instrument(msg gotocol.Message, name string, hist *metrics.Histogram) {
 	received := time.Now()
 	collect.Measure(hist, received.Sub(msg.Sent))
 	if archaius.Conf.Msglog {
 		log.Printf("%v: %v\n", name, msg)
 	}
-	if msg.Ctx == gotocol.NilContext {
-		ann = nil
-		span = gotocol.NilContext
-	} else {
-		ann = Annotate(msg, "sr", name, received) // annotate this request
-		if ann != nil {                           // flow is enabled
-			span = msg.Ctx.NewParent() // make a new context for the outbound request
-		} else {
-			span = gotocol.NilContext
-		}
+	if msg.Ctx != gotocol.NilContext {
+		AnnotateReceive(msg, name, received) // store the annotation for this request
 	}
-	return ann, span
 }

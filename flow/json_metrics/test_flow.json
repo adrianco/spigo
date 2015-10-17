@@ -1,6 +1,12 @@
-{"ctx":"t1p0s1","host":"requestor","calls":["ss:1444700134960740869","sr:1444700134960862570","t1p1s2:1444700134960873103","t1p1s3:1444700134960876497"],"imposition":"GetRequest","intention":"customer1"}
-{"ctx":"t1p1s3","host":"addresses","calls":["sr:1444700134960891292","t1p3s5:1444700134960893057"],"imposition":"GetRequest","intention":"customer1"}
-{"ctx":"t1p3s5","host":"subscriber","calls":["sr:1444700134960896679","t1p5s6:1444700134960898757"],"imposition":"GetResponse","intention":"address:Bedrock"}
-{"ctx":"t1p5s6","host":"requestor","calls":["sr:1444700134960900166"],"imposition":"GetResponse","intention":"name:Fred Flintstone, address:Bedrock"}
-{"ctx":"t1p1s2","host":"names","calls":["sr:1444700134960877704","t1p2s4:1444700134960879834"],"imposition":"GetRequest","intention":"customer1"}
-{"ctx":"t1p2s4","host":"subscriber","calls":["sr:1444700134960894530"],"imposition":"GetResponse","intention":"name:Fred Flintstone"}
+{"ctx":"t1p0s1","host":"requestor","imposition":"GetRequest","intention":"customer1","ts":1445107385087148947,"value":"cs"}
+{"ctx":"t1p0s1","host":"subscriber","imposition":"GetRequest","intention":"customer1","ts":1445107385088305051,"value":"sr"}
+{"ctx":"t1p1s2","host":"subscriber","imposition":"GetRequest","intention":"customer1","ts":1445107385088307078,"value":"cs"}
+{"ctx":"t1p1s3","host":"subscriber","imposition":"GetRequest","intention":"customer1","ts":1445107385088308555,"value":"cs"}
+{"ctx":"t1p1s2","host":"names","imposition":"GetRequest","intention":"customer1","ts":1445107385088309625,"value":"sr"}
+{"ctx":"t1p1s2","host":"names","imposition":"GetResponse","intention":"name:Fred Flintstone","ts":1445107385088310807,"value":"ss"}
+{"ctx":"t1p1s3","host":"addresses","imposition":"GetRequest","intention":"customer1","ts":1445107385088311964,"value":"sr"}
+{"ctx":"t1p1s3","host":"addresses","imposition":"GetResponse","intention":"address:Bedrock","ts":1445107385088312949,"value":"ss"}
+{"ctx":"t1p1s2","host":"subscriber","imposition":"GetResponse","intention":"name:Fred Flintstone","ts":1445107385088313964,"value":"cr"}
+{"ctx":"t1p1s3","host":"subscriber","imposition":"GetResponse","intention":"address:Bedrock","ts":1445107385088315334,"value":"cr"}
+{"ctx":"t1p0s1","host":"subscriber","imposition":"GetResponse","intention":"name:Fred Flintstone, address:Bedrock","ts":1445107385088316342,"value":"ss"}
+{"ctx":"t1p0s1","host":"requestor","imposition":"GetResponse","intention":"name:Fred Flintstone, address:Bedrock","ts":1445107385088317367,"value":"cr"}

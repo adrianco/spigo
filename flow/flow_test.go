@@ -14,37 +14,38 @@ func TestFlow(t *testing.T) {
 	archaius.Conf.Arch = "test"
 	s1 := gotocol.NewTrace()
 	m1 := gotocol.Message{gotocol.GetRequest, nil, time.Now(), s1, "customer1"}
-	Annotate(m1, "ss", "requestor", m1.Sent) // BUG can't Annotate(m1...) twice as it overwrites the record
+	AnnotateSend(m1, "requestor") 
 	// pretend there is a subscriber service that got a message from a requestor
-	a1 := Annotate(m1, "sr", "subscriber", time.Now())
+	AnnotateReceive(m1, "subscriber", time.Now())
 	s2 := m1.Ctx.NewParent()
 	// pretend that the names and addresses services were both sent messages by subscriber
-	m2 := gotocol.Message{gotocol.GetRequest, nil, AnnotateSend(a1, s2), s2, m1.Intention}
+	m2 := gotocol.Message{gotocol.GetRequest, nil, time.Now(), s2, m1.Intention}
+	AnnotateSend(m2, "subscriber")
 	s3 := s2.AddSpan()
-	m3 := gotocol.Message{gotocol.GetRequest, nil, AnnotateSend(a1, s3), s3, m1.Intention}
-	// pretend that names returned to subscriber
-	a2 := Annotate(m2, "sr", "names", time.Now())
-	s4 := m2.Ctx.NewParent()
-	m4 := gotocol.Message{gotocol.GetResponse, nil, AnnotateSend(a2, s4), s4, "name:Fred Flintstone"}
-	// pretend that addresses returned to subscriber
-	a3 := Annotate(m3, "sr", "addresses", time.Now())
-	s5 := m3.Ctx.NewParent()
-	m5 := gotocol.Message{gotocol.GetResponse, nil, AnnotateSend(a3, s5), s5, "address:Bedrock"}
+	m3 := gotocol.Message{gotocol.GetRequest, nil, time.Now(), s3, m1.Intention}
+	AnnotateSend(m3, "subscriber")
+	// pretend that names got the message and returned to subscriber
+	AnnotateReceive(m2, "names", time.Now())
+	m4 := gotocol.Message{gotocol.GetResponse, nil, time.Now(), m2.Ctx, "name:Fred Flintstone"}
+	AnnotateSend(m4, "names")
+	// pretend that addresses got the message and returned to subscriber
+	AnnotateReceive(m3, "addresses", time.Now())
+	m5 := gotocol.Message{gotocol.GetResponse, nil, time.Now(), m3.Ctx, "address:Bedrock"}
+	AnnotateSend(m5, "addresses")
 	// pretend that subscriber got both messages and joined them together
-	Annotate(m4, "sr", "subscriber", time.Now()) // first return doesn't do anything else
-	a5 := Annotate(m5, "sr", "subscriber", time.Now())
-	s6 := m5.Ctx.NewParent()
-	m6 := gotocol.Message{gotocol.GetResponse, nil, AnnotateSend(a5, s6), s6, "name:Fred Flintstone, address:Bedrock"}
+	AnnotateReceive(m4, "subscriber", time.Now())
+	AnnotateReceive(m5, "subscriber", time.Now())
+	m6 := gotocol.Message{gotocol.GetResponse, nil, time.Now(), s1, "name:Fred Flintstone, address:Bedrock"}
+	AnnotateSend(m6, "subscriber")
 	// pretend that requestor got the message
-	Annotate(m6, "sr", "requestor", time.Now())
+	AnnotateReceive(m6, "requestor", time.Now())
 
 	fmt.Println("All flows")
-	fmt.Println(flowmap)
-	fmt.Println("\nWalk all remaining flows")
-	PrintWalk(flowmap)
-	fmt.Println("\nWalk all remaining flows in order to file")
-	Walk(flowmap, 0)
-	fmt.Println("\nEnd trace 1")
-	End(m1.Ctx)
+	for _, f := range flowmap {
+		for _, a := range f {
+			fmt.Println(*a)
+		}
+	}
+	fmt.Println("\nWrite all remaining flows in order to file")
 	Shutdown()
 }

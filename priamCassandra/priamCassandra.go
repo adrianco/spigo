@@ -84,12 +84,11 @@ func RingConfig(m string) ByToken {
 
 // Start priamCassandra, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
-	dunbar := archaius.Conf.Population // starting point for how many nodes to remember
 	// remember the channel to talk to microservices
-	microservices := make(map[string]chan gotocol.Message, dunbar)
+	microservices := make(map[string]chan gotocol.Message)
 	// track the hash values owned by each node in the ring
 	var ring ByToken
-	dependencies := make(map[string]time.Time, dunbar) // dependent services and time last updated
+	dependencies := make(map[string]time.Time) // dependent services and time last updated
 	store := make(map[string]string, 4)                // key value store
 	store["why?"] = "because..."
 	var parent chan gotocol.Message                                          // remember how to talk back to creator
@@ -101,7 +100,7 @@ func Start(listener chan gotocol.Message) {
 	for {
 		select {
 		case msg := <-listener:
-			annotation, span := flow.Instrument(msg, name, hist)
+			flow.Instrument(msg, name, hist)
 			switch msg.Imposition {
 			case gotocol.Hello:
 				if name == "" {
@@ -126,10 +125,14 @@ func Start(listener chan gotocol.Message) {
 				//log.Printf("%v: %v %v\n", name, i, ringHash(msg.Intention))
 				if len(ring) == 0 || ring[i].name == name { // ring is setup so only respond if this is the right place
 					// return any stored value for this key (Cassandra READ.ONE behavior)
-					gotocol.Message{gotocol.GetResponse, listener, flow.AnnotateSend(annotation, span), span, store[msg.Intention]}.GoSend(msg.ResponseChan)
+					outmsg := gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Ctx, store[msg.Intention]}
+					flow.AnnotateSend(outmsg, name)
+					outmsg.GoSend(msg.ResponseChan)
 				} else {
-					// send the message to the right place, but don't change the ResponseChan
-					gotocol.Message{gotocol.GetRequest, msg.ResponseChan, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(microservices[ring[i].name])
+					// forward the message to the right place, but don't change the ResponseChan or span
+					outmsg := gotocol.Message{gotocol.GetRequest,  msg.ResponseChan, time.Now(), msg.Ctx, msg.Intention}
+					flow.AnnotateSend(outmsg, name)
+					outmsg.GoSend(microservices[ring[i].name])
 				}
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up, not used by priamCassandra currently
@@ -142,16 +145,19 @@ func Start(listener chan gotocol.Message) {
 					if len(ring) == 0 || ring[i].name == name { // ring is setup so only store if this is the right place
 						store[key] = value
 					} else {
-						// send the message to the right place, but don't change the ResponseChan
-						gotocol.Message{gotocol.Put, msg.ResponseChan, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(microservices[ring[i].name])
+						// forward the message to the right place, but don't change the ResponseChan or span
+						outmsg := gotocol.Message{gotocol.Put, msg.ResponseChan, time.Now(), msg.Ctx, msg.Intention}
+						flow.AnnotateSend(outmsg, name)
+						outmsg.GoSend(microservices[ring[i].name])
 					}
 					// duplicate the request on to priamCassandra nodes in each zone and one in each region
 					for _, z := range names.OtherZones(name, archaius.Conf.ZoneNames) {
 						// replicate request
 						for n, c := range microservices {
 							if names.Region(n) == names.Region(name) && names.Zone(n) == z {
-								span = span.AddSpan() // increment span since multiple messages could be sent
-								gotocol.Message{gotocol.Replicate, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(c)
+								outmsg := gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
+								flow.AnnotateSend(outmsg, name)
+								outmsg.GoSend(c)
 								break // only need to send it to one node in each zone
 							}
 						}
@@ -159,8 +165,9 @@ func Start(listener chan gotocol.Message) {
 					for _, r := range names.OtherRegions(name, archaius.Conf.RegionNames[0:archaius.Conf.Regions]) {
 						for n, c := range microservices {
 							if names.Region(n) == r {
-								span = span.AddSpan() // increment span since multiple messages could be sent
-								gotocol.Message{gotocol.Replicate, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(c)
+								outmsg := gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
+								flow.AnnotateSend(outmsg, name)
+								outmsg.GoSend(c)
 								break // only need to send it to one node in each region
 							}
 						}
@@ -177,9 +184,10 @@ func Start(listener chan gotocol.Message) {
 					if len(ring) == 0 || ring[i].name == name { // ring is setup so only store if this is the right place
 						store[key] = value
 					} else {
-						// send the message to the right place, but don't change the ResponseChan
-						gotocol.Message{gotocol.Replicate, msg.ResponseChan, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(microservices[ring[i].name])
-					}
+						// forward the message to the right place, but don't change the ResponseChan
+						outmsg := gotocol.Message{gotocol.Replicate, msg.ResponseChan, time.Now(), msg.Ctx, msg.Intention}
+						flow.AnnotateSend(outmsg, name)
+						outmsg.GoSend(microservices[ring[i].name])					}
 				}
 				// name looks like: netflixoss.us-east-1.zoneC.cassTurtle.priamCassandra.cassTurtle11
 				myregion := names.Region(name)
@@ -193,8 +201,9 @@ func Start(listener chan gotocol.Message) {
 							// replicate request
 							for n, c := range microservices {
 								if names.Region(n) == myregion && names.Zone(n) == z {
-									span = span.AddSpan() // increment span since multiple messages could be sent
-									gotocol.Message{gotocol.Replicate, listener, time.Now(), span, msg.Intention}.GoSend(c)
+									outmsg := gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
+									flow.AnnotateSend(outmsg, name)
+									outmsg.GoSend(c)
 									break // only need to send it to one node in each zone
 								}
 							}

@@ -19,7 +19,7 @@ func Start(listener chan gotocol.Message) {
 	dependencies := make(map[string]time.Time) // dependent services and time last updated
 	store := make(map[string]string, 4)        // key value store
 	store["why?"] = "because..."
-	var netflixoss, requestor chan gotocol.Message     // remember creator and how to talk back to incoming requests
+	var netflixoss chan gotocol.Message     // remember creator and how to talk back to incoming requests
 	var name string                                    // remember my name
 	eureka := make(map[string]chan gotocol.Message, 3) // service registry per zone
 	hist := collect.NewHist("")
@@ -28,7 +28,7 @@ func Start(listener chan gotocol.Message) {
 	for {
 		select {
 		case msg := <-listener:
-			annotation, span := flow.Instrument(msg, name, hist)
+			flow.Instrument(msg, name, hist)
 			switch msg.Imposition {
 			case gotocol.Hello:
 				if name == "" {
@@ -45,15 +45,13 @@ func Start(listener chan gotocol.Message) {
 				// forget a buddy
 				gotocol.ForgetHandler(&dependencies, &microservices, msg)
 			case gotocol.GetRequest:
-				// return any stored value for this key (Cassandra READ.ONE behavior)
-				gotocol.Message{gotocol.GetResponse, listener, flow.AnnotateSend(annotation, span), span, store[msg.Intention]}.GoSend(msg.ResponseChan)
+				// return any stored value for this key
+				outmsg := gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Ctx, store[msg.Intention]}
+				flow.AnnotateSend(outmsg, name)
+				outmsg.GoSend(msg.ResponseChan)
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up (not currently used)
-				if requestor != nil {
-					gotocol.Message{gotocol.GetResponse, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(requestor)
-				}
 			case gotocol.Put:
-				requestor = msg.ResponseChan
 				// set a key value pair and replicate globally
 				var key, value string
 				fmt.Sscanf(msg.Intention, "%s%s", &key, &value)
@@ -63,7 +61,9 @@ func Start(listener chan gotocol.Message) {
 					if len(microservices) > 0 {
 						// replicate request
 						for _, c := range microservices {
-							gotocol.Message{gotocol.Replicate, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(c)
+							outmsg := gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
+							flow.AnnotateSend(outmsg, name)
+							outmsg.GoSend(c)
 						}
 					}
 				}
@@ -76,7 +76,7 @@ func Start(listener chan gotocol.Message) {
 				if key != "" && value != "" {
 					store[key] = value
 				}
-				// name looks like: netflixoss.us-east-1.zoneC.cassTurtle.store.cassTurtle11
+				// name looks like: netflixoss.us-east-1.zoneC.mysql.store.mysql1
 				myregion := names.Region(name)
 				//log.Printf("%v: %v\n", name, myregion)
 				// find if this was a cross region Replicate
@@ -88,9 +88,9 @@ func Start(listener chan gotocol.Message) {
 							for nz, cz := range microservices {
 								if myregion == names.Region(nz) {
 									//log.Printf("%v rep to: %v\n", name, nz)
-									span = span.AddSpan() // increment span since multiple messages could be sent
-									gotocol.Message{gotocol.Replicate, listener, flow.AnnotateSend(annotation, span), span, msg.Intention}.GoSend(cz)
-								}
+									outmsg := gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
+									flow.AnnotateSend(outmsg, name)
+									outmsg.GoSend(cz)								}
 							}
 						}
 					}

@@ -31,7 +31,7 @@ func pirateListen(listener chan Message) {
 		case Inform:
 		case GetRequest:
 			if msg.ResponseChan != nil {
-				Message{GetResponse, nil, time.Now(), msg.Ctx.NewSpan(), "Bottle of rum"}.GoSend(msg.ResponseChan)
+				Message{GetResponse, nil, time.Now(), msg.Ctx.NewParent(), "Bottle of rum"}.GoSend(msg.ResponseChan)
 			}
 		case GetResponse:
 		case Put:
@@ -46,7 +46,7 @@ func pirateListen(listener chan Message) {
 func TestImpose(t *testing.T) {
 	var ctx, ctx4 Context
 	ctx2 := NewTrace()
-	ctx3 := ctx2.NewSpan()
+	ctx3 := ctx2.NewParent()
 	ctx4 = NilContext
 	fmt.Println("Context: ", ctx, ctx2, ctx3, ctx4, NewTrace())
 	imp := Message{Hello, nil, time.Now(), ctx2, "world"}
@@ -59,7 +59,7 @@ func TestImpose(t *testing.T) {
 	// test all options including namedrop nil and goodbye
 	for i := 0; i < int(numOfImpositions); i++ {
 		imp.Imposition = Impositions(i)
-		imp.Ctx = imp.Ctx.NewSpan()
+		imp.Ctx = imp.Ctx.AddSpan()
 		noodle <- imp
 	}
 	// shut down second pirate, which will have said hello twice
