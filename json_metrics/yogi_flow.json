@@ -1,401 +1,403 @@
-{"ctx":"t28p0s28","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187299838927,"value":"cs"}
-{"ctx":"t28p0s28","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187299928353,"value":"sr"}
-{"ctx":"t77p0s77","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why22484 me","ts":1445108187788887237,"value":"cs"}
-{"ctx":"t77p0s77","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why22484 me","ts":1445108187788917122,"value":"sr"}
-{"ctx":"t101p0s101","host":"yogi.us-east-1.zoneB.cass4....cass.priamCassandra","imposition":"Goodbye","intention":"chaosmonkey","ts":1445108188017761199,"value":"sr"}
-{"ctx":"t106p0s106","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188067571852,"value":"cs"}
-{"ctx":"t106p0s106","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188067679085,"value":"sr"}
-{"ctx":"t108p0s108","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188087401177,"value":"cs"}
-{"ctx":"t108p0s108","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188087456047,"value":"sr"}
-{"ctx":"t114p0s114","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why00","ts":1445108188150012100,"value":"cs"}
-{"ctx":"t114p0s114","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why00","ts":1445108188150053460,"value":"sr"}
-{"ctx":"t125p0s125","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why401600 me","ts":1445108188259039020,"value":"cs"}
-{"ctx":"t125p0s125","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why401600 me","ts":1445108188259197143,"value":"sr"}
-{"ctx":"t16p0s16","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why636 me","ts":1445108187179396413,"value":"cs"}
-{"ctx":"t16p0s16","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why636 me","ts":1445108187179462927,"value":"sr"}
-{"ctx":"t181p0s181","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188819364222,"value":"cs"}
-{"ctx":"t181p0s181","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188819435678,"value":"sr"}
-{"ctx":"t10p0s10","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187119528978,"value":"cs"}
-{"ctx":"t10p0s10","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187119555196,"value":"sr"}
-{"ctx":"t49p0s49","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why24","ts":1445108187507477971,"value":"cs"}
-{"ctx":"t49p0s49","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why24","ts":1445108187507513218,"value":"sr"}
-{"ctx":"t58p0s58","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why864","ts":1445108187599743362,"value":"cs"}
-{"ctx":"t58p0s58","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why864","ts":1445108187599829169,"value":"sr"}
-{"ctx":"t72p0s72","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187738287832,"value":"cs"}
-{"ctx":"t72p0s72","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187738397222,"value":"sr"}
-{"ctx":"t1p0s1","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187029743962,"value":"cs"}
-{"ctx":"t1p0s1","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187031801737,"value":"sr"}
-{"ctx":"t78p0s78","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187799558817,"value":"cs"}
-{"ctx":"t78p0s78","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187799643617,"value":"sr"}
-{"ctx":"t103p0s103","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188038433889,"value":"cs"}
-{"ctx":"t103p0s103","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188038466742,"value":"sr"}
-{"ctx":"t161p0s161","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why421764","ts":1445108188619390932,"value":"cs"}
-{"ctx":"t161p0s161","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why421764","ts":1445108188619443257,"value":"sr"}
-{"ctx":"t162p0s162","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188629387352,"value":"cs"}
-{"ctx":"t162p0s162","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188629507992,"value":"sr"}
-{"ctx":"t197p0s197","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why603600 me","ts":1445108188977660699,"value":"cs"}
-{"ctx":"t197p0s197","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why603600 me","ts":1445108188977718833,"value":"sr"}
-{"ctx":"t73p0s73","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why636","ts":1445108187749779932,"value":"cs"}
-{"ctx":"t73p0s73","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why636","ts":1445108187749893733,"value":"sr"}
-{"ctx":"t15p0s15","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why525 me","ts":1445108187169389867,"value":"cs"}
-{"ctx":"t15p0s15","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why525 me","ts":1445108187169471403,"value":"sr"}
-{"ctx":"t116p0s116","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why351225 me","ts":1445108188169399125,"value":"cs"}
-{"ctx":"t116p0s116","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why351225 me","ts":1445108188169454493,"value":"sr"}
-{"ctx":"t195p0s195","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why583364 me","ts":1445108188957610286,"value":"cs"}
-{"ctx":"t195p0s195","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why583364 me","ts":1445108188957637571,"value":"sr"}
-{"ctx":"t7p0s7","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why24","ts":1445108187087730298,"value":"cs"}
-{"ctx":"t7p0s7","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why24","ts":1445108187087780173,"value":"sr"}
-{"ctx":"t152p0s152","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188529424632,"value":"cs"}
-{"ctx":"t152p0s152","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188529545325,"value":"sr"}
-{"ctx":"t156p0s156","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why24","ts":1445108188567745222,"value":"cs"}
-{"ctx":"t156p0s156","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why24","ts":1445108188567838279,"value":"sr"}
-{"ctx":"t169p0s169","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188699795767,"value":"cs"}
-{"ctx":"t169p0s169","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188699893137,"value":"sr"}
-{"ctx":"t50p0s50","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why24","ts":1445108187519860572,"value":"cs"}
-{"ctx":"t50p0s50","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why24","ts":1445108187519939837,"value":"sr"}
-{"ctx":"t64p0s64","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why18324 me","ts":1445108187659714957,"value":"cs"}
-{"ctx":"t64p0s64","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why18324 me","ts":1445108187659763527,"value":"sr"}
-{"ctx":"t67p0s67","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187687827380,"value":"cs"}
-{"ctx":"t67p0s67","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187687851180,"value":"sr"}
-{"ctx":"t68p0s68","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why18324","ts":1445108187697652103,"value":"cs"}
-{"ctx":"t68p0s68","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why18324","ts":1445108187697682959,"value":"sr"}
-{"ctx":"t107p0s107","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188079869731,"value":"cs"}
-{"ctx":"t107p0s107","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188079908169,"value":"sr"}
-{"ctx":"t131p0s131","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188317406425,"value":"cs"}
-{"ctx":"t131p0s131","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188317440471,"value":"sr"}
-{"ctx":"t137p0s137","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188379675637,"value":"cs"}
-{"ctx":"t137p0s137","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188379755732,"value":"sr"}
-{"ctx":"t23p0s23","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187249573403,"value":"cs"}
-{"ctx":"t23p0s23","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187249699438,"value":"sr"}
-{"ctx":"t39p0s39","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why12144 me","ts":1445108187409336002,"value":"cs"}
-{"ctx":"t39p0s39","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why12144 me","ts":1445108187409441450,"value":"sr"}
-{"ctx":"t52p0s52","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why15225 me","ts":1445108187537440983,"value":"cs"}
-{"ctx":"t52p0s52","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why15225 me","ts":1445108187537504756,"value":"sr"}
-{"ctx":"t95p0s95","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why29841 me","ts":1445108187967626481,"value":"cs"}
-{"ctx":"t95p0s95","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why29841 me","ts":1445108187967682629,"value":"sr"}
-{"ctx":"t105p0s105","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188058540529,"value":"cs"}
-{"ctx":"t105p0s105","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188058610720,"value":"sr"}
-{"ctx":"t178p0s178","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why431849","ts":1445108188787817632,"value":"cs"}
-{"ctx":"t178p0s178","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why431849","ts":1445108188787887262,"value":"sr"}
-{"ctx":"t182p0s182","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why542916 me","ts":1445108188829345715,"value":"cs"}
-{"ctx":"t182p0s182","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why542916 me","ts":1445108188829380865,"value":"sr"}
-{"ctx":"t201p0s201","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108189017668608,"value":"cs"}
-{"ctx":"t201p0s201","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108189017700283,"value":"sr"}
-{"ctx":"t2p0s2","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why11 me","ts":1445108187037473309,"value":"cs"}
-{"ctx":"t2p0s2","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why11 me","ts":1445108187037487731,"value":"sr"}
-{"ctx":"t158p0s158","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188588722422,"value":"cs"}
-{"ctx":"t158p0s158","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188588759789,"value":"sr"}
-{"ctx":"t155p0s155","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188559903152,"value":"cs"}
-{"ctx":"t155p0s155","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188559968332,"value":"sr"}
-{"ctx":"t168p0s168","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why512601 me","ts":1445108188688345532,"value":"cs"}
-{"ctx":"t168p0s168","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why512601 me","ts":1445108188688469446,"value":"sr"}
-{"ctx":"t173p0s173","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188737609597,"value":"cs"}
-{"ctx":"t173p0s173","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188737657892,"value":"sr"}
-{"ctx":"t57p0s57","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why14196","ts":1445108187587669922,"value":"cs"}
-{"ctx":"t57p0s57","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why14196","ts":1445108187587728112,"value":"sr"}
-{"ctx":"t47p0s47","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why10100","ts":1445108187488212908,"value":"cs"}
-{"ctx":"t47p0s47","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why10100","ts":1445108187488264114,"value":"sr"}
-{"ctx":"t79p0s79","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187809380609,"value":"cs"}
-{"ctx":"t79p0s79","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187809421264,"value":"sr"}
-{"ctx":"t99p0s99","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why25625","ts":1445108188007302251,"value":"cs"}
-{"ctx":"t99p0s99","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why25625","ts":1445108188007328827,"value":"sr"}
-{"ctx":"t130p0s130","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why29841","ts":1445108188309292008,"value":"cs"}
-{"ctx":"t130p0s130","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why29841","ts":1445108188309350519,"value":"sr"}
-{"ctx":"t177p0s177","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why522704 me","ts":1445108188777857832,"value":"cs"}
-{"ctx":"t177p0s177","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why522704 me","ts":1445108188777972601,"value":"sr"}
-{"ctx":"t192p0s192","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188929650118,"value":"cs"}
-{"ctx":"t192p0s192","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188929745961,"value":"sr"}
-{"ctx":"t17p0s17","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why525","ts":1445108187188314691,"value":"cs"}
-{"ctx":"t17p0s17","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why525","ts":1445108187188349762,"value":"sr"}
-{"ctx":"t81p0s81","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187829398102,"value":"cs"}
-{"ctx":"t81p0s81","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187829513007,"value":"sr"}
-{"ctx":"t148p0s148","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188489419940,"value":"cs"}
-{"ctx":"t148p0s148","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188489480975,"value":"sr"}
-{"ctx":"t179p0s179","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why24","ts":1445108188799810912,"value":"cs"}
-{"ctx":"t179p0s179","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why24","ts":1445108188799931014,"value":"sr"}
-{"ctx":"t55p0s55","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why11121","ts":1445108187569055517,"value":"cs"}
-{"ctx":"t55p0s55","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why11121","ts":1445108187569090526,"value":"sr"}
-{"ctx":"t97p0s97","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why23529","ts":1445108187987538876,"value":"cs"}
-{"ctx":"t97p0s97","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why23529","ts":1445108187987610717,"value":"sr"}
-{"ctx":"t127p0s127","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why864","ts":1445108188279371997,"value":"cs"}
-{"ctx":"t127p0s127","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why864","ts":1445108188279452157,"value":"sr"}
-{"ctx":"t150p0s150","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why441936 me","ts":1445108188509380782,"value":"cs"}
-{"ctx":"t150p0s150","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why441936 me","ts":1445108188509524997,"value":"sr"}
-{"ctx":"t164p0s164","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188649827697,"value":"cs"}
-{"ctx":"t164p0s164","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188649935461,"value":"sr"}
-{"ctx":"t170p0s170","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why512601","ts":1445108188707446204,"value":"cs"}
-{"ctx":"t170p0s170","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why512601","ts":1445108188707491022,"value":"sr"}
-{"ctx":"t190p0s190","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why563136 me","ts":1445108188909044475,"value":"cs"}
-{"ctx":"t190p0s190","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why563136 me","ts":1445108188909078267,"value":"sr"}
-{"ctx":"t200p0s200","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why613721 me","ts":1445108189007440505,"value":"cs"}
-{"ctx":"t200p0s200","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why613721 me","ts":1445108189007476474,"value":"sr"}
-{"ctx":"t4p0s4","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why24 me","ts":1445108187059512087,"value":"cs"}
-{"ctx":"t4p0s4","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why24 me","ts":1445108187059574069,"value":"sr"}
-{"ctx":"t85p0s85","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why24576 me","ts":1445108187869396481,"value":"cs"}
-{"ctx":"t85p0s85","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why24576 me","ts":1445108187869442810,"value":"sr"}
-{"ctx":"t129p0s129","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188297507204,"value":"cs"}
-{"ctx":"t129p0s129","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188297533782,"value":"sr"}
-{"ctx":"t133p0s133","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why20400","ts":1445108188337751567,"value":"cs"}
-{"ctx":"t133p0s133","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why20400","ts":1445108188337784198,"value":"sr"}
-{"ctx":"t160p0s160","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why472209 me","ts":1445108188609386592,"value":"cs"}
-{"ctx":"t160p0s160","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why472209 me","ts":1445108188609458387,"value":"sr"}
-{"ctx":"t62p0s62","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why16256 me","ts":1445108187639311203,"value":"cs"}
-{"ctx":"t62p0s62","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why16256 me","ts":1445108187639347310,"value":"sr"}
-{"ctx":"t43p0s43","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187449435167,"value":"cs"}
-{"ctx":"t43p0s43","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187449572957,"value":"sr"}
-{"ctx":"t109p0s109","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why331089 me","ts":1445108188097534454,"value":"cs"}
-{"ctx":"t109p0s109","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why331089 me","ts":1445108188097565955,"value":"sr"}
-{"ctx":"t119p0s119","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why381444 me","ts":1445108188198751947,"value":"cs"}
-{"ctx":"t119p0s119","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why381444 me","ts":1445108188198867067,"value":"sr"}
-{"ctx":"t132p0s132","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why421764 me","ts":1445108188329403797,"value":"cs"}
-{"ctx":"t132p0s132","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why421764 me","ts":1445108188329484453,"value":"sr"}
-{"ctx":"t140p0s140","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why29841","ts":1445108188409973712,"value":"cs"}
-{"ctx":"t140p0s140","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why29841","ts":1445108188410071694,"value":"sr"}
-{"ctx":"t11p0s11","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why24","ts":1445108187128308256,"value":"cs"}
-{"ctx":"t11p0s11","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why24","ts":1445108187128350698,"value":"sr"}
-{"ctx":"t38p0s38","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why525","ts":1445108187399980659,"value":"cs"}
-{"ctx":"t38p0s38","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why525","ts":1445108187400022032,"value":"sr"}
-{"ctx":"t51p0s51","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187527392936,"value":"cs"}
-{"ctx":"t51p0s51","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187527420422,"value":"sr"}
-{"ctx":"t100p0s100","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why31961 me","ts":1445108188017693191,"value":"cs"}
-{"ctx":"t100p0s100","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why31961 me","ts":1445108188017761767,"value":"sr"}
-{"ctx":"t120p0s120","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why331089","ts":1445108188209394302,"value":"cs"}
-{"ctx":"t120p0s120","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why331089","ts":1445108188209496683,"value":"sr"}
-{"ctx":"t122p0s122","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188228362567,"value":"cs"}
-{"ctx":"t122p0s122","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188228513783,"value":"sr"}
-{"ctx":"t128p0s128","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188288787771,"value":"cs"}
-{"ctx":"t128p0s128","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188288831726,"value":"sr"}
-{"ctx":"t135p0s135","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why636","ts":1445108188359356657,"value":"cs"}
-{"ctx":"t135p0s135","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why636","ts":1445108188359452568,"value":"sr"}
-{"ctx":"t3p0s3","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187047731456,"value":"cs"}
-{"ctx":"t3p0s3","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187047766111,"value":"sr"}
-{"ctx":"t141p0s141","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why749","ts":1445108188419349372,"value":"cs"}
-{"ctx":"t141p0s141","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why749","ts":1445108188419412497,"value":"sr"}
-{"ctx":"t32p0s32","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187338427777,"value":"cs"}
-{"ctx":"t32p0s32","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187338545481,"value":"sr"}
-{"ctx":"t34p0s34","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187359335637,"value":"cs"}
-{"ctx":"t34p0s34","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187359477280,"value":"sr"}
-{"ctx":"t46p0s46","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why14196 me","ts":1445108187479707887,"value":"cs"}
-{"ctx":"t46p0s46","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why14196 me","ts":1445108187479750141,"value":"sr"}
-{"ctx":"t65p0s65","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why13169","ts":1445108187669314837,"value":"cs"}
-{"ctx":"t65p0s65","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why13169","ts":1445108187669347075,"value":"sr"}
-{"ctx":"t66p0s66","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why19361 me","ts":1445108187677777762,"value":"cs"}
-{"ctx":"t66p0s66","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why19361 me","ts":1445108187677822845,"value":"sr"}
-{"ctx":"t88p0s88","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why26676 me","ts":1445108187899826192,"value":"cs"}
-{"ctx":"t88p0s88","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why26676 me","ts":1445108187899961613,"value":"sr"}
-{"ctx":"t91p0s91","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why20400","ts":1445108187929476457,"value":"cs"}
-{"ctx":"t91p0s91","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why20400","ts":1445108187929623062,"value":"sr"}
-{"ctx":"t20p0s20","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187218684398,"value":"cs"}
-{"ctx":"t20p0s20","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187218739709,"value":"sr"}
-{"ctx":"t104p0s104","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why31961","ts":1445108188047353247,"value":"cs"}
-{"ctx":"t104p0s104","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why31961","ts":1445108188047391624,"value":"sr"}
-{"ctx":"t112p0s112","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why341156 me","ts":1445108188129886532,"value":"cs"}
-{"ctx":"t112p0s112","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why341156 me","ts":1445108188129995734,"value":"sr"}
-{"ctx":"t117p0s117","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why361296 me","ts":1445108188179380847,"value":"cs"}
-{"ctx":"t117p0s117","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why361296 me","ts":1445108188179482071,"value":"sr"}
-{"ctx":"t121p0s121","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188217431712,"value":"cs"}
-{"ctx":"t121p0s121","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188217463565,"value":"sr"}
-{"ctx":"t134p0s134","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why28784","ts":1445108188349831392,"value":"cs"}
-{"ctx":"t134p0s134","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why28784","ts":1445108188349919993,"value":"sr"}
-{"ctx":"t139p0s139","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188397369949,"value":"cs"}
-{"ctx":"t139p0s139","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188397404191,"value":"sr"}
-{"ctx":"t147p0s147","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188479277357,"value":"cs"}
-{"ctx":"t147p0s147","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188479310418,"value":"sr"}
-{"ctx":"t93p0s93","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187949268297,"value":"cs"}
-{"ctx":"t93p0s93","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187949349377,"value":"sr"}
-{"ctx":"t151p0s151","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why452025 me","ts":1445108188519296067,"value":"cs"}
-{"ctx":"t151p0s151","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why452025 me","ts":1445108188519327915,"value":"sr"}
-{"ctx":"t71p0s71","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187727841147,"value":"cs"}
-{"ctx":"t71p0s71","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187727911447,"value":"sr"}
-{"ctx":"t80p0s80","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187819418632,"value":"cs"}
-{"ctx":"t80p0s80","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187819540110,"value":"sr"}
-{"ctx":"t90p0s90","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why28784 me","ts":1445108187919424337,"value":"cs"}
-{"ctx":"t90p0s90","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why28784 me","ts":1445108187919546765,"value":"sr"}
-{"ctx":"t163p0s163","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why482304 me","ts":1445108188637829712,"value":"cs"}
-{"ctx":"t163p0s163","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why482304 me","ts":1445108188637917237,"value":"sr"}
-{"ctx":"t184p0s184","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why11121","ts":1445108188849775072,"value":"cs"}
-{"ctx":"t184p0s184","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why11121","ts":1445108188849891815,"value":"sr"}
-{"ctx":"t9p0s9","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why416 me","ts":1445108187108307246,"value":"cs"}
-{"ctx":"t9p0s9","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why416 me","ts":1445108187108334401,"value":"sr"}
-{"ctx":"t69p0s69","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187709684451,"value":"cs"}
-{"ctx":"t69p0s69","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187709706043,"value":"sr"}
-{"ctx":"t118p0s118","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why371369 me","ts":1445108188188688937,"value":"cs"}
-{"ctx":"t118p0s118","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why371369 me","ts":1445108188188719954,"value":"sr"}
-{"ctx":"t126p0s126","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why411681 me","ts":1445108188269464350,"value":"cs"}
-{"ctx":"t126p0s126","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why411681 me","ts":1445108188269497567,"value":"sr"}
-{"ctx":"t153p0s153","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why462116 me","ts":1445108188537803847,"value":"cs"}
-{"ctx":"t153p0s153","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why462116 me","ts":1445108188537873747,"value":"sr"}
-{"ctx":"t194p0s194","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188949379372,"value":"cs"}
-{"ctx":"t194p0s194","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188949444487,"value":"sr"}
-{"ctx":"t25p0s25","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187269359407,"value":"cs"}
-{"ctx":"t25p0s25","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187269394258,"value":"sr"}
-{"ctx":"t27p0s27","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187287640757,"value":"cs"}
-{"ctx":"t27p0s27","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187287698477,"value":"sr"}
-{"ctx":"t53p0s53","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187547294979,"value":"cs"}
-{"ctx":"t53p0s53","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187547311572,"value":"sr"}
-{"ctx":"t83p0s83","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why23529 me","ts":1445108187849847702,"value":"cs"}
-{"ctx":"t83p0s83","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why23529 me","ts":1445108187849920077,"value":"sr"}
-{"ctx":"t180p0s180","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why532809 me","ts":1445108188809301995,"value":"cs"}
-{"ctx":"t180p0s180","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why532809 me","ts":1445108188809393737,"value":"sr"}
-{"ctx":"t187p0s187","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why27729","ts":1445108188878371397,"value":"cs"}
-{"ctx":"t187p0s187","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why27729","ts":1445108188878476371,"value":"sr"}
-{"ctx":"t18p0s18","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why39","ts":1445108187199693107,"value":"cs"}
-{"ctx":"t18p0s18","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why39","ts":1445108187199806756,"value":"sr"}
-{"ctx":"t14p0s14","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187159446373,"value":"cs"}
-{"ctx":"t14p0s14","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187159498517,"value":"sr"}
-{"ctx":"t30p0s30","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why981 me","ts":1445108187318233721,"value":"cs"}
-{"ctx":"t30p0s30","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why981 me","ts":1445108187318273430,"value":"sr"}
-{"ctx":"t31p0s31","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why10100 me","ts":1445108187329673643,"value":"cs"}
-{"ctx":"t31p0s31","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why10100 me","ts":1445108187329789813,"value":"sr"}
-{"ctx":"t40p0s40","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why13169 me","ts":1445108187417673201,"value":"cs"}
-{"ctx":"t40p0s40","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why13169 me","ts":1445108187417714848,"value":"sr"}
-{"ctx":"t41p0s41","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187429849532,"value":"cs"}
-{"ctx":"t41p0s41","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187429924317,"value":"sr"}
-{"ctx":"t44p0s44","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why24","ts":1445108187459391802,"value":"cs"}
-{"ctx":"t44p0s44","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why24","ts":1445108187459549877,"value":"sr"}
-{"ctx":"t89p0s89","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why27729 me","ts":1445108187909296137,"value":"cs"}
-{"ctx":"t89p0s89","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why27729 me","ts":1445108187909406462,"value":"sr"}
-{"ctx":"t13p0s13","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187149222060,"value":"cs"}
-{"ctx":"t13p0s13","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187149240208,"value":"sr"}
-{"ctx":"t145p0s145","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why636","ts":1445108188458258572,"value":"cs"}
-{"ctx":"t145p0s145","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why636","ts":1445108188458356936,"value":"sr"}
-{"ctx":"t123p0s123","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why391521 me","ts":1445108188237789802,"value":"cs"}
-{"ctx":"t123p0s123","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why391521 me","ts":1445108188237915347,"value":"sr"}
-{"ctx":"t24p0s24","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why416","ts":1445108187259358473,"value":"cs"}
-{"ctx":"t24p0s24","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why416","ts":1445108187259425963,"value":"sr"}
-{"ctx":"t111p0s111","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why27729","ts":1445108188117586312,"value":"cs"}
-{"ctx":"t111p0s111","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why27729","ts":1445108188117650253,"value":"sr"}
-{"ctx":"t199p0s199","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188997583447,"value":"cs"}
-{"ctx":"t199p0s199","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188997637190,"value":"sr"}
-{"ctx":"t21p0s21","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why636","ts":1445108187229585337,"value":"cs"}
-{"ctx":"t21p0s21","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why636","ts":1445108187229679657,"value":"sr"}
-{"ctx":"t42p0s42","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187439325282,"value":"cs"}
-{"ctx":"t42p0s42","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187439402207,"value":"sr"}
-{"ctx":"t54p0s54","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why636","ts":1445108187559881412,"value":"cs"}
-{"ctx":"t54p0s54","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why636","ts":1445108187560020638,"value":"sr"}
-{"ctx":"t142p0s142","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why401600","ts":1445108188427615377,"value":"cs"}
-{"ctx":"t142p0s142","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why401600","ts":1445108188427674792,"value":"sr"}
-{"ctx":"t165p0s165","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why411681","ts":1445108188659384967,"value":"cs"}
-{"ctx":"t165p0s165","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why411681","ts":1445108188659462562,"value":"sr"}
-{"ctx":"t167p0s167","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why502500 me","ts":1445108188678570005,"value":"cs"}
-{"ctx":"t167p0s167","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why502500 me","ts":1445108188678637582,"value":"sr"}
-{"ctx":"t171p0s171","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why351225","ts":1445108188719891562,"value":"cs"}
-{"ctx":"t171p0s171","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why351225","ts":1445108188719967292,"value":"sr"}
-{"ctx":"t37p0s37","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why11","ts":1445108187387592026,"value":"cs"}
-{"ctx":"t37p0s37","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why11","ts":1445108187387628452,"value":"sr"}
-{"ctx":"t29p0s29","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why864 me","ts":1445108187309290353,"value":"cs"}
-{"ctx":"t29p0s29","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why864 me","ts":1445108187309444285,"value":"sr"}
-{"ctx":"t48p0s48","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why39","ts":1445108187499744062,"value":"cs"}
-{"ctx":"t48p0s48","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why39","ts":1445108187499914137,"value":"sr"}
-{"ctx":"t70p0s70","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187717310837,"value":"cs"}
-{"ctx":"t70p0s70","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187717326656,"value":"sr"}
-{"ctx":"t8p0s8","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why39 me","ts":1445108187098331407,"value":"cs"}
-{"ctx":"t8p0s8","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why39 me","ts":1445108187098404513,"value":"sr"}
-{"ctx":"t146p0s146","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188469688651,"value":"cs"}
-{"ctx":"t146p0s146","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188469760762,"value":"sr"}
-{"ctx":"t185p0s185","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188857510465,"value":"cs"}
-{"ctx":"t185p0s185","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188857540157,"value":"sr"}
-{"ctx":"t186p0s186","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why553025 me","ts":1445108188869843337,"value":"cs"}
-{"ctx":"t186p0s186","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why553025 me","ts":1445108188869925527,"value":"sr"}
-{"ctx":"t196p0s196","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why593481 me","ts":1445108188967607705,"value":"cs"}
-{"ctx":"t196p0s196","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why593481 me","ts":1445108188967648881,"value":"sr"}
-{"ctx":"t45p0s45","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why525","ts":1445108187468001196,"value":"cs"}
-{"ctx":"t45p0s45","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why525","ts":1445108187468033963,"value":"sr"}
-{"ctx":"t94p0s94","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187958399347,"value":"cs"}
-{"ctx":"t94p0s94","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187958464287,"value":"sr"}
-{"ctx":"t124p0s124","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why22484","ts":1445108188249877302,"value":"cs"}
-{"ctx":"t124p0s124","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why22484","ts":1445108188249967587,"value":"sr"}
-{"ctx":"t191p0s191","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why573249 me","ts":1445108188918457240,"value":"cs"}
-{"ctx":"t191p0s191","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why573249 me","ts":1445108188918497244,"value":"sr"}
-{"ctx":"t82p0s82","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why39","ts":1445108187837733662,"value":"cs"}
-{"ctx":"t82p0s82","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why39","ts":1445108187837813242,"value":"sr"}
-{"ctx":"t35p0s35","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why416","ts":1445108187369391896,"value":"cs"}
-{"ctx":"t35p0s35","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why416","ts":1445108187369446413,"value":"sr"}
-{"ctx":"t98p0s98","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why30900 me","ts":1445108187997598773,"value":"cs"}
-{"ctx":"t98p0s98","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why30900 me","ts":1445108187997639382,"value":"sr"}
-{"ctx":"t102p0s102","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why321024 me","ts":1445108188029190676,"value":"cs"}
-{"ctx":"t102p0s102","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why321024 me","ts":1445108188029243383,"value":"sr"}
-{"ctx":"t115p0s115","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why30900","ts":1445108188159305247,"value":"cs"}
-{"ctx":"t115p0s115","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why30900","ts":1445108188159413007,"value":"sr"}
-{"ctx":"t138p0s138","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188387836012,"value":"cs"}
-{"ctx":"t138p0s138","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188387954155,"value":"sr"}
-{"ctx":"t157p0s157","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188579848542,"value":"cs"}
-{"ctx":"t157p0s157","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188579970817,"value":"sr"}
-{"ctx":"t19p0s19","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187209331710,"value":"cs"}
-{"ctx":"t19p0s19","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187209365359,"value":"sr"}
-{"ctx":"t60p0s60","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187619387054,"value":"cs"}
-{"ctx":"t60p0s60","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187619454427,"value":"sr"}
-{"ctx":"t61p0s61","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why12144","ts":1445108187628949497,"value":"cs"}
-{"ctx":"t61p0s61","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why12144","ts":1445108187628990941,"value":"sr"}
-{"ctx":"t63p0s63","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why17289 me","ts":1445108187648483662,"value":"cs"}
-{"ctx":"t63p0s63","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why17289 me","ts":1445108187648573877,"value":"sr"}
-{"ctx":"t84p0s84","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187859284402,"value":"cs"}
-{"ctx":"t84p0s84","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187859356142,"value":"sr"}
-{"ctx":"t110p0s110","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why27729","ts":1445108188107524329,"value":"cs"}
-{"ctx":"t110p0s110","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why27729","ts":1445108188107611497,"value":"sr"}
-{"ctx":"t172p0s172","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why17289","ts":1445108188728100502,"value":"cs"}
-{"ctx":"t172p0s172","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why17289","ts":1445108188728170397,"value":"sr"}
-{"ctx":"t176p0s176","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188769444977,"value":"cs"}
-{"ctx":"t176p0s176","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188769542360,"value":"sr"}
-{"ctx":"t5p0s5","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187069204627,"value":"cs"}
-{"ctx":"t5p0s5","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187069228217,"value":"sr"}
-{"ctx":"t193p0s193","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188937860332,"value":"cs"}
-{"ctx":"t193p0s193","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188937924312,"value":"sr"}
-{"ctx":"t59p0s59","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187609337987,"value":"cs"}
-{"ctx":"t59p0s59","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187609411872,"value":"sr"}
-{"ctx":"t113p0s113","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188137430515,"value":"cs"}
-{"ctx":"t113p0s113","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188137459362,"value":"sr"}
-{"ctx":"t143p0s143","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why421764","ts":1445108188438103467,"value":"cs"}
-{"ctx":"t143p0s143","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why421764","ts":1445108188438194273,"value":"sr"}
-{"ctx":"t149p0s149","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why431849 me","ts":1445108188499510057,"value":"cs"}
-{"ctx":"t149p0s149","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why431849 me","ts":1445108188499600892,"value":"sr"}
-{"ctx":"t154p0s154","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188547301122,"value":"cs"}
-{"ctx":"t154p0s154","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188547330562,"value":"sr"}
-{"ctx":"t26p0s26","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why749 me","ts":1445108187279386813,"value":"cs"}
-{"ctx":"t26p0s26","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why749 me","ts":1445108187279464057,"value":"sr"}
-{"ctx":"t22p0s22","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187238813301,"value":"cs"}
-{"ctx":"t22p0s22","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187238839912,"value":"sr"}
-{"ctx":"t33p0s33","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why11121 me","ts":1445108187349757733,"value":"cs"}
-{"ctx":"t33p0s33","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why11121 me","ts":1445108187349827023,"value":"sr"}
-{"ctx":"t56p0s56","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187579467657,"value":"cs"}
-{"ctx":"t56p0s56","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187579528452,"value":"sr"}
-{"ctx":"t92p0s92","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187937672013,"value":"cs"}
-{"ctx":"t92p0s92","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187937732938,"value":"sr"}
-{"ctx":"t189p0s189","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188899830277,"value":"cs"}
-{"ctx":"t189p0s189","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188899963892,"value":"sr"}
-{"ctx":"t12p0s12","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why39","ts":1445108187139531816,"value":"cs"}
-{"ctx":"t12p0s12","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why39","ts":1445108187139564675,"value":"sr"}
-{"ctx":"t36p0s36","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187379295222,"value":"cs"}
-{"ctx":"t36p0s36","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187379375482,"value":"sr"}
-{"ctx":"t75p0s75","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why21441 me","ts":1445108187769378341,"value":"cs"}
-{"ctx":"t75p0s75","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why21441 me","ts":1445108187769448721,"value":"sr"}
-{"ctx":"t86p0s86","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why25625 me","ts":1445108187879363847,"value":"cs"}
-{"ctx":"t86p0s86","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why25625 me","ts":1445108187879395919,"value":"sr"}
-{"ctx":"t136p0s136","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188368308980,"value":"cs"}
-{"ctx":"t136p0s136","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188368340615,"value":"sr"}
-{"ctx":"t144p0s144","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why26676","ts":1445108188449779977,"value":"cs"}
-{"ctx":"t144p0s144","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why26676","ts":1445108188449896972,"value":"sr"}
-{"ctx":"t159p0s159","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188599629467,"value":"cs"}
-{"ctx":"t159p0s159","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188599735405,"value":"sr"}
-{"ctx":"t198p0s198","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why00","ts":1445108188987522498,"value":"cs"}
-{"ctx":"t198p0s198","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why00","ts":1445108188987552168,"value":"sr"}
-{"ctx":"t6p0s6","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why00","ts":1445108187079281997,"value":"cs"}
-{"ctx":"t6p0s6","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why00","ts":1445108187079306926,"value":"sr"}
-{"ctx":"t76p0s76","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"Why15225","ts":1445108187779396967,"value":"cs"}
-{"ctx":"t76p0s76","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"Why15225","ts":1445108187779459042,"value":"sr"}
-{"ctx":"t87p0s87","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187887705225,"value":"cs"}
-{"ctx":"t87p0s87","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187887736607,"value":"sr"}
-{"ctx":"t166p0s166","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why492401 me","ts":1445108188669395916,"value":"cs"}
-{"ctx":"t166p0s166","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why492401 me","ts":1445108188669435163,"value":"sr"}
-{"ctx":"t174p0s174","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188749906782,"value":"cs"}
-{"ctx":"t174p0s174","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188750007366,"value":"sr"}
-{"ctx":"t183p0s183","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188838120412,"value":"cs"}
-{"ctx":"t183p0s183","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188838192357,"value":"sr"}
-{"ctx":"t74p0s74","host":"yogi.*.*.www0....www.denominator","imposition":"Put","intention":"Why20400 me","ts":1445108187759395282,"value":"cs"}
-{"ctx":"t74p0s74","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"Put","intention":"Why20400 me","ts":1445108187759463752,"value":"sr"}
-{"ctx":"t175p0s175","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188759300242,"value":"cs"}
-{"ctx":"t175p0s175","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188759413607,"value":"sr"}
-{"ctx":"t188p0s188","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108188887624217,"value":"cs"}
-{"ctx":"t188p0s188","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108188887666478,"value":"sr"}
-{"ctx":"t96p0s96","host":"yogi.*.*.www0....www.denominator","imposition":"GetRequest","intention":"why?","ts":1445108187977649483,"value":"cs"}
-{"ctx":"t96p0s96","host":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","imposition":"GetRequest","intention":"why?","ts":1445108187977689645,"value":"sr"}
+[
+{"traceId":"15","name":"Put","id":"15","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345931767,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345931818,"value":"sr"}]}
+,
+{"traceId":"74","name":"Put","id":"74","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346523242,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346523350,"value":"sr"}]}
+,
+{"traceId":"198","name":"GetRequest","id":"198","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347751363,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347751428,"value":"sr"}]}
+,
+{"traceId":"4","name":"Put","id":"4","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345823090,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345823124,"value":"sr"}]}
+,
+{"traceId":"64","name":"Put","id":"64","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346421423,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346421513,"value":"sr"}]}
+,
+{"traceId":"119","name":"Put","id":"119","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346963246,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346963286,"value":"sr"}]}
+,
+{"traceId":"153","name":"Put","id":"153","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347303475,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347303571,"value":"sr"}]}
+,
+{"traceId":"159","name":"GetRequest","id":"159","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347363254,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347363283,"value":"sr"}]}
+,
+{"traceId":"169","name":"GetRequest","id":"169","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347463445,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347463565,"value":"sr"}]}
+,
+{"traceId":"178","name":"GetRequest","id":"178","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347553296,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347553432,"value":"sr"}]}
+,
+{"traceId":"180","name":"Put","id":"180","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347573262,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347573338,"value":"sr"}]}
+,
+{"traceId":"8","name":"Put","id":"8","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345863017,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345863034,"value":"sr"}]}
+,
+{"traceId":"45","name":"GetRequest","id":"45","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346231758,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346231863,"value":"sr"}]}
+,
+{"traceId":"51","name":"GetRequest","id":"51","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346293682,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346293758,"value":"sr"}]}
+,
+{"traceId":"52","name":"Put","id":"52","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346303163,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346303220,"value":"sr"}]}
+,
+{"traceId":"130","name":"GetRequest","id":"130","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347071214,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347071251,"value":"sr"}]}
+,
+{"traceId":"137","name":"GetRequest","id":"137","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347143188,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347143304,"value":"sr"}]}
+,
+{"traceId":"144","name":"GetRequest","id":"144","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347213057,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347213139,"value":"sr"}]}
+,
+{"traceId":"30","name":"Put","id":"30","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346082065,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346082115,"value":"sr"}]}
+,
+{"traceId":"47","name":"GetRequest","id":"47","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346253154,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346253264,"value":"sr"}]}
+,
+{"traceId":"79","name":"GetRequest","id":"79","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346571515,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346571590,"value":"sr"}]}
+,
+{"traceId":"81","name":"GetRequest","id":"81","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346591192,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346591218,"value":"sr"}]}
+,
+{"traceId":"84","name":"GetRequest","id":"84","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346623266,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346623335,"value":"sr"}]}
+,
+{"traceId":"167","name":"Put","id":"167","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347443255,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347443319,"value":"sr"}]}
+,
+{"traceId":"175","name":"GetRequest","id":"175","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347521199,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347521231,"value":"sr"}]}
+,
+{"traceId":"34","name":"GetRequest","id":"34","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346123242,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346123277,"value":"sr"}]}
+,
+{"traceId":"22","name":"GetRequest","id":"22","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346002001,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346002043,"value":"sr"}]}
+,
+{"traceId":"42","name":"GetRequest","id":"42","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346203225,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346203316,"value":"sr"}]}
+,
+{"traceId":"72","name":"GetRequest","id":"72","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346502591,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346502670,"value":"sr"}]}
+,
+{"traceId":"98","name":"Put","id":"98","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346761350,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346761409,"value":"sr"}]}
+,
+{"traceId":"111","name":"GetRequest","id":"111","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346883479,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346883498,"value":"sr"}]}
+,
+{"traceId":"182","name":"Put","id":"182","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347593629,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347593705,"value":"sr"}]}
+,
+{"traceId":"1","name":"GetRequest","id":"1","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345792161,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345794646,"value":"sr"}]}
+,
+{"traceId":"192","name":"GetRequest","id":"192","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347692948,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347693092,"value":"sr"}]}
+,
+{"traceId":"69","name":"GetRequest","id":"69","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346471924,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346472004,"value":"sr"}]}
+,
+{"traceId":"50","name":"GetRequest","id":"50","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346281687,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346281760,"value":"sr"}]}
+,
+{"traceId":"61","name":"GetRequest","id":"61","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346393667,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346393724,"value":"sr"}]}
+,
+{"traceId":"105","name":"GetRequest","id":"105","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346821272,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346821344,"value":"sr"}]}
+,
+{"traceId":"128","name":"GetRequest","id":"128","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347053205,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347053282,"value":"sr"}]}
+,
+{"traceId":"181","name":"GetRequest","id":"181","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347581879,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347581906,"value":"sr"}]}
+,
+{"traceId":"200","name":"Put","id":"200","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347771287,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347771320,"value":"sr"}]}
+,
+{"traceId":"39","name":"Put","id":"39","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346171450,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346171489,"value":"sr"}]}
+,
+{"traceId":"55","name":"GetRequest","id":"55","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346333691,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346333820,"value":"sr"}]}
+,
+{"traceId":"150","name":"Put","id":"150","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347271294,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347271327,"value":"sr"}]}
+,
+{"traceId":"164","name":"GetRequest","id":"164","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347413185,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347413286,"value":"sr"}]}
+,
+{"traceId":"176","name":"GetRequest","id":"176","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347533792,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347533863,"value":"sr"}]}
+,
+{"traceId":"27","name":"GetRequest","id":"27","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346052020,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346052152,"value":"sr"}]}
+,
+{"traceId":"70","name":"GetRequest","id":"70","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346481872,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346481991,"value":"sr"}]}
+,
+{"traceId":"126","name":"Put","id":"126","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347031614,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347031752,"value":"sr"}]}
+,
+{"traceId":"177","name":"Put","id":"177","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347543122,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347543249,"value":"sr"}]}
+,
+{"traceId":"68","name":"GetRequest","id":"68","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346463175,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346463209,"value":"sr"}]}
+,
+{"traceId":"96","name":"GetRequest","id":"96","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346741188,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346741206,"value":"sr"}]}
+,
+{"traceId":"123","name":"Put","id":"123","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347001496,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347001541,"value":"sr"}]}
+,
+{"traceId":"147","name":"GetRequest","id":"147","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347243618,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347243756,"value":"sr"}]}
+,
+{"traceId":"76","name":"GetRequest","id":"76","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346541999,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346542026,"value":"sr"}]}
+,
+{"traceId":"53","name":"GetRequest","id":"53","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346311983,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346312041,"value":"sr"}]}
+,
+{"traceId":"57","name":"GetRequest","id":"57","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346352805,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346352852,"value":"sr"}]}
+,
+{"traceId":"92","name":"GetRequest","id":"92","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346703292,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346703369,"value":"sr"}]}
+,
+{"traceId":"117","name":"Put","id":"117","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346943270,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346943344,"value":"sr"}]}
+,
+{"traceId":"149","name":"Put","id":"149","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347262573,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347262643,"value":"sr"}]}
+,
+{"traceId":"16","name":"Put","id":"16","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345943519,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345943558,"value":"sr"}]}
+,
+{"traceId":"44","name":"GetRequest","id":"44","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346223233,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346223370,"value":"sr"}]}
+,
+{"traceId":"94","name":"GetRequest","id":"94","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346721915,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346721950,"value":"sr"}]}
+,
+{"traceId":"124","name":"GetRequest","id":"124","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347013668,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347013737,"value":"sr"}]}
+,
+{"traceId":"136","name":"GetRequest","id":"136","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347133526,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347133657,"value":"sr"}]}
+,
+{"traceId":"185","name":"GetRequest","id":"185","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347621591,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347621619,"value":"sr"}]}
+,
+{"traceId":"187","name":"GetRequest","id":"187","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347643628,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347643757,"value":"sr"}]}
+,
+{"traceId":"199","name":"GetRequest","id":"199","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347761363,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347761431,"value":"sr"}]}
+,
+{"traceId":"2","name":"Put","id":"2","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345802663,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345802688,"value":"sr"}]}
+,
+{"traceId":"14","name":"GetRequest","id":"14","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345921363,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345921389,"value":"sr"}]}
+,
+{"traceId":"18","name":"GetRequest","id":"18","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345961535,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345961657,"value":"sr"}]}
+,
+{"traceId":"29","name":"Put","id":"29","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346072182,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346072258,"value":"sr"}]}
+,
+{"traceId":"120","name":"GetRequest","id":"120","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346973232,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346973275,"value":"sr"}]}
+,
+{"traceId":"132","name":"Put","id":"132","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347092016,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347092043,"value":"sr"}]}
+,
+{"traceId":"143","name":"GetRequest","id":"143","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347203086,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347203124,"value":"sr"}]}
+,
+{"traceId":"157","name":"GetRequest","id":"157","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347343137,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347343202,"value":"sr"}]}
+,
+{"traceId":"10","name":"GetRequest","id":"10","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345883282,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345883361,"value":"sr"}]}
+,
+{"traceId":"193","name":"GetRequest","id":"193","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347703392,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347703482,"value":"sr"}]}
+,
+{"traceId":"9","name":"Put","id":"9","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345873119,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345873155,"value":"sr"}]}
+,
+{"traceId":"19","name":"GetRequest","id":"19","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345973737,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345973795,"value":"sr"}]}
+,
+{"traceId":"35","name":"GetRequest","id":"35","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346131671,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346131792,"value":"sr"}]}
+,
+{"traceId":"121","name":"GetRequest","id":"121","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346983312,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346983381,"value":"sr"}]}
+,
+{"traceId":"146","name":"GetRequest","id":"146","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347231858,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347231958,"value":"sr"}]}
+,
+{"traceId":"3","name":"GetRequest","id":"3","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345813227,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345813250,"value":"sr"}]}
+,
+{"traceId":"97","name":"GetRequest","id":"97","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346751330,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346751389,"value":"sr"}]}
+,
+{"traceId":"116","name":"Put","id":"116","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346931550,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346931622,"value":"sr"}]}
+,
+{"traceId":"139","name":"GetRequest","id":"139","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347163446,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347163478,"value":"sr"}]}
+,
+{"traceId":"155","name":"GetRequest","id":"155","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347323327,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347323395,"value":"sr"}]}
+,
+{"traceId":"36","name":"GetRequest","id":"36","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346143739,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346143796,"value":"sr"}]}
+,
+{"traceId":"60","name":"GetRequest","id":"60","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346381665,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346381739,"value":"sr"}]}
+,
+{"traceId":"73","name":"GetRequest","id":"73","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346513447,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346513527,"value":"sr"}]}
+,
+{"traceId":"115","name":"GetRequest","id":"115","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346923362,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346923442,"value":"sr"}]}
+,
+{"traceId":"148","name":"GetRequest","id":"148","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347253179,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347253234,"value":"sr"}]}
+,
+{"traceId":"160","name":"Put","id":"160","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347371582,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347371611,"value":"sr"}]}
+,
+{"traceId":"172","name":"GetRequest","id":"172","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347491551,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347491591,"value":"sr"}]}
+,
+{"traceId":"28","name":"GetRequest","id":"28","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346063608,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346063698,"value":"sr"}]}
+,
+{"traceId":"33","name":"Put","id":"33","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346113347,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346113474,"value":"sr"}]}
+,
+{"traceId":"65","name":"GetRequest","id":"65","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346432291,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346432355,"value":"sr"}]}
+,
+{"traceId":"77","name":"Put","id":"77","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346553581,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346553736,"value":"sr"}]}
+,
+{"traceId":"101","name":"Put","id":"101","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346781504,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346781564,"value":"sr"}]}
+,
+{"traceId":"112","name":"Put","id":"112","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346892590,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346892622,"value":"sr"}]}
+,
+{"traceId":"127","name":"GetRequest","id":"127","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347043720,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347043873,"value":"sr"}]}
+,
+{"traceId":"184","name":"GetRequest","id":"184","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347613281,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347613412,"value":"sr"}]}
+,
+{"traceId":"7","name":"GetRequest","id":"7","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345853528,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345853548,"value":"sr"}]}
+,
+{"traceId":"86","name":"Put","id":"86","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346643219,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346643260,"value":"sr"}]}
+,
+{"traceId":"89","name":"Put","id":"89","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346671381,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346671425,"value":"sr"}]}
+,
+{"traceId":"109","name":"Put","id":"109","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346863044,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346863074,"value":"sr"}]}
+,
+{"traceId":"110","name":"GetRequest","id":"110","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346871663,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346871684,"value":"sr"}]}
+,
+{"traceId":"134","name":"GetRequest","id":"134","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347113571,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347113704,"value":"sr"}]}
+,
+{"traceId":"142","name":"GetRequest","id":"142","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347193342,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347193413,"value":"sr"}]}
+,
+{"traceId":"168","name":"Put","id":"168","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347452562,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347452614,"value":"sr"}]}
+,
+{"traceId":"62","name":"Put","id":"62","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346403153,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346403229,"value":"sr"}]}
+,
+{"traceId":"190","name":"Put","id":"190","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347671437,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347671571,"value":"sr"}]}
+,
+{"traceId":"31","name":"Put","id":"31","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346092911,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346093030,"value":"sr"}]}
+,
+{"traceId":"125","name":"Put","id":"125","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347023134,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347023259,"value":"sr"}]}
+,
+{"traceId":"173","name":"GetRequest","id":"173","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347503837,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347503893,"value":"sr"}]}
+,
+{"traceId":"179","name":"GetRequest","id":"179","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347563320,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347563398,"value":"sr"}]}
+,
+{"traceId":"12","name":"GetRequest","id":"12","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345903755,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345903900,"value":"sr"}]}
+,
+{"traceId":"40","name":"Put","id":"40","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346182241,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346182299,"value":"sr"}]}
+,
+{"traceId":"83","name":"Put","id":"83","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346613197,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346613280,"value":"sr"}]}
+,
+{"traceId":"118","name":"Put","id":"118","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346953246,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346953361,"value":"sr"}]}
+,
+{"traceId":"151","name":"Put","id":"151","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347283708,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347283796,"value":"sr"}]}
+,
+{"traceId":"152","name":"GetRequest","id":"152","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347292515,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347292631,"value":"sr"}]}
+,
+{"traceId":"158","name":"GetRequest","id":"158","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347353312,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347353389,"value":"sr"}]}
+,
+{"traceId":"161","name":"GetRequest","id":"161","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347383647,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347383781,"value":"sr"}]}
+,
+{"traceId":"37","name":"GetRequest","id":"37","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346153166,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346153317,"value":"sr"}]}
+,
+{"traceId":"188","name":"GetRequest","id":"188","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347653155,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347653213,"value":"sr"}]}
+,
+{"traceId":"189","name":"GetRequest","id":"189","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347663281,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347663417,"value":"sr"}]}
+,
+{"traceId":"166","name":"Put","id":"166","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347433610,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347433777,"value":"sr"}]}
+,
+{"traceId":"58","name":"GetRequest","id":"58","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346363364,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346363511,"value":"sr"}]}
+,
+{"traceId":"67","name":"GetRequest","id":"67","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346453684,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346453799,"value":"sr"}]}
+,
+{"traceId":"197","name":"Put","id":"197","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347741172,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347741205,"value":"sr"}]}
+,
+{"traceId":"23","name":"GetRequest","id":"23","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346013519,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346013555,"value":"sr"}]}
+,
+{"traceId":"6","name":"GetRequest","id":"6","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345841308,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345841340,"value":"sr"}]}
+,
+{"traceId":"38","name":"GetRequest","id":"38","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346161466,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346161508,"value":"sr"}]}
+,
+{"traceId":"59","name":"GetRequest","id":"59","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346373228,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346373305,"value":"sr"}]}
+,
+{"traceId":"66","name":"Put","id":"66","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346441605,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346441730,"value":"sr"}]}
+,
+{"traceId":"71","name":"GetRequest","id":"71","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346491763,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346491801,"value":"sr"}]}
+,
+{"traceId":"106","name":"GetRequest","id":"106","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346831730,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346831816,"value":"sr"}]}
+,
+{"traceId":"131","name":"GetRequest","id":"131","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347083790,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347083863,"value":"sr"}]}
+,
+{"traceId":"5","name":"GetRequest","id":"5","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345831505,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345831552,"value":"sr"}]}
+,
+{"traceId":"162","name":"GetRequest","id":"162","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347391221,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347391251,"value":"sr"}]}
+,
+{"traceId":"174","name":"GetRequest","id":"174","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347512622,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347512654,"value":"sr"}]}
+,
+{"traceId":"140","name":"GetRequest","id":"140","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347173191,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347173311,"value":"sr"}]}
+,
+{"traceId":"26","name":"Put","id":"26","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346041547,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346041617,"value":"sr"}]}
+,
+{"traceId":"113","name":"GetRequest","id":"113","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346903343,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346903378,"value":"sr"}]}
+,
+{"traceId":"183","name":"GetRequest","id":"183","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347603159,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347603275,"value":"sr"}]}
+,
+{"traceId":"196","name":"Put","id":"196","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347731392,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347731450,"value":"sr"}]}
+,
+{"traceId":"11","name":"GetRequest","id":"11","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345891216,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345891282,"value":"sr"}]}
+,
+{"traceId":"171","name":"GetRequest","id":"171","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347481902,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347481936,"value":"sr"}]}
+,
+{"traceId":"186","name":"Put","id":"186","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347631810,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347631916,"value":"sr"}]}
+,
+{"traceId":"191","name":"Put","id":"191","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347681758,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347681875,"value":"sr"}]}
+,
+{"traceId":"108","name":"GetRequest","id":"108","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346853519,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346853553,"value":"sr"}]}
+,
+{"traceId":"48","name":"GetRequest","id":"48","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346263294,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346263403,"value":"sr"}]}
+,
+{"traceId":"88","name":"Put","id":"88","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346662051,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346662106,"value":"sr"}]}
+,
+{"traceId":"100","name":"Goodbye","id":"100","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.us-east-1.zoneB.cass4....cass.priamCassandra","ipv4":"54.221.0.10","port":8080},"timestamp":1445241346781559,"value":"sr"}]}
+,
+{"traceId":"122","name":"GetRequest","id":"122","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346993249,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346993276,"value":"sr"}]}
+,
+{"traceId":"154","name":"GetRequest","id":"154","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347313264,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347313389,"value":"sr"}]}
+,
+{"traceId":"32","name":"GetRequest","id":"32","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346102962,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346102993,"value":"sr"}]}
+,
+{"traceId":"25","name":"GetRequest","id":"25","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346031659,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346031776,"value":"sr"}]}
+,
+{"traceId":"41","name":"GetRequest","id":"41","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346193630,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346193687,"value":"sr"}]}
+,
+{"traceId":"87","name":"GetRequest","id":"87","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346653239,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346653325,"value":"sr"}]}
+,
+{"traceId":"91","name":"GetRequest","id":"91","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346693131,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346693259,"value":"sr"}]}
+,
+{"traceId":"93","name":"GetRequest","id":"93","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346713293,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346713420,"value":"sr"}]}
+,
+{"traceId":"99","name":"GetRequest","id":"99","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346771538,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346771601,"value":"sr"}]}
+,
+{"traceId":"104","name":"GetRequest","id":"104","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346813207,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346813307,"value":"sr"}]}
+,
+{"traceId":"24","name":"GetRequest","id":"24","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346021304,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346021338,"value":"sr"}]}
+,
+{"traceId":"133","name":"GetRequest","id":"133","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347102068,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347102112,"value":"sr"}]}
+,
+{"traceId":"163","name":"Put","id":"163","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347403864,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347403925,"value":"sr"}]}
+,
+{"traceId":"129","name":"GetRequest","id":"129","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347061507,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347061542,"value":"sr"}]}
+,
+{"traceId":"49","name":"GetRequest","id":"49","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346271299,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346271329,"value":"sr"}]}
+,
+{"traceId":"56","name":"GetRequest","id":"56","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346343115,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346343155,"value":"sr"}]}
+,
+{"traceId":"85","name":"Put","id":"85","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346633234,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346633281,"value":"sr"}]}
+,
+{"traceId":"103","name":"GetRequest","id":"103","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346803697,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346803749,"value":"sr"}]}
+,
+{"traceId":"107","name":"GetRequest","id":"107","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346841304,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346841333,"value":"sr"}]}
+,
+{"traceId":"165","name":"GetRequest","id":"165","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347421813,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347421938,"value":"sr"}]}
+,
+{"traceId":"201","name":"GetRequest","id":"201","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347781585,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347781620,"value":"sr"}]}
+,
+{"traceId":"13","name":"GetRequest","id":"13","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345913223,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345913282,"value":"sr"}]}
+,
+{"traceId":"78","name":"GetRequest","id":"78","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346563269,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346563334,"value":"sr"}]}
+,
+{"traceId":"90","name":"Put","id":"90","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346683693,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346683734,"value":"sr"}]}
+,
+{"traceId":"114","name":"GetRequest","id":"114","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346913243,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346913320,"value":"sr"}]}
+,
+{"traceId":"135","name":"GetRequest","id":"135","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347122046,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347122077,"value":"sr"}]}
+,
+{"traceId":"138","name":"GetRequest","id":"138","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347153300,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347153399,"value":"sr"}]}
+,
+{"traceId":"75","name":"Put","id":"75","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346533244,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346533325,"value":"sr"}]}
+,
+{"traceId":"46","name":"Put","id":"46","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346243615,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346243657,"value":"sr"}]}
+,
+{"traceId":"54","name":"GetRequest","id":"54","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346321530,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346321561,"value":"sr"}]}
+,
+{"traceId":"80","name":"GetRequest","id":"80","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346583712,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346583800,"value":"sr"}]}
+,
+{"traceId":"82","name":"GetRequest","id":"82","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346603782,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346603980,"value":"sr"}]}
+,
+{"traceId":"170","name":"GetRequest","id":"170","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347473213,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347473343,"value":"sr"}]}
+,
+{"traceId":"194","name":"GetRequest","id":"194","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347712786,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347712871,"value":"sr"}]}
+,
+{"traceId":"195","name":"Put","id":"195","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347721985,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347722030,"value":"sr"}]}
+,
+{"traceId":"43","name":"GetRequest","id":"43","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346213283,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346213403,"value":"sr"}]}
+,
+{"traceId":"21","name":"GetRequest","id":"21","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345991956,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345992003,"value":"sr"}]}
+,
+{"traceId":"145","name":"GetRequest","id":"145","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347221600,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347221630,"value":"sr"}]}
+,
+{"traceId":"20","name":"GetRequest","id":"20","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345981563,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345981605,"value":"sr"}]}
+,
+{"traceId":"141","name":"GetRequest","id":"141","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347182880,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347182931,"value":"sr"}]}
+,
+{"traceId":"63","name":"Put","id":"63","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346411247,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346411276,"value":"sr"}]}
+,
+{"traceId":"95","name":"Put","id":"95","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346731422,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346731468,"value":"sr"}]}
+,
+{"traceId":"102","name":"Put","id":"102","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241346791682,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241346791751,"value":"sr"}]}
+,
+{"traceId":"156","name":"GetRequest","id":"156","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241347333237,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241347333309,"value":"sr"}]}
+,
+{"traceId":"17","name":"GetRequest","id":"17","parentId":"0","debug":"false","annotations":[{"endpoint":{"servicename":"yogi.*.*.www0....www.denominator","ipv4":"54.198.0.14","port":8080},"timestamp":1445241345953160,"value":"cs"},{"endpoint":{"servicename":"yogi.us-east-1.*.ext-dmz-elb0....ext-dmz-elb.elb","ipv4":"54.198.0.15","port":8080},"timestamp":1445241345953238,"value":"sr"}]}
+]

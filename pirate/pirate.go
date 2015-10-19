@@ -7,6 +7,7 @@ import (
 	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/gotocol"
+	"github.com/adrianco/spigo/handlers"
 	"log"
 	"math/rand"
 	"time"
@@ -44,7 +45,7 @@ func Start(listener chan gotocol.Message) {
 				}
 			case gotocol.Inform:
 				// remember where to send updates
-				logger = gotocol.InformHandler(msg, name, listener)
+				logger = handlers.Inform(msg, name, listener)
 			case gotocol.NameDrop:
 				// don't remember too many buddies and don't talk to myself
 				buddy := msg.Intention // message body is buddy name

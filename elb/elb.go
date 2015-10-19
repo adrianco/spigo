@@ -37,12 +37,12 @@ func Start(listener chan gotocol.Message) {
 					hist = collect.NewHist(name)
 				}
 			case gotocol.Inform:
-				eureka[msg.Intention] = gotocol.InformHandler(msg, name, listener)
+				eureka[msg.Intention] = handlers.Inform(msg, name, listener)
 			case gotocol.NameDrop: // cross zone = true
-				gotocol.NameDropHandler(&dependencies, &microservices, msg, name, listener, eureka, true)
+				handlers.NameDrop(&dependencies, &microservices, msg, name, listener, eureka, true)
 			case gotocol.Forget:
 				// forget a buddy
-				gotocol.ForgetHandler(&dependencies, &microservices, msg)
+				handlers.Forget(&dependencies, &microservices, msg)
 			case gotocol.GetRequest:
 				// route the request on to microservices
 				handlers.GetRequest(msg, name, listener, &requestor, &microservices, &microindex)

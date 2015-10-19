@@ -8,6 +8,7 @@ import (
 	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/flow"
 	"github.com/adrianco/spigo/gotocol"
+	"github.com/adrianco/spigo/handlers"
 	"github.com/adrianco/spigo/names"
 	"time"
 )
@@ -38,12 +39,12 @@ func Start(listener chan gotocol.Message) {
 					hist = collect.NewHist(name)
 				}
 			case gotocol.Inform:
-				eureka[msg.Intention] = gotocol.InformHandler(msg, name, listener)
+				eureka[msg.Intention] = handlers.Inform(msg, name, listener)
 			case gotocol.NameDrop: // cross zone = true
-				gotocol.NameDropHandler(&dependencies, &microservices, msg, name, listener, eureka, true)
+				handlers.NameDrop(&dependencies, &microservices, msg, name, listener, eureka, true)
 			case gotocol.Forget:
 				// forget a buddy
-				gotocol.ForgetHandler(&dependencies, &microservices, msg)
+				handlers.Forget(&dependencies, &microservices, msg)
 			case gotocol.GetRequest:
 				// return any stored value for this key
 				outmsg := gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Ctx, store[msg.Intention]}

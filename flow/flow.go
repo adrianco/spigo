@@ -6,10 +6,13 @@ import (
 	"fmt"
 	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/collect"
+	"github.com/adrianco/spigo/dhcp"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/codahale/metrics"
 	"log"
 	"os"
+	"sort"
+	"strings"
 	"sync"
 	"time"
 )
@@ -46,12 +49,25 @@ type flowmaptype map[gotocol.TraceContextType][]*spannotype
 
 // Annotation information for each step in the span
 type spannotype struct {
-	Ctx       string `json:"ctx"`        // Context
+	Ctx       string `json:"ctx"`        // Context as string
 	Host      string `json:"host"`       // host name
 	Imp       string `json:"imposition"` // protocol request type
 	Intent    string `json:"intention"`  // request body
 	Timestamp int64  `json:"ts"`         // unix nanotimestamp
 	Value     string `json:"value"`      // direction of span
+}
+
+// sortable spans
+type ByCtx []*spannotype
+
+func (a ByCtx) Len() int             { return len(a) }
+func (a ByCtx) Swap(i, j int)        { a[i], a[j] = a[j], a[i] }
+func (a ByCtx) Less(i, j int) bool { // sort by span first then time
+	if a[i].Ctx == a[j].Ctx {
+		return a[i].Timestamp < a[j].Timestamp
+	} else {
+		return a[i].Ctx < a[j].Ctx
+	}
 }
 
 var flowmap flowmaptype
@@ -70,6 +86,7 @@ func setup() {
 	} else {
 		file = f
 	}
+	file.WriteString("[\n")
 	// Initialize the flow mapping system
 	flowmap = make(flowmaptype, archaius.Conf.Population)
 }
@@ -123,8 +140,8 @@ func End(ctx gotocol.Context) {
 	if !archaius.Conf.Collect {
 		return
 	}
-	Flush(flowmap[ctx.Trace])
-	delete(flowmap, ctx.Trace)
+	//Flush(ctx.Trace, flowmap[ctx.Trace])
+	//delete(flowmap, ctx.Trace)
 }
 
 // Shutdown the flow mapping system and flush remaining flows
@@ -134,23 +151,128 @@ func Shutdown() {
 	}
 	flowlock.Lock()
 	log.Printf("Flushing flows to %v\n", file.Name())
-	for _, f := range flowmap {
-		Flush(f)
+	comma := false
+	for c, f := range flowmap {
+		if comma {
+			file.WriteString(",\n")
+		} else {
+			comma = true
+		}
+		Flush(c, f)
 	}
+	file.WriteString("]\n")
 	file.Close()
 	flowlock.Unlock()
 }
 
-// Flush the spans for a request
-func Flush(trace []*spannotype) {
-	for _, a := range trace {
-		j, err := json.Marshal(*a)
-		if err != nil {
-			log.Fatal(err)
-		}
-		file.WriteString(fmt.Sprintf("%v\n", string(j)))
-		//log.Println(string(j))
+/* example: Zipkin format is an array of these
+{
+  "traceId": "5e27c67030932221",
+  "name": "GET",
+  "id": "38357d8f309b379d",
+  "parentId": "5e27c67030932221",
+  "annotations": [
+    {
+      "endpoint": {
+        "serviceName": "zipkin-query",
+        "ipv4": "127.0.0.1"
+      },
+      "timestamp": 1444780030334000,
+      "value": "cs"
+    },
+    {
+      "endpoint": {
+        "serviceName": "zipkin-query",
+        "ipv4": "172.17.0.84"
+      },
+      "timestamp": 1444780030643000,
+      "value": "sr"
+    },
+    {
+      "endpoint": {
+        "serviceName": "zipkin-query",
+        "ipv4": "127.0.0.1"
+      },
+      "timestamp": 1444780031521000,
+      "value": "cr"
+    },
+    {
+      "endpoint": {
+        "serviceName": "zipkin-query",
+        "ipv4": "172.17.0.84"
+      },
+      "timestamp": 1444780031689000,
+      "value": "ss"
+    }
+  ]
+},
+*/
+
+// endpoint for zipkin
+type zipkinendpoint struct {
+	Servicename string `json:"servicename"`
+	Ipv4        string `json:"ipv4"`
+	Port        int    `json:"port"`
+}
+
+// annotation for zipkin
+type zipkinannotation struct {
+	Endpoint  zipkinendpoint `json:"endpoint"`
+	Timestamp int64          `json:"timestamp"`
+	Value     string         `json:"value"`
+}
+
+// trace for zipkin
+type zipkinspan struct {
+	Traceid     string             `json:"traceId"`
+	Name        string             `json:"name"`
+	Id          string             `json:"id"`
+	ParentId    string             `json:"parentId"`
+	Debug       string             `json:"debug"`
+	Annotations []zipkinannotation `json:"annotations"`
+}
+
+func WriteZip(zip zipkinspan) {
+	j, err := json.Marshal(zip)
+	if err != nil {
+		log.Fatal(err)
 	}
+	file.WriteString(fmt.Sprintf("%v\n", string(j)))
+}
+
+// Flush the spans for a request in zipkin format
+func Flush(t gotocol.TraceContextType, trace []*spannotype) {
+	var zip zipkinspan
+	var ctx string
+	n := -1
+	sort.Sort(ByCtx(trace))
+	for _, a := range trace {
+		//fmt.Println(*a)
+		if ctx != a.Ctx { // new span
+			if ctx != "" { // not the first
+				WriteZip(zip)
+				file.WriteString(",")
+				zip.Annotations = nil
+			}
+			n++
+			zip.Traceid = fmt.Sprintf("%v", t)
+			zip.Name = a.Imp
+			s := strings.SplitAfter(a.Ctx, "s")                            // tXpYsZ -> [tXpYs, Z]
+			p := strings.TrimSuffix(strings.SplitAfter(s[0], "p")[1], "s") // tXpYs -> [tXp, Ys] -> Ys -> Y
+			zip.Id = s[1]
+			zip.ParentId = p
+			zip.Debug = "false"
+			ctx = a.Ctx
+		}
+		var ann zipkinannotation
+		ann.Endpoint.Servicename = a.Host
+		ann.Endpoint.Ipv4 = dhcp.Lookup(a.Host)
+		ann.Endpoint.Port = 8080
+		ann.Timestamp = a.Timestamp / 1000 // convert from UnixNano to Microseconds
+		ann.Value = a.Value
+		zip.Annotations = append(zip.Annotations, ann)
+	}
+	WriteZip(zip)
 }
 
 // common code for instrumenting requests

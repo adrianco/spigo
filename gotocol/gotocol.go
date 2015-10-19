@@ -4,9 +4,6 @@ package gotocol
 
 import (
 	"fmt"
-	"github.com/adrianco/spigo/names"
-	"log"
-	//"math/rand"
 	"sync/atomic"
 	"time"
 )
@@ -87,8 +84,13 @@ func (ctx Context) String() string {
 	return fmt.Sprintf("t%vp%vs%v", ctx.Trace, ctx.Parent, ctx.Span)
 }
 
+// string formatter for routing part of context
+func (ctx Context) Route() string {
+	return fmt.Sprintf("t%vp%v", ctx.Trace, ctx.Parent)
+}
+
 // fast hack for generating unique-enough contexts
-var spanner, tracer TraceContextType
+var spanner TraceContextType
 
 // return uniquely incremented TraceContextType
 func increment(tc *TraceContextType) TraceContextType {
@@ -101,7 +103,7 @@ func NewTrace() Context {
 	//ctx.Trace = rand.Uint32()
 	// NilContext is t0p0s0, so first real Trace,Parent,Span is t1p0s1
 	ctx.Span = increment(&spanner)
-	ctx.Trace = ctx.Span
+	ctx.Trace = ctx.Span // trace = span with zero parent for first span in a trace
 	return ctx
 }
 
@@ -162,48 +164,3 @@ func (msg Message) GoSend(to chan Message) {
 		}
 	}(to, msg)
 }
-
-// InformHandler default handler for Inform message
-func InformHandler(msg Message, name string, listener chan Message) chan Message {
-	if name == "" {
-		log.Fatal(name + "Inform message received before Hello message")
-	}
-	// service registry channel is buffered so don't use GoSend to tell Eureka we exist
-	msg.ResponseChan <- Message{Put, listener, time.Now(), NilContext, name}
-	return msg.ResponseChan
-}
-
-func NameDropHandler(dependencies *map[string]time.Time, microservices *map[string]chan Message, msg Message, name string, listener chan Message, eureka map[string]chan Message, crosszone ...bool) {
-	if msg.ResponseChan == nil { // dependency by service name, needs to be looked up in eureka
-		(*dependencies)[msg.Intention] = msg.Sent // remember it for later
-		for _, ch := range eureka {
-			//log.Println(name + " looking up " + msg.Intention)
-			Send(ch, Message{GetRequest, listener, time.Now(), NilContext, msg.Intention})
-		}
-	} else { // update dependency with full name and listener channel
-		microservice := msg.Intention // message body is buddy name
-		if len(crosszone) > 0 || names.Zone(name) == names.Zone(microservice) {
-			if microservice != name && (*microservices)[microservice] == nil { // don't talk to myself or record duplicates
-				// remember how to talk to this buddy
-				(*microservices)[microservice] = msg.ResponseChan // message channel is buddy's listener
-				(*dependencies)[names.Service(microservice)] = msg.Sent
-				for _, ch := range eureka {
-					// tell one of the service registries I have a new buddy to talk to so it doesn't get logged more than once
-					Send(ch, Message{Inform, listener, time.Now(), NilContext, name + " " + microservice})
-					return
-				}
-			}
-		}
-	}
-}
-
-// ForgetHandler removes a buddy from the buddy list
-func ForgetHandler(dependencies *map[string]time.Time, microservices *map[string]chan Message, msg Message) {
-	microservice := msg.Intention              // message body is buddy name to forget
-	if (*microservices)[microservice] != nil { // an existing buddy to forget
-		// forget how to talk to this buddy
-		(*dependencies)[names.Service(microservice)] = msg.Sent // remember when we were told to forget this service
-		delete(*microservices, microservice)
-	}
-}
-

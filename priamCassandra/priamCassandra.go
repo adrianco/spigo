@@ -8,6 +8,7 @@ import (
 	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/flow"
 	"github.com/adrianco/spigo/gotocol"
+	"github.com/adrianco/spigo/handlers"
 	"github.com/adrianco/spigo/names"
 	"hash/crc32"
 	"sort"
@@ -89,7 +90,7 @@ func Start(listener chan gotocol.Message) {
 	// track the hash values owned by each node in the ring
 	var ring ByToken
 	dependencies := make(map[string]time.Time) // dependent services and time last updated
-	store := make(map[string]string, 4)                // key value store
+	store := make(map[string]string, 4)        // key value store
 	store["why?"] = "because..."
 	var parent chan gotocol.Message                                          // remember how to talk back to creator
 	var name string                                                          // remember my name
@@ -110,12 +111,12 @@ func Start(listener chan gotocol.Message) {
 					hist = collect.NewHist(name)
 				}
 			case gotocol.Inform:
-				eureka[msg.Intention] = gotocol.InformHandler(msg, name, listener)
+				eureka[msg.Intention] = handlers.Inform(msg, name, listener)
 			case gotocol.NameDrop: // cross zone = true
-				gotocol.NameDropHandler(&dependencies, &microservices, msg, name, listener, eureka, true)
+				handlers.NameDrop(&dependencies, &microservices, msg, name, listener, eureka, true)
 			case gotocol.Forget:
 				// forget a buddy
-				gotocol.ForgetHandler(&dependencies, &microservices, msg)
+				handlers.Forget(&dependencies, &microservices, msg)
 			case gotocol.Chat:
 				// Gossip setup notification of hash values for nodes, cass1:123,cass2:456
 				ring = RingConfig(msg.Intention)
@@ -130,7 +131,7 @@ func Start(listener chan gotocol.Message) {
 					outmsg.GoSend(msg.ResponseChan)
 				} else {
 					// forward the message to the right place, but don't change the ResponseChan or span
-					outmsg := gotocol.Message{gotocol.GetRequest,  msg.ResponseChan, time.Now(), msg.Ctx, msg.Intention}
+					outmsg := gotocol.Message{gotocol.GetRequest, msg.ResponseChan, time.Now(), msg.Ctx.AddSpan(), msg.Intention}
 					flow.AnnotateSend(outmsg, name)
 					outmsg.GoSend(microservices[ring[i].name])
 				}
@@ -145,8 +146,8 @@ func Start(listener chan gotocol.Message) {
 					if len(ring) == 0 || ring[i].name == name { // ring is setup so only store if this is the right place
 						store[key] = value
 					} else {
-						// forward the message to the right place, but don't change the ResponseChan or span
-						outmsg := gotocol.Message{gotocol.Put, msg.ResponseChan, time.Now(), msg.Ctx, msg.Intention}
+						// forward the message to the right place, but don't change the ResponseChan or context parent
+						outmsg := gotocol.Message{gotocol.Put, msg.ResponseChan, time.Now(), msg.Ctx.AddSpan(), msg.Intention}
 						flow.AnnotateSend(outmsg, name)
 						outmsg.GoSend(microservices[ring[i].name])
 					}
@@ -187,7 +188,8 @@ func Start(listener chan gotocol.Message) {
 						// forward the message to the right place, but don't change the ResponseChan
 						outmsg := gotocol.Message{gotocol.Replicate, msg.ResponseChan, time.Now(), msg.Ctx, msg.Intention}
 						flow.AnnotateSend(outmsg, name)
-						outmsg.GoSend(microservices[ring[i].name])					}
+						outmsg.GoSend(microservices[ring[i].name])
+					}
 				}
 				// name looks like: netflixoss.us-east-1.zoneC.cassTurtle.priamCassandra.cassTurtle11
 				myregion := names.Region(name)
