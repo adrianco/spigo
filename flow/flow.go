@@ -254,13 +254,13 @@ func Flush(t gotocol.TraceContextType, trace []*spannotype) {
 				zip.Annotations = nil
 			}
 			n++
-			zip.Traceid = fmt.Sprintf("%016x", t)
+			zip.Traceid = fmt.Sprintf("%016d", t) // pad id's to 16 characters to keep zipkin happy
 			zip.Name = a.Imp
 			s := strings.SplitAfter(a.Ctx, "s")                            // tXpYsZ -> [tXpYs, Z]
 			p := strings.TrimSuffix(strings.SplitAfter(s[0], "p")[1], "s") // tXpYs -> [tXp, Ys] -> Ys -> Y
-			zip.Id = "000000000000000"[0:(15-len(s[1]))] + s[1]
+			zip.Id = "000000000000000"[0:(16-len(s[1]))] + s[1]            // pad id's to 16 characters to keep zipkin happy
 			if p != "0" {
-				zip.ParentId = "000000000000000"[0:(15-len(p))] + p
+				zip.ParentId = "000000000000000"[0:(16-len(p))] + p // pad id's to 16 characters to keep zipkin happy
 			}
 			ctx = a.Ctx
 		}
