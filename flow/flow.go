@@ -210,7 +210,7 @@ func Shutdown() {
 
 // endpoint for zipkin
 type zipkinendpoint struct {
-	Servicename string `json:"servicename"`
+	Servicename string `json:"serviceName"`
 	Ipv4        string `json:"ipv4"`
 	Port        int    `json:"port"`
 }
@@ -227,8 +227,7 @@ type zipkinspan struct {
 	Traceid     string             `json:"traceId"`
 	Name        string             `json:"name"`
 	Id          string             `json:"id"`
-	ParentId    string             `json:"parentId"`
-	Debug       string             `json:"debug"`
+	ParentId    string             `json:"parentId,omitempty"`
 	Annotations []zipkinannotation `json:"annotations"`
 }
 
@@ -255,13 +254,14 @@ func Flush(t gotocol.TraceContextType, trace []*spannotype) {
 				zip.Annotations = nil
 			}
 			n++
-			zip.Traceid = fmt.Sprintf("%v", t)
+			zip.Traceid = fmt.Sprintf("%016x", t)
 			zip.Name = a.Imp
 			s := strings.SplitAfter(a.Ctx, "s")                            // tXpYsZ -> [tXpYs, Z]
 			p := strings.TrimSuffix(strings.SplitAfter(s[0], "p")[1], "s") // tXpYs -> [tXp, Ys] -> Ys -> Y
-			zip.Id = s[1]
-			zip.ParentId = p
-			zip.Debug = "false"
+			zip.Id = "000000000000000"[0:(15-len(s[1]))] + s[1]
+			if p != "0" {
+				zip.ParentId = "000000000000000"[0:(15-len(p))] + p
+			}
 			ctx = a.Ctx
 		}
 		var ann zipkinannotation
