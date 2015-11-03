@@ -15,24 +15,38 @@ func ThroughputXN(capacityN, baseLambda, contentionRho, crosstalkKappa float64) 
 	return (baseLambda * capacityN) / (1.0 + contentionRho*(capacityN-1.0) + crosstalkKappa*capacityN*(capacityN-1.0))
 }
 
+// Maximum throughput for a given contention and crosstalk
 func ThroughputMax(contentionRho, crosstalkKappa float64) float64 {
 	// Nmax = sqrt((1-Rho)/Kappa)
 	return math.Sqrt((1.0 - contentionRho) / crosstalkKappa)
 }
 
+// Response time as a function of capacity
 func ResponseRN(capacityN, baseLambda, contentionRho, crosstalkKappa float64) float64 {
 	// R(N) = (1 + Rho(N - 1) + KappaN(N - 1)) / Lambda
 	return (1 + contentionRho*(capacityN-1.0) + crosstalkKappa*capacityN*(capacityN-1.0)) / baseLambda
 }
 
+// Response time as a function of throughput
 func ResponseRX(throughputX, baseLambda, contentionRho, crosstalkKappa float64) float64 {
 	if crosstalkKappa == 0.0 {
 		// R(X) = (Rho - 1) / ( RhoX - Lambda)
 		return (contentionRho - 1.0) / (contentionRho*throughputX - baseLambda)
 	} else {
 		// R(X) = (-sqrt(X^2(Kappa^2 + 2Kappa(Rho -2) + rho^2) + 2LambdaX(Kappa - Rho) + Lambda^2) + KappaX + Lambda - RhoX) / 2KappaX^2
-		return (-math.Sqrt(throughputX*throughputX*(crosstalkKappa*crosstalkKappa+2.0*crosstalkKappa*(contentionRho-2.0)+contentionRho*contentionRho)+
-			2.0*baseLambda*throughputX*(crosstalkKappa-contentionRho)+(baseLambda*baseLambda)) +(crosstalkKappa*throughputX)+baseLambda-(contentionRho*throughputX)) /
+		return (-math.Sqrt(throughputX*throughputX*(crosstalkKappa*crosstalkKappa+
+			2.0*crosstalkKappa*(contentionRho-2.0)+contentionRho*contentionRho)+
+			2.0*baseLambda*throughputX*(crosstalkKappa-contentionRho)+
+			(baseLambda*baseLambda)) + (crosstalkKappa * throughputX) +
+			baseLambda - (contentionRho * throughputX)) /
 			(2.0 * crosstalkKappa * throughputX * throughputX)
 	}
+}
+
+// Throughput as a function of response time
+func ThroughputXR(responseR, baseLambda, contentionRho, crosstalkKappa float64) float64 {
+	// X(R) = (sqrt(Rho^2 + Kappa^2 + 2Kappa(2LambdaR + Rho - 2)) - Kappa + Rho)/2KappaR
+	return (math.Sqrt(contentionRho*contentionRho+crosstalkKappa*crosstalkKappa+
+		2.0*crosstalkKappa*(2.0*baseLambda*responseR+contentionRho-2.0)) - crosstalkKappa + contentionRho) /
+		(2.0 * crosstalkKappa * responseR)
 }
