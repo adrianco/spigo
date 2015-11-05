@@ -34,6 +34,7 @@ const (
 	StaashPkg         = "staash"
 	PriamCassandraPkg = "priamCassandra"
 	StorePkg          = "store"
+	RiakPkg           = "riak"
 )
 
 var (
@@ -41,7 +42,7 @@ var (
 	eurekachan map[string]chan gotocol.Message // eureka for each region and zone
 	// noodles channels mapped by microservice name connects netflixoss to everyone
 	noodles  map[string]chan gotocol.Message
-	Packages = []string{EurekaPkg, PiratePkg, ElbPkg, DenominatorPkg, ZuulPkg, KaryonPkg, MonolithPkg, StaashPkg, PriamCassandraPkg, StorePkg}
+	Packages = []string{EurekaPkg, PiratePkg, ElbPkg, DenominatorPkg, ZuulPkg, KaryonPkg, MonolithPkg, StaashPkg, PriamCassandraPkg, StorePkg, RiakPkg}
 )
 
 // Create the maps of channels
@@ -183,6 +184,8 @@ func StartNode(name string, dependencies ...string) {
 		go monolith.Start(noodles[name])
 	case "staash":
 		go staash.Start(noodles[name])
+	case "riak":
+		fallthrough // fake Riak using priamCassandra
 	case "priamCassandra":
 		go priamCassandra.Start(noodles[name])
 	case "store":

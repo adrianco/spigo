@@ -1,0 +1,24 @@
+{
+    "arch": "riak",
+    "description":"Riak IoT ingestion example for the RICON 2015 presentation",
+    "version": "arch-0.0",
+    "victim": "",
+    "services": [
+        { "name": "riakTS",     "package": "riak",           "count": 6, "regions": 1, "dependencies": ["riakTS", "eureka"]},
+        { "name": "ingester",   "package": "staash",         "count": 6, "regions": 1, "dependencies": ["riakTS"]},
+        { "name": "ingestMQ",   "package": "karyon",         "count": 3, "regions": 1, "dependencies": ["ingester"]},
+        { "name": "riakKV",     "package": "riak",           "count": 3, "regions": 1, "dependencies": ["riakKV"]},
+        { "name": "enricher",   "package": "staash",         "count": 6, "regions": 1, "dependencies": ["riakKV", "ingestMQ"]},
+        { "name": "enrichMQ",   "package": "karyon",         "count": 3, "regions": 1, "dependencies": ["enricher"]},
+        { "name": "analytics",  "package": "karyon",         "count": 6, "regions": 1, "dependencies": ["ingester"]},
+        { "name": "analytics-elb", "package": "elb",         "count": 0, "regions": 1, "dependencies": ["analytics"]},
+        { "name": "analytics-api", "package": "denominator", "count": 0, "regions": 0, "dependencies": ["analytics-elb"]},
+        { "name": "normalization", "package": "karyon",      "count": 6, "regions": 1, "dependencies": ["enrichMQ"]},
+        { "name": "iot-elb",    "package": "elb",            "count": 0, "regions": 1, "dependencies": ["normalization"]},
+        { "name": "iot-api",    "package": "denominator",    "count": 0, "regions": 0, "dependencies": ["iot-elb"]},
+        { "name": "stream",     "package": "karyon",         "count": 6, "regions": 1, "dependencies": ["ingestMQ"]},
+        { "name": "stream-elb", "package": "elb",            "count": 0, "regions": 1, "dependencies": ["stream"]},
+        { "name": "stream-api", "package": "denominator",    "count": 0, "regions": 0, "dependencies": ["stream-elb"]}
+    ]
+}
+

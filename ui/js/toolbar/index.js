@@ -119,6 +119,7 @@ export default React.createClass({
 						<option value="netflix">More complex Netflix</option>
 						<option value="cassandra">Cassandra only</option>
 						<option value="yogi">Contributed data science</option>
+						<option value="riak">IoT model based on Riak</option>
 					</select>
 				</span>
 			</section>
