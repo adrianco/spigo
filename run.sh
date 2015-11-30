@@ -59,6 +59,9 @@
 ./spigo -a netflixoss -d 5 -j -p 200 -s 7 -w 6
 ./spigo -a netflixoss -d 5 -j -p 300 -s 8 -w 6
 ./spigo -a netflixoss -d 5 -j -p 400 -s 9 -w 6 -f=true
+./spigo -d 2 -a riak -j -c
+./spigo -d 2 -a riak -j -s 1 -w 2 -c
+./spigo -d 2 -a riak -j -s 2 -w 2 -p 200
 ./spigo -a testyaml -d 2 -j
 ./spigo -a yogi -d 2 -j -c -f
 ./spigo -a yogi -d 5 -j -p 100 -s 1 -w 1
