@@ -1,13 +1,13 @@
-// Collect throughput and response times using Coda Hale's Metrics, adding monitor and trace option next
+// Collect throughput and response times using Go-Kit Metrics
 package collect
 
 import (
-	"encoding/json"
+	//	"encoding/json"
 	"fmt"
+	"github.com/adrianco/kit/metrics/expvar"
 	"github.com/adrianco/spigo/archaius"
-	"github.com/codahale/metrics"
-	//	"gopkg.in/spacemonkeygo/monitor.v1"
-	//	"gopkg.in/spacemonkeygo/monitor.v1/trace"
+	"github.com/adrianco/spigo/names"
+	"github.com/go-kit/kit/metrics"
 	"log"
 	"net"
 	"net/http"
@@ -15,31 +15,52 @@ import (
 	"time"
 )
 
+const (
+	maxHistObservable = 1000000
+)
+
 //var mon = monitor.GetMonitors()
 
-func NewHist(name string) *metrics.Histogram {
+func NewHist(name string) metrics.Histogram {
+	var h metrics.Histogram
 	if name != "" && archaius.Conf.Collect {
-		return metrics.NewHistogram(name, 1000, 100000000, 5)
+		h = expvar.NewHistogram(name, 1000, maxHistObservable, 1, []int{50, 99}...)
+		return h
 	}
 	return nil
 }
 
-func Measure(h *metrics.Histogram, d time.Duration) {
+func Measure(h metrics.Histogram, d time.Duration) {
 	if h != nil && archaius.Conf.Collect {
-		h.RecordValue(int64(d))
-		metrics.Counter(h.Name()).Add()
+		if d > maxHistObservable {
+			h.Observe(int64(maxHistObservable))
+		} else {
+			h.Observe(int64(d))
+		}
+	}
+}
+
+// have to pass in name because metrics.Histogram blocks expvar.Historgram.Name()
+func SaveHist(h metrics.Histogram, name, suffix string) {
+	if archaius.Conf.Collect {
+		file, err := os.Create("csv_metrics/" + names.Arch(name) + "_" + names.Machine(name) + suffix + ".csv")
+		if err != nil {
+			log.Printf("%v: %v\n", name, err)
+		}
+		file.WriteString(fmt.Sprintf("%v", h))
+		file.Close()
 	}
 }
 
 func Save() {
-	if archaius.Conf.Collect {
-		file, _ := os.Create("json_metrics/" + archaius.Conf.Arch + "_metrics.json")
-		counters, gauges := metrics.Snapshot()
-		cj, _ := json.Marshal(counters)
-		gj, _ := json.Marshal(gauges)
-		file.WriteString(fmt.Sprintf("{\n\"counters\":%v\n\"gauges\":%v\n}\n", string(cj), string(gj)))
-		file.Close()
-	}
+	//	if archaius.Conf.Collect {
+	//		file, _ := os.Create("csv_metrics/" + archaius.Conf.Arch + "_metrics.csv")
+	//		counters, gauges := metrics.Snapshot()
+	//		cj, _ := json.Marshal(counters)
+	//		gj, _ := json.Marshal(gauges)
+	//		file.WriteString(fmt.Sprintf("{\n\"counters\":%v\n\"gauges\":%v\n}\n", string(cj), string(gj)))
+	//		file.Close()
+	//	}
 }
 
 func Serve(port int) {

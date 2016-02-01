@@ -4,47 +4,10 @@
     "version": "arch-0.0",
     "victim": "webserver",
     "services": [
-        {
-            "name": "rds-mysql",
-            "count": 2,
-            "dependencies": [],
-            "package": "store",
-            "regions": 1
-        },
-	{
-            "name": "memcache",
-            "count": 1,
-            "dependencies": [],
-            "package": "store",
-            "regions": 1
-        },
-        {
-            "name": "webserver",
-            "count": 18,
-            "dependencies": [
-                "memcache",
-		"rds-mysql"	
-            ],
-            "package": "monolith",
-            "regions": 1
-        },
-        {
-            "name": "webserver-elb",
-            "count": 0,
-            "dependencies": [
-                "webserver"
-            ],
-            "package": "elb",
-            "regions": 1
-        },
-        {
-            "name": "www",
-            "count": 0,
-            "dependencies": [
-                "webserver-elb"
-            ],
-            "package": "denominator",
-            "regions": 0
-        }
+        { "name": "rds-mysql",     "package": "store",       "count": 2,  "regions": 1, "dependencies": [] },
+	{ "name": "memcache",      "package": "store",       "count": 1,  "regions": 1, "dependencies": [] },
+        { "name": "webserver",     "package": "monolith",    "count": 18, "regions": 1, "dependencies": ["memcache", "rds-mysql"] },
+        { "name": "webserver-elb", "package": "elb",         "count": 0,  "regions": 1, "dependencies": ["webserver"] },
+        { "name": "www",           "package": "denominator", "count": 0,  "regions": 0, "dependencies": ["webserver-elb"] }
     ]
 }

@@ -23,7 +23,10 @@ func Start(listener chan gotocol.Message) {
 	dependencies := make(map[string]time.Time, dunbar)                       // dependent services and time last updated
 	var parent chan gotocol.Message                                          // remember how to talk back to creator
 	var name string                                                          // remember my name
-	hist := collect.NewHist("")                                              // don't know name yet
+	nethist := collect.NewHist("")                                           // don't know name yet - message network latency
+	resphist := collect.NewHist("")                                          // response time history
+	servhist := collect.NewHist("")                                          // service time history
+	rthist := collect.NewHist("")                                          // round trip history
 	eureka := make(map[string]chan gotocol.Message, 3*archaius.Conf.Regions) // service registry per zone and region
 	var chatrate time.Duration
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
@@ -34,19 +37,22 @@ func Start(listener chan gotocol.Message) {
 	for {
 		select {
 		case msg := <-listener:
-			flow.Instrument(msg, name, hist)
+			flow.Instrument(msg, name, nethist)
 			switch msg.Imposition {
 			case gotocol.Hello:
 				if name == "" {
 					// if I don't have a name yet remember what I've been named
 					parent = msg.ResponseChan // remember how to talk to my namer
 					name = msg.Intention      // message body is my name
-					hist = collect.NewHist(name)
+					nethist = collect.NewHist(name + "_net")
+					resphist = collect.NewHist(name + "_resp")
+					servhist = collect.NewHist(name + "_serv")
+					rthist = collect.NewHist(name + "_rt")
 				}
 			case gotocol.Inform:
 				eureka[msg.Intention] = handlers.Inform(msg, name, listener)
 			case gotocol.NameDrop:
-				handlers.NameDrop(&dependencies, &microservices, msg, name, listener, eureka)
+				handlers.NameDrop(&dependencies, &microservices, msg, name, listener, eureka, true)
 			case gotocol.Forget:
 				// forget a buddy
 				handlers.Forget(&dependencies, &microservices, msg)
@@ -58,12 +64,16 @@ func Start(listener chan gotocol.Message) {
 					chatTicker = time.NewTicker(chatrate)
 				}
 			case gotocol.GetResponse:
-				// return path from a request, terminate and log
-				flow.End(msg.Ctx)
+				// return path from a request, terminate and log response time in histograms
+				flow.End(msg, resphist, servhist, rthist)
 			case gotocol.Goodbye:
 				if archaius.Conf.Msglog {
 					log.Printf("%v: Going away, was chatting every %v\n", name, chatrate)
 				}
+				collect.SaveHist(nethist, name, "_net")
+				collect.SaveHist(resphist, name, "_resp")
+				collect.SaveHist(servhist, name, "_serv")
+				collect.SaveHist(rthist, name, "_rt")
 				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext, name}.GoSend(parent)
 				return
 			}

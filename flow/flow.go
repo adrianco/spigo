@@ -8,7 +8,7 @@ import (
 	"github.com/adrianco/spigo/collect"
 	"github.com/adrianco/spigo/dhcp"
 	"github.com/adrianco/spigo/gotocol"
-	"github.com/codahale/metrics"
+	"github.com/go-kit/kit/metrics"
 	"log"
 	"os"
 	"sort"
@@ -77,24 +77,11 @@ var flowlock sync.Mutex // lock changes to the maps
 // file to log flow data to
 var file *os.File
 
-// setup and initialize the flow log
-func setup() {
-	// do this here since Arch is not set in time for init()
-	f, err := os.Create("json_metrics/" + archaius.Conf.Arch + "_flow.json")
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		file = f
-	}
-	file.WriteString("[\n")
-	// Initialize the flow mapping system
-	flowmap = make(flowmaptype, archaius.Conf.Population)
-}
-
 // Common Annotation code
 func annotate(msg gotocol.Message, name string, t time.Time, resp, others Values) *spannotype {
-	if file == nil {
-		setup()
+	if flowmap == nil {
+		flowmap = make(flowmaptype, archaius.Conf.Population)
+
 	}
 	if flowmap[msg.Ctx.Trace] == nil {
 		flowmap[msg.Ctx.Trace] = make([]*spannotype, 0, 2) // reserve space for at least 2 annotations in a span
@@ -136,12 +123,35 @@ func AnnotateSend(msg gotocol.Message, name string) {
 }
 
 // Terminate a flow, flushing output and freeing the request id to keep the map smaller
-func End(ctx gotocol.Context) {
+func End(msg gotocol.Message, resphist, servhist, rthist metrics.Histogram) {
 	if !archaius.Conf.Collect {
 		return
 	}
-	//Flush(ctx.Trace, flowmap[ctx.Trace])
-	//delete(flowmap, ctx.Trace)
+	var cs, sr, ss, cr int64
+	// find the annotations for the client send time and the client receive time
+	for _, a := range flowmap[msg.Ctx.Trace] {
+		if a.Value == CS.String() {
+			cs = a.Timestamp
+		}
+		if a.Value == SR.String() {
+			sr = a.Timestamp
+		}
+		if a.Value == SS.String() {
+			ss = a.Timestamp
+		}
+		if a.Value == CR.String() {
+			cr = a.Timestamp
+		}
+	}
+	if cs > 0 && cr > 0 { // response time measured at the client
+		collect.Measure(resphist, time.Unix(0, cr).Sub(time.Unix(0, cs)))
+	}
+	if ss > 0 && sr > 0 { // service time measured at the server
+		collect.Measure(servhist, time.Unix(0, ss).Sub(time.Unix(0, sr)))
+	}
+	if cs > 0 && cr > 0 && ss > 0 && sr > 0 { // network time sum of each direction
+		collect.Measure(rthist, time.Unix(0, sr).Sub(time.Unix(0, cs)) + time.Unix(0, cr).Sub(time.Unix(0, ss)))
+	}
 }
 
 // Shutdown the flow mapping system and flush remaining flows
@@ -150,7 +160,15 @@ func Shutdown() {
 		return
 	}
 	flowlock.Lock()
+	defer flowlock.Unlock()
+	f, err := os.Create("json_metrics/" + archaius.Conf.Arch + "_flow.json")
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		file = f
+	}
 	log.Printf("Flushing flows to %v\n", file.Name())
+	file.WriteString("[\n")
 	comma := false
 	for c, f := range flowmap {
 		if comma {
@@ -162,7 +180,6 @@ func Shutdown() {
 	}
 	file.WriteString("]\n")
 	file.Close()
-	flowlock.Unlock()
 }
 
 /* example: Zipkin format is an array of these
@@ -276,7 +293,7 @@ func Flush(t gotocol.TraceContextType, trace []*spannotype) {
 }
 
 // common code for instrumenting requests
-func Instrument(msg gotocol.Message, name string, hist *metrics.Histogram) {
+func Instrument(msg gotocol.Message, name string, hist metrics.Histogram) {
 	received := time.Now()
 	collect.Measure(hist, received.Sub(msg.Sent))
 	if archaius.Conf.Msglog {

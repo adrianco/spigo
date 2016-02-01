@@ -1,0 +1,50 @@
+{
+    "arch": "storage",
+    "description":"Simple storage architecture for latency analysis",
+    "version": "arch-0.0",
+    "victim": "",
+    "services": [
+        {
+            "name": "volume",
+            "count": 1,
+            "dependencies": [],
+            "package": "store",
+            "regions": 1
+        },
+        {
+            "name": "mysql",
+            "count": 1,
+            "dependencies": [
+	        "volume"
+	    ],
+            "package": "staash",
+            "regions": 1
+        },
+	{
+            "name": "memcache",
+            "count": 1,
+            "dependencies": [],
+            "package": "store",
+            "regions": 1
+        },
+        {
+            "name": "web",
+            "count": 1,
+            "dependencies": [
+                "memcache",
+		"mysql"	
+            ],
+            "package": "staash",
+            "regions": 1
+        },
+        {
+            "name": "load",
+            "count": 0,
+            "dependencies": [
+                "memcache"
+            ],
+            "package": "denominator",
+            "regions": 0
+        }
+    ]
+}
