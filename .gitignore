@@ -3,3 +3,9 @@
 ui/node_modules
 ui/dist
 *npm-debug.log
+
+*.pdf
+
+graphgexf/LesMiserables.gexf
+
+graphgexf/gephisetup.sh
