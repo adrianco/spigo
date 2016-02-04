@@ -1,0 +1,5 @@
+name: netflix.*.*.www00....www.denominator_resp
+count: 0
+gauges: map[50:0 99:0]
+    From,      To,   Count,   Prob, Bar
+

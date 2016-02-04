@@ -1,0 +1,5 @@
+name: riak.*.*.analytics-api00....analytics-api.denominator_serv
+count: 0
+gauges: map[50:0 99:0]
+    From,      To,   Count,   Prob, Bar
+

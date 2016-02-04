@@ -41,7 +41,7 @@
             "name": "load",
             "count": 0,
             "dependencies": [
-                "memcache"
+                "web"
             ],
             "package": "denominator",
             "regions": 0

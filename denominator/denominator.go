@@ -74,6 +74,7 @@ func Start(listener chan gotocol.Message) {
 				collect.SaveHist(resphist, name, "_resp")
 				collect.SaveHist(servhist, name, "_serv")
 				collect.SaveHist(rthist, name, "_rt")
+				collect.SaveAllGuesses(name)
 				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext, name}.GoSend(parent)
 				return
 			}
