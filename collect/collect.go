@@ -2,13 +2,13 @@
 package collect
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	"fmt"
 	. "github.com/adrianco/goguesstimate/guesstimate"
-	"github.com/adrianco/kit/metrics/expvar"
 	"github.com/adrianco/spigo/archaius"
 	"github.com/adrianco/spigo/names"
 	"github.com/go-kit/kit/metrics"
+	"github.com/go-kit/kit/metrics/expvar"
 	"log"
 	"net"
 	"net/http"
@@ -59,15 +59,16 @@ func SaveHist(h metrics.Histogram, name, suffix string) {
 		if err != nil {
 			log.Printf("%v: %v\n", name, err)
 		}
-		file.WriteString(fmt.Sprintf("%v", h))
+		metrics.PrintDistribution(file, h)
 		file.Close()
-		dfile, err := os.Create("csv_metrics/" + names.Arch(name) + "_" + names.Machine(name) + suffix + ".data")
-		if err != nil {
-			log.Printf("%v: %v\n", name, err)
-		}
-		sj, _ := json.Marshal(sampleMap[h])
-		dfile.WriteString(fmt.Sprintf("%v", string(sj)))
-		dfile.Close()
+		//Sample data is written out by SaveAllGuesses now
+		//dfile, err := os.Create("csv_metrics/" + names.Arch(name) + "_" + names.Machine(name) + suffix + ".data")
+		//if err != nil {
+		//	log.Printf("%v: %v\n", name, err)
+		//}
+		//sj, _ := json.Marshal(sampleMap[h])
+		//dfile.WriteString(fmt.Sprintf("%v", string(sj)))
+		//dfile.Close()
 	}
 }
 
@@ -85,9 +86,9 @@ func SaveAllGuesses(name string) {
 			},
 		},
 	}
-	row := 2
-	col := 2
-	seq := []string{"", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"}
+	row := 1
+	col := 1
+	seq := []string{"", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"}
 	for _, data := range sampleMap {
 		g.Space.Graph.Metrics = append(g.Space.Graph.Metrics, GuessMetric{
 			ID:         seq[row] + seq[col],
@@ -102,6 +103,10 @@ func SaveAllGuesses(name string) {
 			Data:            data,
 		})
 		row++
+		if row > len(seq) {
+			row = 1
+			col++
+		}
 	}
 	SaveGuess(g, "json_metrics/"+names.Arch(name))
 }
