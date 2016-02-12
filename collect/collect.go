@@ -2,7 +2,6 @@
 package collect
 
 import (
-	//"encoding/json"
 	"fmt"
 	. "github.com/adrianco/goguesstimate/guesstimate"
 	"github.com/adrianco/spigo/archaius"
@@ -17,8 +16,8 @@ import (
 )
 
 const (
-	maxHistObservable = 1000000
-	sampleCount       = 500
+	maxHistObservable = 1000000 // one millisecond
+	sampleCount       = 1000    // data points will be sampled 5000 times to build a distribution by guesstimate
 )
 
 //var mon = monitor.GetMonitors()
@@ -61,14 +60,6 @@ func SaveHist(h metrics.Histogram, name, suffix string) {
 		}
 		metrics.PrintDistribution(file, h)
 		file.Close()
-		//Sample data is written out by SaveAllGuesses now
-		//dfile, err := os.Create("csv_metrics/" + names.Arch(name) + "_" + names.Machine(name) + suffix + ".data")
-		//if err != nil {
-		//	log.Printf("%v: %v\n", name, err)
-		//}
-		//sj, _ := json.Marshal(sampleMap[h])
-		//dfile.WriteString(fmt.Sprintf("%v", string(sj)))
-		//dfile.Close()
 	}
 }
 
@@ -89,11 +80,11 @@ func SaveAllGuesses(name string) {
 	row := 1
 	col := 1
 	seq := []string{"", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"}
-	for _, data := range sampleMap {
+	for h, data := range sampleMap {
 		g.Space.Graph.Metrics = append(g.Space.Graph.Metrics, GuessMetric{
 			ID:         seq[row] + seq[col],
 			ReadableID: seq[row] + seq[col],
-			Name:       "histogram",
+			Name:       h.Name(),
 			Location:   GuessMetricLocation{row, col},
 		})
 		g.Space.Graph.Guesstimates = append(g.Space.Graph.Guesstimates, Guesstimate{
@@ -106,6 +97,9 @@ func SaveAllGuesses(name string) {
 		if row > len(seq) {
 			row = 1
 			col++
+			if col > len(seq) {
+				break
+			}
 		}
 	}
 	SaveGuess(g, "json_metrics/"+names.Arch(name))
