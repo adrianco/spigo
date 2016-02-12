@@ -95,7 +95,7 @@ func Start(listener chan gotocol.Message, name string) {
 						if metadata[n].online {
 							gotocol.Message{gotocol.NameDrop, ch, time.Now(), gotocol.NilContext, n}.GoSend(msg.ResponseChan)
 						} else {
-							log.Printf("%v:Forget %v\n", name, n)
+							//log.Printf("%v:Forget %v\n", name, n)
 							gotocol.Message{gotocol.Forget, ch, time.Now(), gotocol.NilContext, n}.GoSend(msg.ResponseChan)
 						}
 					}

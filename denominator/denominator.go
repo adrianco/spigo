@@ -9,6 +9,7 @@ import (
 	"github.com/adrianco/spigo/flow"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/handlers"
+	"github.com/adrianco/spigo/ribbon"
 	"log"
 	"math/rand"
 	"time"
@@ -16,17 +17,14 @@ import (
 
 // Start the denominator, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
-	dunbar := 6 // starting point for how many nodes to remember
-	// remember the channel to talk to microservices
-	microservices := make(map[string]chan gotocol.Message, dunbar)
-	microindex := make([]chan gotocol.Message, dunbar)
-	dependencies := make(map[string]time.Time, dunbar)                       // dependent services and time last updated
+	microservices := ribbon.MakeRouter()
+	dependencies := make(map[string]time.Time)                               // dependent services and time last updated
 	var parent chan gotocol.Message                                          // remember how to talk back to creator
 	var name string                                                          // remember my name
 	nethist := collect.NewHist("")                                           // don't know name yet - message network latency
 	resphist := collect.NewHist("")                                          // response time history
 	servhist := collect.NewHist("")                                          // service time history
-	rthist := collect.NewHist("")                                          // round trip history
+	rthist := collect.NewHist("")                                            // round trip history
 	eureka := make(map[string]chan gotocol.Message, 3*archaius.Conf.Regions) // service registry per zone and region
 	var chatrate time.Duration
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
@@ -85,17 +83,8 @@ func Start(listener chan gotocol.Message) {
 				}
 			}
 		case <-chatTicker.C:
-			if len(microservices) > 0 {
-				// build index if needed
-				if len(microindex) != len(microservices) {
-					i := 0
-					for _, ch := range microservices {
-						microindex[i] = ch
-						i++
-					}
-				}
-				m := rand.Intn(len(microservices))
-				// start a request to a random member of this denominator
+			c := microservices.Random()
+			if c != nil {
 				ctx := gotocol.NewTrace()
 				now := time.Now()
 				var sm gotocol.Message
@@ -110,7 +99,7 @@ func Start(listener chan gotocol.Message) {
 					w++ // put a new key each time
 				}
 				flow.AnnotateSend(sm, name) // service send logs creation time for this flow
-				sm.GoSend(microindex[m])
+				sm.GoSend(c)
 			}
 		}
 	}

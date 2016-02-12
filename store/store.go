@@ -10,17 +10,18 @@ import (
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/handlers"
 	"github.com/adrianco/spigo/names"
+	"github.com/adrianco/spigo/ribbon"
 	"time"
 )
 
 // Start store, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
 	// remember the channel to talk to microservices
-	microservices := make(map[string]chan gotocol.Message)
+	microservices := ribbon.MakeRouter()
 	dependencies := make(map[string]time.Time) // dependent services and time last updated
 	store := make(map[string]string, 4)        // key value store
 	store["why?"] = "because..."
-	var netflixoss chan gotocol.Message     // remember creator and how to talk back to incoming requests
+	var netflixoss chan gotocol.Message                // remember creator and how to talk back to incoming requests
 	var name string                                    // remember my name
 	eureka := make(map[string]chan gotocol.Message, 3) // service registry per zone
 	hist := collect.NewHist("")
@@ -53,48 +54,26 @@ func Start(listener chan gotocol.Message) {
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up (not currently used)
 			case gotocol.Put:
-				// set a key value pair and replicate globally
+				// set a key value pair and replicate to other stores
 				var key, value string
 				fmt.Sscanf(msg.Intention, "%s%s", &key, &value)
 				if key != "" && value != "" {
 					store[key] = value
-					// duplicate the request on to all connected store nodes
-					if len(microservices) > 0 {
-						// replicate request
-						for _, c := range microservices {
-							outmsg := gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
-							flow.AnnotateSend(outmsg, name)
-							outmsg.GoSend(c)
-						}
+					// duplicate the request on to all connected store nodes with the same package name as this one
+					for _, n := range microservices.All(names.Package(name)).Names() {
+						outmsg := gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
+						flow.AnnotateSend(outmsg, name)
+						outmsg.GoSend(microservices.Named(n))
 					}
 				}
 			case gotocol.Replicate:
-				// Replicate is only used between store nodes
+				// Replicate is used between store nodes
 				// end point for a request
 				var key, value string
 				fmt.Sscanf(msg.Intention, "%s%s", &key, &value)
 				// log.Printf("store: %v:%v", key, value)
 				if key != "" && value != "" {
 					store[key] = value
-				}
-				// name looks like: netflixoss.us-east-1.zoneC.mysql.store.mysql1
-				myregion := names.Region(name)
-				//log.Printf("%v: %v\n", name, myregion)
-				// find if this was a cross region Replicate
-				for n, c := range microservices {
-					// find the name matching incoming request channel
-					if c == msg.ResponseChan {
-						if myregion != names.Region(n) {
-							// Replicate from out of region needs to be Replicated only to other zones in this Region
-							for nz, cz := range microservices {
-								if myregion == names.Region(nz) {
-									//log.Printf("%v rep to: %v\n", name, nz)
-									outmsg := gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
-									flow.AnnotateSend(outmsg, name)
-									outmsg.GoSend(cz)								}
-							}
-						}
-					}
 				}
 			case gotocol.Goodbye:
 				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext, name}.GoSend(netflixoss)

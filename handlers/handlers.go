@@ -5,8 +5,8 @@ import (
 	"github.com/adrianco/spigo/flow"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/names"
+	"github.com/adrianco/spigo/ribbon"
 	"log"
-	"math/rand"
 	"time"
 )
 
@@ -21,7 +21,7 @@ func Inform(msg gotocol.Message, name string, listener chan gotocol.Message) cha
 }
 
 // NameDrop updates local buddy list
-func NameDrop(dependencies *map[string]time.Time, microservices *map[string]chan gotocol.Message, msg gotocol.Message, name string, listener chan gotocol.Message, eureka map[string]chan gotocol.Message, crosszone ...bool) {
+func NameDrop(dependencies *map[string]time.Time, router *ribbon.Router, msg gotocol.Message, name string, listener chan gotocol.Message, eureka map[string]chan gotocol.Message, crosszone ...bool) {
 	if msg.ResponseChan == nil { // dependency by service name, needs to be looked up in eureka
 		(*dependencies)[msg.Intention] = msg.Sent // remember it for later
 		for _, ch := range eureka {
@@ -31,12 +31,12 @@ func NameDrop(dependencies *map[string]time.Time, microservices *map[string]chan
 	} else { // update dependency with full name and listener channel
 		microservice := msg.Intention // message body is buddy name
 		if len(crosszone) > 0 || names.Zone(name) == names.Zone(microservice) {
-			if microservice != name && (*microservices)[microservice] == nil { // don't talk to myself or record duplicates
+			if microservice != name && router.Named(microservice) == nil { // don't talk to myself or record duplicates
 				// remember how to talk to this buddy
-				(*microservices)[microservice] = msg.ResponseChan // message channel is buddy's listener
+				router.Add(microservice, msg.ResponseChan, msg.Sent) // message channel is buddy's listener
 				(*dependencies)[names.Service(microservice)] = msg.Sent
 				for _, ch := range eureka {
-					// tell one of the service registries I have a new buddy to talk to so it doesn't get logged more than once
+					// tell just one of the service registries I have a new buddy to talk to so it doesn't get logged more than once
 					gotocol.Send(ch, gotocol.Message{gotocol.Inform, listener, time.Now(), gotocol.NilContext, name + " " + microservice})
 					return
 				}
@@ -46,50 +46,36 @@ func NameDrop(dependencies *map[string]time.Time, microservices *map[string]chan
 }
 
 // Forget removes a buddy from the buddy list
-func Forget(dependencies *map[string]time.Time, microservices *map[string]chan gotocol.Message, msg gotocol.Message) {
+func Forget(dependencies *map[string]time.Time, router *ribbon.Router, msg gotocol.Message) {
 	microservice := msg.Intention              // message body is buddy name to forget
-	if (*microservices)[microservice] != nil { // an existing buddy to forget
+	if router.Named(microservice) != nil { // an existing buddy to forget
 		// forget how to talk to this buddy
 		(*dependencies)[names.Service(microservice)] = msg.Sent // remember when we were told to forget this service
-		delete(*microservices, microservice)
+		router.Remove(microservice)
 	}
 }
 
-func Put(msg gotocol.Message, name string, listener chan gotocol.Message, requestor *map[string]gotocol.Routetype, microservices *map[string]chan gotocol.Message, microindex *map[int]chan gotocol.Message) {
-	if len(*microservices) > 0 {
-		if len(*microindex) != len(*microservices) {
-			// rebuild index
-			i := 0
-			for _, ch := range *microservices {
-				(*microindex)[i] = ch
-				i++
-			}
-		}
-		m := rand.Intn(len(*microservices))
-		// pass on request to a random service - client send
-		outmsg := gotocol.Message{gotocol.Put, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
-		flow.AnnotateSend(outmsg, name)
-		outmsg.GoSend((*microindex)[m])
+func Put(msg gotocol.Message, name string, listener chan gotocol.Message, requestor *map[string]gotocol.Routetype, router *ribbon.Router) {
+	// pass on request to a random service - client send
+	c := router.Random()
+	if c == nil {
+		return
 	}
+	outmsg := gotocol.Message{gotocol.Put, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
+	flow.AnnotateSend(outmsg, name)
+	outmsg.GoSend(c)
 }
 
-func GetRequest(msg gotocol.Message, name string, listener chan gotocol.Message, requestor *map[string]gotocol.Routetype, microservices *map[string]chan gotocol.Message, microindex *map[int]chan gotocol.Message) {
-	if len(*microservices) > 0 {
-		if len(*microindex) != len(*microservices) {
-			// rebuild index
-			i := 0
-			for _, ch := range *microservices {
-				(*microindex)[i] = ch
-				i++
-			}
-		}
-		m := rand.Intn(len(*microservices))
-		// pass on request to a random service - client send
-		outmsg := gotocol.Message{gotocol.GetRequest, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
-		flow.AnnotateSend(outmsg, name)
-		(*requestor)[outmsg.Ctx.Route()] = msg.Route() // remember where to respond to when this span comes back
-		outmsg.GoSend((*microindex)[m])
+func GetRequest(msg gotocol.Message, name string, listener chan gotocol.Message, requestor *map[string]gotocol.Routetype, router *ribbon.Router) {
+	// pass on request to a random service - client send
+	c := router.Random()
+	if c == nil {
+		return
 	}
+	outmsg := gotocol.Message{gotocol.GetRequest, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
+	flow.AnnotateSend(outmsg, name)
+	(*requestor)[outmsg.Ctx.Route()] = msg.Route() // remember where to respond to when this span comes back
+	outmsg.GoSend(c)
 }
 
 // Responsehandler provides generic response handling

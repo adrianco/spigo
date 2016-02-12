@@ -8,14 +8,13 @@ import (
 	"github.com/adrianco/spigo/flow"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/handlers"
+	"github.com/adrianco/spigo/ribbon"
 	"time"
 )
 
 // Start - all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
-	// remember the channel to talk to microservices
-	microservices := make(map[string]chan gotocol.Message)
-	microindex := make(map[int]chan gotocol.Message)
+	microservices := ribbon.MakeRouter()
 	dependencies := make(map[string]time.Time)         // dependent services and time last updated
 	var parent chan gotocol.Message                    // remember how to talk back to creator
 	requestor := make(map[string]gotocol.Routetype)    // remember where requests came from when responding
@@ -45,13 +44,13 @@ func Start(listener chan gotocol.Message) {
 				handlers.Forget(&dependencies, &microservices, msg)
 			case gotocol.GetRequest:
 				// route the request on to microservices
-				handlers.GetRequest(msg, name, listener, &requestor, &microservices, &microindex)
+				handlers.GetRequest(msg, name, listener, &requestor, &microservices)
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up using saved span context - server send
 				handlers.GetResponse(msg, name, listener, &requestor)
 			case gotocol.Put:
 				// route the request on to a random dependency
-				handlers.Put(msg, name, listener, &requestor, &microservices, &microindex)
+				handlers.Put(msg, name, listener, &requestor, &microservices)
 			case gotocol.Goodbye:
 				for _, ch := range eureka { // tell name service I'm not going to be here
 					ch <- gotocol.Message{gotocol.Delete, nil, time.Now(), gotocol.NilContext, name}

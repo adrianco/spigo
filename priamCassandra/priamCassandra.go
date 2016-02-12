@@ -10,6 +10,7 @@ import (
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/handlers"
 	"github.com/adrianco/spigo/names"
+	"github.com/adrianco/spigo/ribbon"
 	"hash/crc32"
 	"sort"
 	"strings"
@@ -86,7 +87,7 @@ func RingConfig(m string) ByToken {
 // Start priamCassandra, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
 	// remember the channel to talk to microservices
-	microservices := make(map[string]chan gotocol.Message)
+	microservices := ribbon.MakeRouter()
 	// track the hash values owned by each node in the ring
 	var ring ByToken
 	dependencies := make(map[string]time.Time) // dependent services and time last updated
@@ -133,7 +134,7 @@ func Start(listener chan gotocol.Message) {
 					// forward the message to the right place, but don't change the ResponseChan or span
 					outmsg := gotocol.Message{gotocol.GetRequest, msg.ResponseChan, time.Now(), msg.Ctx.AddSpan(), msg.Intention}
 					flow.AnnotateSend(outmsg, name)
-					outmsg.GoSend(microservices[ring[i].name])
+					outmsg.GoSend(microservices.Named(ring[i].name))
 				}
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up, not used by priamCassandra currently
@@ -149,26 +150,26 @@ func Start(listener chan gotocol.Message) {
 						// forward the message to the right place, but don't change the ResponseChan or context parent
 						outmsg := gotocol.Message{gotocol.Put, msg.ResponseChan, time.Now(), msg.Ctx.AddSpan(), msg.Intention}
 						flow.AnnotateSend(outmsg, name)
-						outmsg.GoSend(microservices[ring[i].name])
+						outmsg.GoSend(microservices.Named(ring[i].name))
 					}
 					// duplicate the request on to priamCassandra nodes in each zone and one in each region
 					for _, z := range names.OtherZones(name, archaius.Conf.ZoneNames) {
 						// replicate request
-						for n, c := range microservices {
+						for _, n := range microservices.Names() {
 							if names.Region(n) == names.Region(name) && names.Zone(n) == z {
 								outmsg := gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
 								flow.AnnotateSend(outmsg, name)
-								outmsg.GoSend(c)
+								outmsg.GoSend(microservices.Named(n))
 								break // only need to send it to one node in each zone
 							}
 						}
 					}
 					for _, r := range names.OtherRegions(name, archaius.Conf.RegionNames[0:archaius.Conf.Regions]) {
-						for n, c := range microservices {
+						for _, n := range microservices.Names() {
 							if names.Region(n) == r {
 								outmsg := gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
 								flow.AnnotateSend(outmsg, name)
-								outmsg.GoSend(c)
+								outmsg.GoSend(microservices.Named(n))
 								break // only need to send it to one node in each region
 							}
 						}
@@ -188,30 +189,29 @@ func Start(listener chan gotocol.Message) {
 						// forward the message to the right place, but don't change the ResponseChan
 						outmsg := gotocol.Message{gotocol.Replicate, msg.ResponseChan, time.Now(), msg.Ctx, msg.Intention}
 						flow.AnnotateSend(outmsg, name)
-						outmsg.GoSend(microservices[ring[i].name])
+						outmsg.GoSend(microservices.Named(ring[i].name))
 					}
 				}
 				// name looks like: netflixoss.us-east-1.zoneC.cassTurtle.priamCassandra.cassTurtle11
 				myregion := names.Region(name)
 				//log.Printf("%v: %v\n", name, myregion)
 				// find if this was a cross region Replicate
-				for in, c := range microservices {
-					// find the name matching incoming request channel to see where its coming from
-					if c == msg.ResponseChan && myregion != names.Region(in) {
-						// Replicate from out of region needs to be Replicated once only to other zones in this Region
-						for _, z := range names.OtherZones(name, archaius.Conf.ZoneNames) {
-							// replicate request
-							for n, c := range microservices {
-								if names.Region(n) == myregion && names.Zone(n) == z {
-									outmsg := gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
-									flow.AnnotateSend(outmsg, name)
-									outmsg.GoSend(c)
-									break // only need to send it to one node in each zone
-								}
+				// find the name matching incoming request channel to see where its coming from
+				in := microservices.NameChan(msg.ResponseChan)
+				if in != "" && myregion != names.Region(in) {
+					// Replicate from out of region needs to be Replicated once only to other zones in this Region
+					for _, z := range names.OtherZones(name, archaius.Conf.ZoneNames) {
+						// replicate request
+						for _, n := range microservices.Names() {
+							if names.Region(n) == myregion && names.Zone(n) == z {
+								outmsg := gotocol.Message{gotocol.Replicate, listener, time.Now(), msg.Ctx.NewParent(), msg.Intention}
+								flow.AnnotateSend(outmsg, name)
+								outmsg.GoSend(microservices.Named(n))
+								break // only need to send it to one node in each zone
 							}
 						}
-						break
 					}
+					break
 				}
 			case gotocol.Goodbye:
 				gotocol.Message{gotocol.Goodbye, nil, time.Now(), gotocol.NilContext, name}.GoSend(parent)
