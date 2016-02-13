@@ -38,19 +38,19 @@ func Start(listener chan gotocol.Message) {
 			case gotocol.Inform:
 				eureka[msg.Intention] = handlers.Inform(msg, name, listener)
 			case gotocol.NameDrop:
-				handlers.NameDrop(&dependencies, &microservices, msg, name, listener, eureka, true) // true to setup cross region routing
+				handlers.NameDrop(&dependencies, microservices, msg, name, listener, eureka, true) // true to setup cross region routing
 			case gotocol.Forget:
 				// forget a buddy
-				handlers.Forget(&dependencies, &microservices, msg)
+				handlers.Forget(&dependencies, microservices, msg)
 			case gotocol.GetRequest:
 				// route the request on to microservices
-				handlers.GetRequest(msg, name, listener, &requestor, &microservices)
+				handlers.GetRequest(msg, name, listener, &requestor, microservices)
 			case gotocol.GetResponse:
 				// return path from a request, send payload back up using saved span context - server send
 				handlers.GetResponse(msg, name, listener, &requestor)
 			case gotocol.Put:
 				// route the request on to a random dependency
-				handlers.Put(msg, name, listener, &requestor, &microservices)
+				handlers.Put(msg, name, listener, &requestor, microservices)
 			case gotocol.Goodbye:
 				for _, ch := range eureka { // tell name service I'm not going to be here
 					ch <- gotocol.Message{gotocol.Delete, nil, time.Now(), gotocol.NilContext, name}

@@ -114,10 +114,10 @@ func Start(listener chan gotocol.Message) {
 			case gotocol.Inform:
 				eureka[msg.Intention] = handlers.Inform(msg, name, listener)
 			case gotocol.NameDrop: // cross zone = true
-				handlers.NameDrop(&dependencies, &microservices, msg, name, listener, eureka, true)
+				handlers.NameDrop(&dependencies, microservices, msg, name, listener, eureka, true)
 			case gotocol.Forget:
 				// forget a buddy
-				handlers.Forget(&dependencies, &microservices, msg)
+				handlers.Forget(&dependencies, microservices, msg)
 			case gotocol.Chat:
 				// Gossip setup notification of hash values for nodes, cass1:123,cass2:456
 				ring = RingConfig(msg.Intention)

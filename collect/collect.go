@@ -94,10 +94,10 @@ func SaveAllGuesses(name string) {
 			Data:            data,
 		})
 		row++
-		if row > len(seq) {
+		if row >= len(seq) {
 			row = 1
 			col++
-			if col > len(seq) {
+			if col >= len(seq) {
 				break
 			}
 		}

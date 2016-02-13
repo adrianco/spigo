@@ -14,6 +14,7 @@ import (
 	"github.com/adrianco/spigo/karyon"         // business logic microservice
 	"github.com/adrianco/spigo/monolith"       // business logic monolith
 	"github.com/adrianco/spigo/names"          // manage service name hierarchy
+	. "github.com/adrianco/spigo/packagenames" // name definitions
 	"github.com/adrianco/spigo/pirate"         // random end user network
 	"github.com/adrianco/spigo/priamCassandra" // Priam managed Cassandra cluster
 	"github.com/adrianco/spigo/staash"         // storage tier as a service http - data access layer
@@ -23,26 +24,11 @@ import (
 	"time"
 )
 
-const (
-	EurekaPkg         = "eureka"
-	PiratePkg         = "pirate"
-	ElbPkg            = "elb"
-	DenominatorPkg    = "denominator"
-	ZuulPkg           = "zuul"
-	KaryonPkg         = "karyon"
-	MonolithPkg       = "monolith"
-	StaashPkg         = "staash"
-	PriamCassandraPkg = "priamCassandra"
-	StorePkg          = "store"
-	RiakPkg           = "riak"
-)
-
 var (
 	listener   chan gotocol.Message            // asgard listener
 	eurekachan map[string]chan gotocol.Message // eureka for each region and zone
 	// noodles channels mapped by microservice name connects netflixoss to everyone
-	noodles  map[string]chan gotocol.Message
-	Packages = []string{EurekaPkg, PiratePkg, ElbPkg, DenominatorPkg, ZuulPkg, KaryonPkg, MonolithPkg, StaashPkg, PriamCassandraPkg, StorePkg, RiakPkg}
+	noodles map[string]chan gotocol.Message
 )
 
 // Create the maps of channels
@@ -170,25 +156,29 @@ func StartNode(name string, dependencies ...string) {
 	}
 	// start the service and tell it it's name
 	switch names.Package(name) {
-	case "pirate":
+	case PiratePkg:
 		go pirate.Start(noodles[name])
-	case "elb":
+	case ElbPkg:
 		go elb.Start(noodles[name])
-	case "denominator":
+	case DenominatorPkg:
 		go denominator.Start(noodles[name])
-	case "zuul":
+	case ZuulPkg:
 		go zuul.Start(noodles[name])
-	case "karyon":
+	case KaryonPkg:
 		go karyon.Start(noodles[name])
-	case "monolith":
+	case MonolithPkg:
 		go monolith.Start(noodles[name])
-	case "staash":
+	case StaashPkg:
 		go staash.Start(noodles[name])
-	case "riak":
+	case RiakPkg:
 		fallthrough // fake Riak using priamCassandra
-	case "priamCassandra":
+	case PriamCassandraPkg:
 		go priamCassandra.Start(noodles[name])
-	case "store":
+	case CachePkg:
+		fallthrough // fake memcache using store
+	case VolumePkg:
+		fallthrough // fake disk volume using store
+	case StorePkg:
 		go store.Start(noodles[name])
 	default:
 		log.Fatal("asgard: unknown package: " + names.Package(name))

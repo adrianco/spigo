@@ -4,8 +4,9 @@
 package migration
 
 import (
-	"github.com/adrianco/spigo/archaius" // global configuration
-	"github.com/adrianco/spigo/asgard"   // tools to create an architecture
+	"github.com/adrianco/spigo/archaius"       // global configuration
+	"github.com/adrianco/spigo/asgard"         // tools to create an architecture
+	. "github.com/adrianco/spigo/packagenames" // name definitions
 	"log"
 )
 
@@ -52,101 +53,101 @@ func Start() {
 	case 0: // basic LAMP
 		asgard.CreateChannels()
 		asgard.CreateEureka() // service registries for each zone
-		asgard.Create(sname, asgard.StorePkg, regions, mysqlcount, sname)
-		asgard.Create(pname, asgard.MonolithPkg, regions, phpcount, sname)
-		asgard.Create(elbname, asgard.ElbPkg, regions, 0, pname)
+		asgard.Create(sname, StorePkg, regions, mysqlcount, sname)
+		asgard.Create(pname, MonolithPkg, regions, phpcount, sname)
+		asgard.Create(elbname, ElbPkg, regions, 0, pname)
 	case 1: // basic LAMP with memcache
 		asgard.CreateChannels()
 		asgard.CreateEureka() // service registries for each zone
-		asgard.Create(sname, asgard.StorePkg, regions, mysqlcount, sname)
-		asgard.Create(mname, asgard.StorePkg, regions, mcount)
-		asgard.Create(pname, asgard.MonolithPkg, regions, phpcount, sname, mname)
-		asgard.Create(elbname, asgard.ElbPkg, regions, 0, pname)
+		asgard.Create(sname, StorePkg, regions, mysqlcount, sname)
+		asgard.Create(mname, StorePkg, regions, mcount)
+		asgard.Create(pname, MonolithPkg, regions, phpcount, sname, mname)
+		asgard.Create(elbname, ElbPkg, regions, 0, pname)
 	case 2: // LAMP with zuul and memcache
 		asgard.CreateChannels()
 		asgard.CreateEureka() // service registries for each zone
-		asgard.Create(sname, asgard.StorePkg, regions, mysqlcount, sname)
-		asgard.Create(mname, asgard.StorePkg, regions, mcount)
-		asgard.Create(pname, asgard.MonolithPkg, regions, phpcount, sname, mname)
-		asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, pname)
-		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
+		asgard.Create(sname, StorePkg, regions, mysqlcount, sname)
+		asgard.Create(mname, StorePkg, regions, mcount)
+		asgard.Create(pname, MonolithPkg, regions, phpcount, sname, mname)
+		asgard.Create(zuname, ZuulPkg, regions, zuulcount, pname)
+		asgard.Create(elbname, ElbPkg, regions, 0, zuname)
 	case 3: // LAMP with zuul and staash and evcache
 		asgard.CreateChannels()
 		asgard.CreateEureka() // service registries for each zone
-		asgard.Create(sname, asgard.StorePkg, regions, mysqlcount, sname)
-		asgard.Create(mname, asgard.StorePkg, regions, mcount)
-		asgard.Create(tname, asgard.StaashPkg, regions, staashcount, sname, mname)
-		asgard.Create(pname, asgard.KaryonPkg, regions, phpcount, tname)
-		asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, pname)
-		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
+		asgard.Create(sname, StorePkg, regions, mysqlcount, sname)
+		asgard.Create(mname, StorePkg, regions, mcount)
+		asgard.Create(tname, StaashPkg, regions, staashcount, sname, mname)
+		asgard.Create(pname, KaryonPkg, regions, phpcount, tname)
+		asgard.Create(zuname, ZuulPkg, regions, zuulcount, pname)
+		asgard.Create(elbname, ElbPkg, regions, 0, zuname)
 	case 4: // added node microservice
 		asgard.CreateChannels()
 		asgard.CreateEureka() // service registries for each zone
-		asgard.Create(sname, asgard.StorePkg, regions, mysqlcount, sname)
-		asgard.Create(mname, asgard.StorePkg, regions, mcount)
-		asgard.Create(tname, asgard.StaashPkg, regions, staashcount, sname, mname, cname)
-		asgard.Create(pname, asgard.KaryonPkg, regions, phpcount, tname)
-		asgard.Create(nname, asgard.KaryonPkg, regions, nodecount, tname)
-		asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, pname, nname)
-		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
+		asgard.Create(sname, StorePkg, regions, mysqlcount, sname)
+		asgard.Create(mname, StorePkg, regions, mcount)
+		asgard.Create(tname, StaashPkg, regions, staashcount, sname, mname, cname)
+		asgard.Create(pname, KaryonPkg, regions, phpcount, tname)
+		asgard.Create(nname, KaryonPkg, regions, nodecount, tname)
+		asgard.Create(zuname, ZuulPkg, regions, zuulcount, pname, nname)
+		asgard.Create(elbname, ElbPkg, regions, 0, zuname)
 	case 5: // added cassandra alongside mysql
 		asgard.CreateChannels()
 		asgard.CreateEureka() // service registries for each zone
-		asgard.Create(cname, asgard.PriamCassandraPkg, regions, priamCassandracount, cname)
-		asgard.Create(sname, asgard.StorePkg, regions, mysqlcount, sname)
-		asgard.Create(mname, asgard.StorePkg, regions, mcount)
-		asgard.Create(tname, asgard.StaashPkg, regions, staashcount, sname, mname, cname)
-		asgard.Create(pname, asgard.KaryonPkg, regions, phpcount, tname)
-		asgard.Create(nname, asgard.KaryonPkg, regions, nodecount, tname)
-		asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, pname, nname)
-		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
+		asgard.Create(cname, PriamCassandraPkg, regions, priamCassandracount, cname)
+		asgard.Create(sname, StorePkg, regions, mysqlcount, sname)
+		asgard.Create(mname, StorePkg, regions, mcount)
+		asgard.Create(tname, StaashPkg, regions, staashcount, sname, mname, cname)
+		asgard.Create(pname, KaryonPkg, regions, phpcount, tname)
+		asgard.Create(nname, KaryonPkg, regions, nodecount, tname)
+		asgard.Create(zuname, ZuulPkg, regions, zuulcount, pname, nname)
+		asgard.Create(elbname, ElbPkg, regions, 0, zuname)
 	case 6: // removed mysql so that multi-region will work properly
 		asgard.CreateChannels()
 		asgard.CreateEureka() // service registries for each zone
-		asgard.Create(cname, asgard.PriamCassandraPkg, regions, priamCassandracount, cname)
-		asgard.Create(mname, asgard.StorePkg, regions, mcount)
-		asgard.Create(tname, asgard.StaashPkg, regions, staashcount, mname, cname)
-		asgard.Create(pname, asgard.KaryonPkg, regions, phpcount, tname)
-		asgard.Create(nname, asgard.KaryonPkg, regions, nodecount, tname)
-		asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, pname, nname)
-		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
+		asgard.Create(cname, PriamCassandraPkg, regions, priamCassandracount, cname)
+		asgard.Create(mname, StorePkg, regions, mcount)
+		asgard.Create(tname, StaashPkg, regions, staashcount, mname, cname)
+		asgard.Create(pname, KaryonPkg, regions, phpcount, tname)
+		asgard.Create(nname, KaryonPkg, regions, nodecount, tname)
+		asgard.Create(zuname, ZuulPkg, regions, zuulcount, pname, nname)
+		asgard.Create(elbname, ElbPkg, regions, 0, zuname)
 	case 7: // set two regions with disconnected priamCassandra
 		regions = 2
 		archaius.Conf.Regions = regions
 		asgard.CreateChannels()
 		asgard.CreateEureka() // service registries for each zone
-		asgard.Create(cname, asgard.PriamCassandraPkg, regions, priamCassandracount, cname)
-		asgard.Create(mname, asgard.StorePkg, regions, mcount)
-		asgard.Create(tname, asgard.StaashPkg, regions, staashcount, mname, cname)
-		asgard.Create(pname, asgard.KaryonPkg, regions, phpcount, tname)
-		asgard.Create(nname, asgard.KaryonPkg, regions, nodecount, tname)
-		asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, pname, nname)
-		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
+		asgard.Create(cname, PriamCassandraPkg, regions, priamCassandracount, cname)
+		asgard.Create(mname, StorePkg, regions, mcount)
+		asgard.Create(tname, StaashPkg, regions, staashcount, mname, cname)
+		asgard.Create(pname, KaryonPkg, regions, phpcount, tname)
+		asgard.Create(nname, KaryonPkg, regions, nodecount, tname)
+		asgard.Create(zuname, ZuulPkg, regions, zuulcount, pname, nname)
+		asgard.Create(elbname, ElbPkg, regions, 0, zuname)
 	case 8: // set two regions with connected priamCassandra
 		regions = 2
 		archaius.Conf.Regions = regions
 		asgard.CreateChannels()
 		asgard.CreateEureka() // service registries for each zone
-		asgard.Create(cname, asgard.PriamCassandraPkg, regions, priamCassandracount, "eureka", cname)
-		asgard.Create(mname, asgard.StorePkg, regions, mcount)
-		asgard.Create(tname, asgard.StaashPkg, regions, staashcount, mname, cname)
-		asgard.Create(pname, asgard.KaryonPkg, regions, phpcount, tname)
-		asgard.Create(nname, asgard.KaryonPkg, regions, nodecount, tname)
-		asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, pname, nname)
-		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
+		asgard.Create(cname, PriamCassandraPkg, regions, priamCassandracount, "eureka", cname)
+		asgard.Create(mname, StorePkg, regions, mcount)
+		asgard.Create(tname, StaashPkg, regions, staashcount, mname, cname)
+		asgard.Create(pname, KaryonPkg, regions, phpcount, tname)
+		asgard.Create(nname, KaryonPkg, regions, nodecount, tname)
+		asgard.Create(zuname, ZuulPkg, regions, zuulcount, pname, nname)
+		asgard.Create(elbname, ElbPkg, regions, 0, zuname)
 	case 9: // set three regions with disconnected priamCassandra
 		regions = 3
 		archaius.Conf.Regions = regions
 		asgard.CreateChannels()
 		asgard.CreateEureka() // service registries for each zone
-		asgard.Create(cname, asgard.PriamCassandraPkg, regions, priamCassandracount, "eureka", cname)
-		asgard.Create(mname, asgard.StorePkg, regions, mcount)
-		asgard.Create(tname, asgard.StaashPkg, regions, staashcount, mname, cname)
-		asgard.Create(pname, asgard.KaryonPkg, regions, phpcount, tname)
-		asgard.Create(nname, asgard.KaryonPkg, regions, nodecount, tname)
-		asgard.Create(zuname, asgard.ZuulPkg, regions, zuulcount, pname, nname)
-		asgard.Create(elbname, asgard.ElbPkg, regions, 0, zuname)
+		asgard.Create(cname, PriamCassandraPkg, regions, priamCassandracount, "eureka", cname)
+		asgard.Create(mname, StorePkg, regions, mcount)
+		asgard.Create(tname, StaashPkg, regions, staashcount, mname, cname)
+		asgard.Create(pname, KaryonPkg, regions, phpcount, tname)
+		asgard.Create(nname, KaryonPkg, regions, nodecount, tname)
+		asgard.Create(zuname, ZuulPkg, regions, zuulcount, pname, nname)
+		asgard.Create(elbname, ElbPkg, regions, 0, zuname)
 	}
-	dnsname := asgard.Create(dns, asgard.DenominatorPkg, 0, 0, elbname)
+	dnsname := asgard.Create(dns, DenominatorPkg, 0, 0, elbname)
 	asgard.Run(dnsname, "")
 }

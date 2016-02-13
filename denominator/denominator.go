@@ -50,10 +50,10 @@ func Start(listener chan gotocol.Message) {
 			case gotocol.Inform:
 				eureka[msg.Intention] = handlers.Inform(msg, name, listener)
 			case gotocol.NameDrop:
-				handlers.NameDrop(&dependencies, &microservices, msg, name, listener, eureka, true)
+				handlers.NameDrop(&dependencies, microservices, msg, name, listener, eureka, true)
 			case gotocol.Forget:
 				// forget a buddy
-				handlers.Forget(&dependencies, &microservices, msg)
+				handlers.Forget(&dependencies, microservices, msg)
 			case gotocol.Chat:
 				// setup the ticker to run at the specified rate
 				d, e := time.ParseDuration(msg.Intention)

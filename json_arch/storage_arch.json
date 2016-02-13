@@ -5,17 +5,17 @@
     "victim": "",
     "services": [
         {
-            "name": "volume",
+            "name": "disk",
             "count": 1,
             "dependencies": [],
-            "package": "store",
+            "package": "volume",
             "regions": 1
         },
         {
             "name": "mysql",
             "count": 1,
             "dependencies": [
-	        "volume"
+	        "disk"
 	    ],
             "package": "staash",
             "regions": 1
@@ -24,7 +24,7 @@
             "name": "memcache",
             "count": 1,
             "dependencies": [],
-            "package": "store",
+            "package": "cache",
             "regions": 1
         },
         {

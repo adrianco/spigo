@@ -14,11 +14,17 @@ type Router struct {
 }
 
 // Make a new Router with map initialized
-func MakeRouter() Router {
-	var r Router
+func MakeRouter() *Router {
+	var r *Router
+	r = new(Router)
 	r.routes = make(map[string]chan gotocol.Message)
 	r.updated = make(map[string]time.Time)
 	return r
+}
+
+// Size of routing table
+func (r *Router) Len() int {
+	return len(r.routes)
 }
 
 // Add an entry to the routing table
@@ -62,7 +68,7 @@ func (r *Router) All(p string) *Router {
 			packroutes.Add(n, c, t)
 		}
 	}
-	return &packroutes
+	return packroutes
 }
 
 // Pick a random matching package and return that channel from the routing table

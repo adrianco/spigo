@@ -42,10 +42,10 @@ func Start(listener chan gotocol.Message) {
 			case gotocol.Inform:
 				eureka[msg.Intention] = handlers.Inform(msg, name, listener)
 			case gotocol.NameDrop: // cross zone = true
-				handlers.NameDrop(&dependencies, &microservices, msg, name, listener, eureka, true)
+				handlers.NameDrop(&dependencies, microservices, msg, name, listener, eureka, true)
 			case gotocol.Forget:
 				// forget a buddy
-				handlers.Forget(&dependencies, &microservices, msg)
+				handlers.Forget(&dependencies, microservices, msg)
 			case gotocol.GetRequest:
 				// return any stored value for this key
 				outmsg := gotocol.Message{gotocol.GetResponse, listener, time.Now(), msg.Ctx, store[msg.Intention]}

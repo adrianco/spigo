@@ -41,7 +41,7 @@ func TestRouter(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		r.Add(names.Make("test", "us", "a", "s", "staash", i), c, now)
 	}
-	fmt.Println(r)
+	fmt.Println(r.Len(), r)
 	for i := 0; i < 10; i++ {
 		if r.Pick("staash") != c {
 			t.Errorf("Pick failed to get the right channel back for %v", n)

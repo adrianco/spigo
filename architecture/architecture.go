@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/adrianco/spigo/archaius" // global configuration
 	"github.com/adrianco/spigo/asgard"   // tools to create an architecture
+	"github.com/adrianco/spigo/packagenames" // name definitions
 	"io/ioutil"
 	"log"
 	"os"
@@ -72,10 +73,10 @@ func ReadArch(arch string) *archV0r1 {
 	a := new(archV0r1)
 	e := json.Unmarshal(data, a)
 	if e == nil {
-		names := make(map[string]bool, 10)
-		names[asgard.EurekaPkg] = true // special case to allow cross region references
-		packs := make(map[string]bool, 10)
-		for _, p := range asgard.Packages {
+		names := make(map[string]bool)
+		names[packagenames.EurekaPkg] = true // special case to allow cross region references
+		packs := make(map[string]bool)
+		for _, p := range packagenames.Packages {
 			packs[p] = true
 		}
 		// map all the service names and check packages exist
