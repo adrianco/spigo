@@ -6,14 +6,17 @@ import (
 	"fmt"
 	"github.com/adrianco/spigo/archaius" // global configuration
 	"github.com/adrianco/spigo/architecture"
+	"github.com/cloudfoundry-incubator/candiedyaml"
 	"gopkg.in/yaml.v2"
+	"log"
+	"os"
 	"strings"
 	"testing"
 	"time"
 )
 
 func try(t string) {
-	var c ComposeYaml
+	var c ComposeServices
 	err := yaml.Unmarshal([]byte(t), &c)
 	if err != nil {
 		fmt.Println(err)
@@ -77,5 +80,114 @@ db:
 	try(testyaml)
 	c := ReadCompose("compose_yaml/test.yml")
 	fmt.Println(c)
-	ComposeArch("test", c)
+
+	file, err := os.Open("compose_yaml/testV2.yml")
+	if err != nil {
+		println("File does not exist:", err.Error())
+		os.Exit(1)
+	}
+	defer file.Close()
+	document := new(interface{})
+	decoder := candiedyaml.NewDecoder(file)
+	err = decoder.Decode(document)
+	if err != nil {
+		log.Fatal(err)
+	}
+	println("parsed yml:")
+	cs := make(ComposeServices)
+	switch comp := (*document).(type) {
+	case map[interface{}]interface{}:
+		for label, section := range comp {
+			switch label {
+			case "version":
+				switch version := section.(type) {
+				case string:
+					fmt.Printf("Got version %v\n", version)
+				default:
+					fmt.Printf("Version not a string %v\n", section)
+				}
+			case "services":
+				//fmt.Printf("Got services %v\n", section)
+				switch services := section.(type) {
+				case map[interface{}]interface{}:
+					for name, options := range services {
+						switch optionmap := options.(type) {
+						case map[interface{}]interface{}:
+							fmt.Printf("Service %v:\n", name)
+							ca := new(ComposeAttributes)
+							for option, values := range optionmap {
+								ok := true
+								switch value := values.(type) {
+								case []interface{}:
+									fmt.Printf("    slice %v:%v\n", option, value)
+									sv := make([]string, len(value))
+									for i, v := range value {
+										sv[i], ok = v.(string)
+										if !ok {
+											fmt.Printf("not ok %v:%v\n", option, value)
+										}
+									}
+									switch option {
+									case "volumes":
+										ca.Volumes = sv
+									case "ports":
+										ca.Ports = sv
+									case "links":
+										ca.Links = sv
+									case "networks":
+										ca.Networks = sv
+									default:
+										fmt.Printf("option ignored %v:%v\n", option, value)
+									}
+								case string:
+									fmt.Printf("    string %v:%v\n", option, value)
+									switch option {
+									case "build":
+										ca.Build = value
+									case "image":
+										ca.Image = value
+									default:
+										fmt.Printf("option ignored %v:%v\n", option, value)
+									}
+								default:
+									fmt.Printf("    no match %v:%v\n", option, value)
+								}
+
+							}
+							cs[name.(string)] = *ca
+						default:
+							fmt.Printf("Couldn't find services in %v", services)
+						}
+					}
+				default:
+					fmt.Println("Couldn't find services")
+				}
+				for k, v := range cs {
+					fmt.Printf("Service %v:%v\n", k, v)
+				}
+			case "networks":
+				switch networks := section.(type) {
+				case map[interface{}]interface{}:
+					for name, options := range networks {
+						fmt.Printf("network %v:%v\n", name, options)
+					}
+				}
+			case "volumes":
+				switch volumes := section.(type) {
+				case map[interface{}]interface{}:
+					for name, options := range volumes {
+						fmt.Printf("volume %v:%v\n", name, options)
+					}
+				}
+			default:
+				fmt.Printf("No matching section: %v\n", label)
+			}
+		}
+	default:
+		fmt.Println("Couldn't find sections in compose v2 file")
+	}
+
+	//c2 := ReadCompose("compose_yaml/testV2.yml")
+	//fmt.Println(c2)
+	//ComposeArch("test", c)
 }
