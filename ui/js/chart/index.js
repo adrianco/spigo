@@ -17,9 +17,9 @@ import removableLinksFactory from 'lib/d3-removable-links';
 import linkExpanderFactory from 'lib/d3-link-expander';
 import pinNodes from 'lib/d3-pin-nodes';
 
-d3 = fisheye(d3);
+const fisheyeD3 = fisheye(d3);
 
-const collide = collideFactory(d3);
+const collide = collideFactory(fisheyeD3);
 
 const HEADER_HEIGHT = 80;
 
@@ -107,7 +107,7 @@ export default React.createClass({
 			.attr('class', 'node')
 			.attr('r', (d) => Math.sqrt(d.size) * 2.6)
 			.style('fill', pickColor)
-			.call(pinNodes(d3, this.force, bind(this._onTick, this)));
+			.call(pinNodes(fisheyeD3, this.force, bind(this._onTick, this)));
 
 		const {mouseover, mouseout} = connectedNodesFactory(this.nodes, this.links);
 		const removableNodes = removableNodesFactory(this.nodes, this.links);
@@ -134,51 +134,53 @@ export default React.createClass({
 	componentDidMount () {
 		const {arch, step} = this.props;
 
-		this.svg = d3.select(this.getDOMNode());
-		this.force = d3.layout.force();
-		this.fisheye = d3.fisheye
+		this.svg = fisheyeD3.select(this.getDOMNode());
+		this.force = fisheyeD3.layout.force();
+		this.fisheye = fisheyeD3.fisheye
 			.circular()
 			.radius(230)
 			.distortion(2);
 
-		this.tip = tooltip(d3)()
+		this.tip = tooltip(fisheyeD3)()
 			.attr('class', 'd3-tip')
 			.offset([-10, 0])
 			.html((d) => d[0].node);
 
 		this.svg.call(this.tip);
 
-		this.svg.on('mousemove', () => {
-			this.force.stop();
-			this.fisheye.focus(d3.mouse(this.svg[0][0]));
+		setTimeout(() => {
+			this.svg.on('mousemove', () => {
+				this.force.stop();
+				this.fisheye.focus(fisheyeD3.mouse(this.svg[0][0]));
 
-			this.nodes
-				.each(d => { d.fisheye = this.fisheye(d); })
-				.attr('cx', d => d.fisheye.x)
-				.attr('cy', d => d.fisheye.y)
-				.attr('r', d => Math.sqrt(d.size) * 3);
+				this.nodes
+					.each(d => { d.fisheye = this.fisheye(d); })
+					.attr('cx', d => d.fisheye.x)
+					.attr('cy', d => d.fisheye.y)
+					.attr('r', d => Math.sqrt(d.size) * 3);
 
-			this.links
-				.attr('x1', d => d.source.fisheye.x)
-				.attr('y1', d => d.source.fisheye.y)
-				.attr('x2', d => d.target.fisheye.x)
-				.attr('y2', d => d.target.fisheye.y);
-		});
+				this.links
+					.attr('x1', d => d.source.fisheye.x)
+					.attr('y1', d => d.source.fisheye.y)
+					.attr('x2', d => d.target.fisheye.x)
+					.attr('y2', d => d.target.fisheye.y);
+			});
 
-		this.svg.on('mouseout', () => {
-			this.force.resume();
+			this.svg.on('mouseout', () => {
+				this.force.resume();
 
-			this.links
-				.attr('x1', d => d.source.x)
-				.attr('y1', d => d.source.y)
-				.attr('x2', d => d.target.x)
-				.attr('y2', d => d.target.y);
+				this.links
+					.attr('x1', d => d.source.x)
+					.attr('y1', d => d.source.y)
+					.attr('x2', d => d.target.x)
+					.attr('y2', d => d.target.y);
 
-			this.nodes
-				.attr('cx', (d) => d.x)
-				.attr('cy', (d) => d.y)
-				.attr('r', d => Math.sqrt(d.size) * 2.6);
-		});
+				this.nodes
+					.attr('cx', (d) => d.x)
+					.attr('cy', (d) => d.y)
+					.attr('r', d => Math.sqrt(d.size) * 2.6);
+			});
+		}, 2000)
 
 		ChartStore.addChangeListener(bind(this.updateChart), this);
 		ChartStore.fetch(arch, step);

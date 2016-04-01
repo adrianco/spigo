@@ -17,7 +17,7 @@ $ ./compose2arch -file compose.yaml > arch.json
 ```
 
 Recent UI changes include pinning nodes so graphs can be stretched out and deleting nodes and edges by double-clicking on them. To add new entries to the architecture menu, add a line to ui/js/toolbar/index.js
-[Run the netflixoss simulation in your browser](http://simianviz.divshot.io/netflixoss)
+[Run the netflixoss simulation in your browser](http://simianviz.surge.sh/netflixoss)
 
 For a local installation of spigo, with no network dependencies, you can start the service and browse localhost:8000 using:
 ```
@@ -110,7 +110,7 @@ $ spigo -a netflixoss -d 5 -j
 Migration from LAMP to NetflixOSS
 -----------
 The orchestration to create this now uses a eureka discovery service per zone and has been heavily refactored.
-[Run this simulation in your browser](http://simianviz.divshot.io/migration)
+[Run this simulation in your browser](http://simianviz.surge.sh/migration)
 
 Start with a monolithic LAMP stack
 ![Migration ](png/migration-1-1.png)
@@ -153,7 +153,7 @@ Extend to six regions, an interesting visualization challenge
 
 LAMP Stack Architecture
 -----------
-To create a starting point for architecture transitions, an AWS hosted LAMP stack is simulated. It has DNS feeding an ELB, then a horizontally scaled layer of PHP servers backed with a single memcached and a master slave pair of MySQL servers. The configuration is managed using a Eureka name service and logged by Edda. [Run this simulation in your browser](http://simianviz.divshot.io/lamp)
+To create a starting point for architecture transitions, an AWS hosted LAMP stack is simulated. It has DNS feeding an ELB, then a horizontally scaled layer of PHP servers backed with a single memcached and a master slave pair of MySQL servers. The configuration is managed using a Eureka name service and logged by Edda. [Run this simulation in your browser](http://simianviz.surge.sh/lamp)
 
 ![LAMP stack](png/lamp.png)
 
@@ -165,7 +165,7 @@ Each microservice is based on Karyon as the prototype to copy when creating a ne
 
 There is a more complex architecture defined in json_arch/netflix_arch.json, which has two separate DNS endpoints for www and api, and three cassandra clusters. It provides a more realistic challenge for visualization.
 
-[Run the netflixoss simulation in your browser](http://simianviz.divshot.io/netflixoss)
+[Run the netflixoss simulation in your browser](http://simianviz.surge.sh/netflixoss)
 
 ![Two Region NetflixOSS](png/netflixoss-w2-tooltip.png)
 
@@ -198,7 +198,7 @@ After seeding with two random friends GraphML rendered using yFiles
 After chatting and making new friends rendered using graphJSON and D3
 ![100 pirates after chatting](png/spigo-100-json.png)
 
-[Run this simulation in your browser](http://simianviz.divshot.io/fsm)
+[Run this simulation in your browser](http://simianviz.surge.sh/fsm)
 
 Spigo uses a common message protocol called Gotocol which contains a channel of the same type. This allows message listener endpoints to be passed around to dynamically create an arbitrary interconnection network.
 
@@ -273,4 +273,3 @@ sys	0m1.728s
 ```
 
 Up to about 200,000 pirates time is linear with count. Beyond that it gradually slows down as my laptop runs out of memory.
-

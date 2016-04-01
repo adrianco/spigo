@@ -1,9 +1,6 @@
-language: go
+language: node_js
+node_js:
+  - "4.2"
 script: cd ui && npm install && npm run build && cd ..
-deploy:
-  provider: divshot
-  environment:
-    master: production
-  skip_cleanup: true
-  api_key:
-    secure: P0cRcXCoqy/hnAiLfzfIQyo7bylMmb8hLhbxe29nTTCmUBtjfvDPzv9pZrlpeK0oVyTmpdgO675Bb6+jsn+s0u44LqvgbaOcJWhrBS87EQiLKwi1VdCdJwzO3CZoEDz5xUQ/yxbgdk5epZ7HrEQN3ZubNGLkaxy5YezBp7hhhXk=
+after_success:
+  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ] && cd ui && npm run deploy'

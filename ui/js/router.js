@@ -6,7 +6,18 @@ import SimianViz from 'simianviz';
 import FourOhFour from 'four-oh-four';
 import indexOf from 'lodash.indexof';
 
-const archs = ['fsm', 'migration', 'netflixoss', 'lamp'];
+const archs = [
+	'fsm',
+	'migration',
+	'netflixoss',
+	'lamp',
+	'container',
+	'aws_ac_ra_web',
+	'netflix',
+	'cassandra',
+	'yogi',
+	'riak',
+];
 
 export default Router.extend({
 	routes: {
@@ -20,7 +31,7 @@ export default Router.extend({
 	},
 
 	deepLink (arch, step) {
-		if (indexOf(archs, arch) < 0) return this.fourOhFour();
+		if (!~indexOf(archs, arch)) return this.fourOhFour();
 		React.render(<SimianViz arch={arch} step={step} />, document.body);
 	},
 
