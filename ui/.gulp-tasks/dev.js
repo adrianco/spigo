@@ -10,7 +10,7 @@ module.exports = function(gulp) {
 			connect.reload();
 		});
 
-		gulp.watch(config.js.src, ['bundle-app'], function() {
+		gulp.watch(config.js.src, ['lint', 'bundle-app'], function() {
 			connect.reload();
 		});
 

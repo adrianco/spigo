@@ -1,7 +1,7 @@
 'use strict';
 
 // config for Karma test runner for client tests
-const gulpConfig = rere('./gulp.config');
+const gulpConfig = require('./gulp.config');
 
 const files = [
 	'./js/**/*.js',

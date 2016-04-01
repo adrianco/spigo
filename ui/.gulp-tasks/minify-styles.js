@@ -4,7 +4,7 @@ var plumber = require('gulp-plumber');
 var rename = require('gulp-rename');
 var connect = require('gulp-connect');
 var notify = require('gulp-notify');
-var minifyCss = require('gulp-minify-css');
+var minifyCss = require('gulp-clean-css');
 var config = require('../gulp.config.js');
 
 module.exports = function(gulp) {
