@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  proxy:
+    build: ./proxy
+    ports:
+      - "8080:8080"
+    links:
+      - app
+    networks:
+      - front
+  app:
+    build: ./app
+    links:
+      - db
+    networks:
+      - front
+      - back
+  db:
+    image: postgres
+    networks:
+      - back
+
+networks:
+  front:
+  back:

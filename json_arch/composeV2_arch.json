@@ -1,1 +1,126 @@
-{"arch":"../compose/compose_yaml/testV2.yml","version":"arch-0.1","description":"compose yaml","args":"[compose2arch -file ../compose/compose_yaml/testV2.yml]","date":"2016-02-15T16:16:23.89643236-08:00","services":[{"name":"voting-app","machine":"machine","instance":"instance","container":"./voting-app/.","process":"process","package":"monolith","regions":1,"count":1,"dependencies":["redis","front-tier","back-tier"]},{"name":"www-voting-app","machine":"external","package":"denominator","count":0,"dependencies":["voting-app"]},{"name":"result-app","machine":"machine","instance":"instance","container":"./result-app/.","process":"process","package":"monolith","regions":1,"count":1,"dependencies":["db","front-tier","back-tier"]},{"name":"www-result-app","machine":"external","package":"denominator","count":0,"dependencies":["result-app"]},{"name":"worker","machine":"machine","instance":"instance","container":"./worker","process":"process","package":"monolith","regions":1,"count":1,"dependencies":["db","redis","back-tier"]},{"name":"redis","machine":"machine","instance":"instance","container":"redis","process":"process","package":"monolith","regions":1,"count":1,"dependencies":["back-tier"]},{"name":"db","machine":"machine","instance":"instance","container":"postgres:9.4","process":"process","package":"monolith","regions":1,"count":1,"dependencies":["back-tier"]},{"name":"front-tier","machine":"network","package":"elb","regions":1,"count":0,"dependencies":null},{"name":"back-tier","machine":"network","package":"elb","regions":1,"count":0,"dependencies":null}]}
+{
+    "arch": "composeTestResult",
+    "args": "[/var/folders/vy/jc5bpnm10xb3cdwmf9skr2rjgt5hnf/T/go-build980515732/github.com/adrianco/spigo/compose/_test/compose.test]",
+    "date": "2016-04-09T12:43:57.950415642-07:00",
+    "description": "compose yaml",
+    "services": [
+        {
+            "container": "./result-app/.",
+            "count": 3,
+            "dependencies": [
+                "db"
+            ],
+            "instance": "instance",
+            "machine": "machine",
+            "name": "result-app",
+            "package": "monolith",
+            "process": "process",
+            "regions": 1
+        },
+        {
+            "count": 0,
+            "dependencies": [
+                "result-app"
+            ],
+            "machine": "external",
+            "name": "www-result-app",
+            "package": "denominator"
+        },
+        {
+            "container": "./worker",
+            "count": 3,
+            "dependencies": [
+                "db",
+                "redis"
+            ],
+            "instance": "instance",
+            "machine": "machine",
+            "name": "worker",
+            "package": "monolith",
+            "process": "process",
+            "regions": 1
+        },
+        {
+            "container": "redis",
+            "count": 1,
+            "dependencies": null,
+            "instance": "instance",
+            "machine": "machine",
+            "name": "redis",
+            "package": "store",
+            "process": "process",
+            "regions": 1
+        },
+        {
+            "container": "postgres:9.4",
+            "count": 1,
+            "dependencies": [
+                "db-data"
+            ],
+            "instance": "instance",
+            "machine": "machine",
+            "name": "db",
+            "package": "staash",
+            "process": "process",
+            "regions": 1
+        },
+        {
+            "container": "./voting-app/.",
+            "count": 3,
+            "dependencies": [
+                "redis"
+            ],
+            "instance": "instance",
+            "machine": "machine",
+            "name": "voting-app",
+            "package": "monolith",
+            "process": "process",
+            "regions": 1
+        },
+        {
+            "count": 0,
+            "dependencies": [
+                "voting-app"
+            ],
+            "machine": "external",
+            "name": "www-voting-app",
+            "package": "denominator"
+        },
+        {
+            "count": 0,
+            "dependencies": [
+                "result-app",
+                "voting-app"
+            ],
+            "machine": "network",
+            "name": "front-tier",
+            "package": "elb",
+            "regions": 1
+        },
+        {
+            "count": 0,
+            "dependencies": [
+                "result-app",
+                "worker",
+                "redis",
+                "db",
+                "voting-app"
+            ],
+            "machine": "network",
+            "name": "back-tier",
+            "package": "elb",
+            "regions": 1
+        },
+        {
+            "count": 0,
+            "dependencies": [
+                "db"
+            ],
+            "machine": "volume",
+            "name": "db-data",
+            "package": "store",
+            "regions": 1
+        }
+    ],
+    "version": "arch-0.1"
+}

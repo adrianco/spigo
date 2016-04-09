@@ -146,3 +146,13 @@ func Write(a *archV0r1) {
 		os.Stdout.Write(b)
 	}
 }
+
+func WriteFile(a *archV0r1, fn string) {
+	dfile, err := os.Create(fn + ".json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	sj, _ := json.Marshal(a)
+	dfile.WriteString(fmt.Sprintf("%v", string(sj)))
+	dfile.Close()
+}

@@ -77,10 +77,14 @@ db:
 	//archaius.Conf.Collect = false
 	//archaius.Conf.StopStep = 0
 	archaius.Conf.EurekaPoll = "1s"
+	fmt.Println("\nTesting Parser from Docker Compose V1 string")
 	try(testyaml)
+
+	fmt.Println("\nTesting file conversion from Docker Compose V1 compose_yaml/test.yml")
 	c := ReadCompose("compose_yaml/test.yml")
 	fmt.Println(c)
 
+	fmt.Println("\nTesting Docker Compose V2 format input from compose_yaml/testV2.yml")
 	file, err := os.Open("compose_yaml/testV2.yml")
 	if err != nil {
 		println("File does not exist:", err.Error())
@@ -88,6 +92,7 @@ db:
 	}
 	defer file.Close()
 	document := new(interface{})
+	// too hard to parse V2 yaml with decoder, so use candiedyaml to walk the structure
 	decoder := candiedyaml.NewDecoder(file)
 	err = decoder.Decode(document)
 	if err != nil {
@@ -187,7 +192,8 @@ db:
 		fmt.Println("Couldn't find sections in compose v2 file")
 	}
 
-	//c2 := ReadCompose("compose_yaml/testV2.yml")
-	//fmt.Println(c2)
-	//ComposeArch("test", c)
+	fmt.Println("\nTesting ReadComposeV2(compose_yaml/testV2.yml)")
+	c2 := ReadComposeV2("compose_yaml/testV2.yml")
+	fmt.Println(*c2)
+	ComposeArch("composeTestResult", c2)
 }
