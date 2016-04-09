@@ -8,20 +8,31 @@ import (
 	"github.com/adrianco/spigo/flow"
 	"github.com/adrianco/spigo/gotocol"
 	"github.com/adrianco/spigo/handlers"
+	"github.com/adrianco/spigo/names"
 	. "github.com/adrianco/spigo/packagenames"
 	"github.com/adrianco/spigo/ribbon"
 	"time"
 )
 
+// states for request resolution stored in gotocol.Routetype.State
+const (
+	newRequest = iota
+	cacheLookup
+	volumeLookup
+	cassandraLookup
+	storeLookup
+	staashLookup
+)
+
 // Start staash, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
-	microservices := ribbon.MakeRouter()               // outbound routes
-	var caches, stores, volumes, cass *ribbon.Router   // subsets of the router
-	dependencies := make(map[string]time.Time)         // dependent service names and time last updated
-	var parent chan gotocol.Message                    // remember how to talk back to creator
-	requestor := make(map[string]gotocol.Routetype)    // remember where requests came from when responding
-	var name string                                    // remember my name
-	eureka := make(map[string]chan gotocol.Message, 1) // service registry
+	microservices := ribbon.MakeRouter()                     // outbound routes
+	var caches, stores, volumes, cass, staash *ribbon.Router // subsets of the router
+	dependencies := make(map[string]time.Time)               // dependent service names and time last updated
+	var parent chan gotocol.Message                          // remember how to talk back to creator
+	requestor := make(map[string]gotocol.Routetype)          // remember where requests came from when responding
+	var name string                                          // remember my name
+	eureka := make(map[string]chan gotocol.Message, 1)       // service registry
 	hist := collect.NewHist("")
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
 	eurekaTicker := time.NewTicker(ep)
@@ -45,6 +56,7 @@ func Start(listener chan gotocol.Message) {
 				volumes = microservices.All(VolumePkg)
 				stores = microservices.All(StorePkg)
 				cass = microservices.All(PriamCassandraPkg)
+				staash = microservices.All(StaashPkg)
 			case gotocol.Forget:
 				// forget a buddy
 				handlers.Forget(&dependencies, microservices, msg)
@@ -52,37 +64,90 @@ func Start(listener chan gotocol.Message) {
 				volumes = microservices.All(VolumePkg)
 				stores = microservices.All(StorePkg)
 				cass = microservices.All(PriamCassandraPkg)
+				staash = microservices.All(StaashPkg)
 			case gotocol.GetRequest:
 				// route the request on to a cache first if configured
+				r := gotocol.PickRoute(requestor, msg)
 				if caches.Len() > 0 {
 					handlers.GetRequest(msg, name, listener, &requestor, caches)
+					r.State = cacheLookup
 				} else {
-					// route to any volumes next if configured
+					// route to any volumes if configured
 					if volumes.Len() > 0 {
 						handlers.GetRequest(msg, name, listener, &requestor, volumes)
+						r.State = volumeLookup
 					} else {
 						// route to any cassandra if configured
 						if cass.Len() > 0 {
 							handlers.GetRequest(msg, name, listener, &requestor, cass)
+							r.State = cassandraLookup
 						} else {
 							// route to stores if configured
 							if stores.Len() > 0 {
 								handlers.GetRequest(msg, name, listener, &requestor, stores)
+								r.State = storeLookup
+							} else {
+								// route to more staash layers if configured
+								if staash.Len() > 0 {
+									handlers.GetRequest(msg, name, listener, &requestor, staash)
+									r.State = staashLookup
+								}
 							}
 						}
 					}
 				}
 			case gotocol.GetResponse:
-				// return path from a request, send payload back up using saved span context - server send
-				handlers.GetResponse(msg, name, listener, &requestor)
+				// return path from a request, resend or send payload back up using saved span context - server send
+				r := gotocol.PickRoute(requestor, msg)
+				if msg.Intention != "" { // we got a value, so pass it back up
+					handlers.GetResponse(msg, name, listener, &requestor)
+				} else {
+					switch r.State {
+					case cacheLookup:
+						if volumes.Len() > 0 {
+							handlers.GetRequest(msg, name, listener, &requestor, volumes)
+							r.State = volumeLookup
+							break
+						}
+						fallthrough // no volumes so look for cassandra
+					case volumeLookup:
+						if cass.Len() > 0 {
+							handlers.GetRequest(msg, name, listener, &requestor, cass)
+							r.State = cassandraLookup
+							break
+						}
+						fallthrough // no cassandra so look for stores
+					case cassandraLookup:
+						if stores.Len() > 0 {
+							handlers.GetRequest(msg, name, listener, &requestor, stores)
+							r.State = storeLookup
+							break
+						}
+						fallthrough // no stores
+					case storeLookup:
+						if staash.Len() > 0 {
+							handlers.GetRequest(msg, name, listener, &requestor, staash)
+							r.State = staashLookup
+							break
+						}
+						fallthrough // no staash
+					case staashLookup:
+						// ran out of options to find anything so pass empty response back up
+						handlers.GetResponse(msg, name, listener, &requestor)
+					case newRequest:
+					default:
+					}
+				}
 			case gotocol.Put:
 				// duplicate the request to any cache, volumes, stores, and cassandra but only to one of each type
 				// storage class packages sideways Replicate if configured
 				// to get a lossy write, configure multiple stores that don't cross replicate
 				handlers.Put(msg, name, listener, &requestor, caches)
-				handlers.Put(msg, name, listener, &requestor, volumes)
-				handlers.Put(msg, name, listener, &requestor, stores)
 				handlers.Put(msg, name, listener, &requestor, cass)
+				handlers.Put(msg, name, listener, &requestor, staash)
+				handlers.Put(msg, name, listener, &requestor, stores)
+				msg.Intention = names.Instance(name) + "/" + msg.Intention // store to an instance specific volume namespace
+				handlers.Put(msg, name, listener, &requestor, volumes)
 			case gotocol.Goodbye:
 				for _, ch := range eureka { // tell name service I'm not going to be here
 					ch <- gotocol.Message{gotocol.Delete, nil, time.Now(), gotocol.NilContext, name}

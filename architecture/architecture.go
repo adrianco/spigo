@@ -5,8 +5,8 @@ package architecture
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/adrianco/spigo/archaius" // global configuration
-	"github.com/adrianco/spigo/asgard"   // tools to create an architecture
+	"github.com/adrianco/spigo/archaius"     // global configuration
+	"github.com/adrianco/spigo/asgard"       // tools to create an architecture
 	"github.com/adrianco/spigo/packagenames" // name definitions
 	"io/ioutil"
 	"log"

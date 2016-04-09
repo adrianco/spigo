@@ -6,7 +6,7 @@
     "services": [
         {
             "name": "disk",
-            "count": 1,
+            "count": 0,
             "dependencies": [],
             "package": "volume",
             "regions": 1

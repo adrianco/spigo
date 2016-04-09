@@ -34,7 +34,7 @@ func Splitter(name string, offset hier) string {
 }
 
 const (
-	FilterDefault   = "*.*.*.*.*"
+	FilterDefault   = "*..*.*.*.*"
 	FilterReduce    = "*.*.*.*.."
 	FilterContainer = "*.*."
 )
@@ -87,7 +87,7 @@ func FilterEdge(fromTo string) string {
 
 // Make a service name from components and an index
 func Make(a, r, z, s, g string, i int) string {
-	return MakeContainer(a, r, z, fmt.Sprintf("%v%02v", s, i), "", "", "", s, g)
+	return MakeContainer(a, r, z, "", fmt.Sprintf("%v%02v", s, i), "", "", s, g)
 }
 
 // Make a container name from components and an index

@@ -64,6 +64,9 @@ func SaveHist(h metrics.Histogram, name, suffix string) {
 }
 
 func SaveAllGuesses(name string) {
+	if len(sampleMap) == 0 {
+		return
+	}
 	log.Printf("Saving %v histograms for Guesstimate\n", len(sampleMap))
 	var g Guess
 	g = Guess{

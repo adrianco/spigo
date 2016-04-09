@@ -22,11 +22,11 @@ func TestDiscovery(t *testing.T) {
 	eureka := make(chan gotocol.Message, 10)
 	go Start(eureka, "test.eureka")
 	// stack up a series of requests in the buffered channel
-	eureka <- gotocol.Message{gotocol.Hello, listener, time.Now(), gotocol.NilContext(), "test0" + " " + "test"}
-	eureka <- gotocol.Message{gotocol.Hello, listener, time.Now(), gotocol.NilContext(), "test1" + " " + "test"}
-	eureka <- gotocol.Message{gotocol.Hello, listener, time.Now(), gotocol.NilContext(), "thing0" + " " + "thing"}
-	eureka <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NilContext(), "test0"}
-	eureka <- gotocol.Message{gotocol.Goodbye, listener, time.Now(), gotocol.NilContext(), ""}
+	eureka <- gotocol.Message{gotocol.Hello, listener, time.Now(), gotocol.NilContext, "test0" + " " + "test"}
+	eureka <- gotocol.Message{gotocol.Hello, listener, time.Now(), gotocol.NilContext, "test1" + " " + "test"}
+	eureka <- gotocol.Message{gotocol.Hello, listener, time.Now(), gotocol.NilContext, "thing0" + " " + "thing"}
+	eureka <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NilContext, "test0"}
+	eureka <- gotocol.Message{gotocol.Goodbye, listener, time.Now(), gotocol.NilContext, ""}
 	// pick up responses until we see the Goodbye response
 	for {
 		msg := <-listener

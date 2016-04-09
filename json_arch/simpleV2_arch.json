@@ -1,0 +1,15 @@
+{
+    "arch":"simpleV2.yml",
+    "version":"arch-0.1",
+    "description":"compose yaml",
+    "args":"[compose2arch -file simpleV2.yml]",
+    "date":"2016-02-15T18:15:58.851429152-08:00",
+    "services":[
+	{"name":"proxy","machine":"machine","instance":"instance","container":"./proxy","process":"process","package":"monolith","regions":1,"count":3,"dependencies":null},
+	{"name":"www-proxy","machine":"external","package":"denominator","count":0,"dependencies":["front"]},
+	{"name":"app","machine":"machine","instance":"instance","container":"./app","process":"process","package":"monolith","regions":1,"count":3,"dependencies":null},
+	{"name":"db","machine":"machine","instance":"instance","container":"postgres","process":"process","package":"store","regions":1,"count":1,"dependencies":null},
+	{"name":"front","machine":"network","package":"elb","regions":1,"count":0,"dependencies":["proxy","app"]},
+	{"name":"back","machine":"network","package":"elb","regions":1,"count":0,"dependencies":["app","db"]}
+    ]
+}

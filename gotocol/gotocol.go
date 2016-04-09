@@ -139,6 +139,7 @@ func (msg Message) String() string {
 type Routetype struct {
 	Ctx          Context
 	ResponseChan chan Message
+	State        int // state machine for managing responses
 }
 
 // extract routing information from a message
@@ -147,6 +148,11 @@ func (msg Message) Route() Routetype {
 	r.Ctx = msg.Ctx
 	r.ResponseChan = msg.ResponseChan
 	return r
+}
+
+// use a message to extract route from routing map
+func PickRoute(rmap map[string]Routetype, msg Message) Routetype {
+	return rmap[msg.Ctx.Route()]
 }
 
 // Send a synchronous message

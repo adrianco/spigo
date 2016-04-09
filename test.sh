@@ -8,4 +8,5 @@ cd gotocol;go test;cd ..
 cd graphjson;go test;cd ..
 cd names;go test;cd ..
 cd priamCassandra;go test;cd ..
+cd ribbon;go test;cd ..
 cd usl;go test;cd ..
