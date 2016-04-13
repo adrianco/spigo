@@ -1,5 +1,5 @@
 ./spigo -a aws_ac_ra_web -d 3 -j -p 100
-./spigo -d 2 -j -w 1 -c -a cassandra -p 100
+./spigo -d 10 -j -a cassandra -c
 ./spigo -a cassandra -d 2 -j -s 1
 ./spigo -a cassandra -d 2 -j -s 2 -p 200
 ./spigo -a cassandra -d 2 -j -s 3 -p 400
@@ -10,6 +10,8 @@
 ./spigo -a cassandra -d 4 -j -s 8 -p 100 -w 6
 ./spigo -a cassandra -d 4 -j -s 9 -p 200 -w 6
 ./spigo -a composeV2 -d 2 -j
+./spigo -a composeV2 -d 2 -j -p 200 -s 1
+./spigo -a composeV2 -d 2 -j -p 100 -s 2 -w 2
 ./spigo -a container -j -f
 ./spigo -a container -j -d 4 -s 1
 ./spigo -a container -j -d 4 -s 2 -p 200
@@ -64,7 +66,7 @@
 ./spigo -d 2 -a riak -j -s 1 -w 2 -c
 ./spigo -d 2 -a riak -j -s 2 -w 2 -p 200
 ./spigo -a simpleV2 -d 2 -j
-./spigo -a storage -d 2 -j -c
+./spigo -a storage -j -c -d 60
 ./spigo -a storage -d 2 -p 200 -s 1 -j
 ./spigo -a testyaml -d 2 -j
 ./spigo -a yogi -d 2 -j -c -f
