@@ -1,19 +1,21 @@
 {
   "arch":"storage",
   "version":"spigo-0.4",
-  "args":"[./spigo -a storage -d 2 -j -c]",
-  "date":"2016-04-10T07:21:18.411904562-07:00",
+  "args":"[./spigo -a storage -j -c -d 60]",
+  "date":"2016-04-13T09:40:52.790088765-04:00",
   "graph":[
-    {"node":"storage.us-east-1.*.disk00","package":"volume","timestamp":"2016-04-10T07:21:18.410679021-07:00","metadata":"IP/54.198.0.1"},
-    {"node":"storage.us-east-1.zoneA.mysql00","package":"staash","timestamp":"2016-04-10T07:21:18.410849575-07:00","metadata":"IP/54.198.0.2"},
-    {"edge":"e1","source":"storage.us-east-1.zoneA.mysql00","target":"storage.us-east-1.*.disk00","timestamp":"2016-04-10T07:21:18.411159108-07:00"},
-    {"node":"storage.us-east-1.zoneA.memcache00","package":"cache","timestamp":"2016-04-10T07:21:18.411321577-07:00","metadata":"IP/54.198.0.3"},
-    {"node":"storage.us-east-1.zoneA.web00","package":"staash","timestamp":"2016-04-10T07:21:18.411365244-07:00","metadata":"IP/54.198.0.4"},
-    {"edge":"e2","source":"storage.us-east-1.zoneA.web00","target":"storage.us-east-1.zoneA.memcache00","timestamp":"2016-04-10T07:21:18.41151961-07:00"},
-    {"node":"storage.*.*.load00","package":"denominator","timestamp":"2016-04-10T07:21:18.4115315-07:00","metadata":"IP/54.198.0.5"},
-    {"edge":"e3","source":"storage.us-east-1.zoneA.web00","target":"storage.us-east-1.zoneA.mysql00","timestamp":"2016-04-10T07:21:18.411575017-07:00"},
-    {"edge":"e4","source":"storage.*.*.load00","target":"storage.us-east-1.zoneA.web00","timestamp":"2016-04-10T07:21:18.411654386-07:00"},
-    {"done":"storage.us-east-1.zoneA.web00","exit":"normal","timestamp":"2016-04-10T07:21:20.411811195-07:00"},
-    {"done":"storage.us-east-1.zoneA.mysql00","exit":"normal","timestamp":"2016-04-10T07:21:20.411834546-07:00"}
+    {"node":"storage.us-east-1.*.disk00","package":"volume","timestamp":"2016-04-13T09:40:52.790618673-04:00","metadata":"IP/54.198.0.1"},
+    {"node":"storage.us-east-1.zoneA.mysql00","package":"staash","timestamp":"2016-04-13T09:40:52.790798679-04:00","metadata":"IP/54.198.0.2"},
+    {"edge":"e1","source":"storage.us-east-1.zoneA.mysql00","target":"storage.us-east-1.*.disk00","timestamp":"2016-04-13T09:40:52.790836732-04:00"},
+    {"node":"storage.us-east-1.zoneA.memcache00","package":"cache","timestamp":"2016-04-13T09:40:52.790928288-04:00","metadata":"IP/54.198.0.3"},
+    {"node":"storage.us-east-1.zoneB.memcache01","package":"cache","timestamp":"2016-04-13T09:40:52.791042659-04:00","metadata":"IP/54.221.0.1"},
+    {"node":"storage.us-east-1.zoneA.web00","package":"staash","timestamp":"2016-04-13T09:40:52.791054748-04:00","metadata":"IP/54.198.0.4"},
+    {"node":"storage.*.*.load00","package":"denominator","timestamp":"2016-04-13T09:40:52.79124704-04:00","metadata":"IP/54.198.0.5"},
+    {"edge":"e2","source":"storage.us-east-1.zoneA.web00","target":"storage.us-east-1.zoneA.memcache00","timestamp":"2016-04-13T09:40:52.791247808-04:00"},
+    {"edge":"e3","source":"storage.*.*.load00","target":"storage.us-east-1.zoneA.web00","timestamp":"2016-04-13T09:40:52.791376317-04:00"},
+    {"edge":"e4","source":"storage.us-east-1.zoneA.web00","target":"storage.us-east-1.zoneA.mysql00","timestamp":"2016-04-13T09:40:52.791454656-04:00"},
+    {"edge":"e5","source":"storage.us-east-1.zoneA.web00","target":"storage.us-east-1.zoneB.memcache01","timestamp":"2016-04-13T09:40:53.792900656-04:00"},
+    {"done":"storage.us-east-1.zoneA.web00","exit":"normal","timestamp":"2016-04-13T09:41:52.79365763-04:00"},
+    {"done":"storage.us-east-1.zoneA.mysql00","exit":"normal","timestamp":"2016-04-13T09:41:52.793676971-04:00"}
   ]
 }

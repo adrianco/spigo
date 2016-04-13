@@ -1,3 +1,0 @@
-name: riak.*.*..analytics-api00...analytics-api.denominator_rt
-quantiles: [{50 0} {99 0}]
-From  To  Count  Prob  Bar

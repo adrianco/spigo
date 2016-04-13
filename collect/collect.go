@@ -54,7 +54,7 @@ func Measure(h metrics.Histogram, d time.Duration) {
 // have to pass in name because metrics.Histogram blocks expvar.Historgram.Name()
 func SaveHist(h metrics.Histogram, name, suffix string) {
 	if archaius.Conf.Collect {
-		file, err := os.Create("csv_metrics/" + names.Arch(name) + "_" + names.Machine(name) + suffix + ".csv")
+		file, err := os.Create("csv_metrics/" + names.Arch(name) + "_" + names.Instance(name) + suffix + ".csv")
 		if err != nil {
 			log.Printf("%v: %v\n", name, err)
 		}

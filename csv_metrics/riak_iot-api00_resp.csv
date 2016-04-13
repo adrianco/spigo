@@ -1,5 +1,0 @@
-name: riak.*.*.iot-api00....iot-api.denominator_resp
-count: 0
-gauges: map[99:0 50:0]
-    From,      To,   Count,   Prob, Bar
-

@@ -22,7 +22,7 @@
         },
 	{
             "name": "memcache",
-            "count": 1,
+            "count": 2,
             "dependencies": [],
             "package": "cache",
             "regions": 1
