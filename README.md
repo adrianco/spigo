@@ -9,11 +9,13 @@ The name spigo is taken, but simianviz wasn't, so domains have been registered e
 
 Simulate Protocol Interactions in Go using nanoservice actors - spigo
 
-SIMulate Interactive Actor Network VIsualiZation - simianviz - also visualize the simian army in action (not yet implemented).
+SIMulate Interactive Actor Network VIsualiZation - simianviz - also visualize the simian army in action.
 
 Docker compose version2 yaml files can be converted to architecture json using
 ```
-$ ./compose2arch -file compose.yaml > arch.json
+$ cd compose2arch; go install
+
+$ compose2arch -file myarch.yaml > json_arch/myarch.json
 ```
 
 [Run the netflixoss simulation in your browser](http://simianviz.surge.sh/netflixoss)
