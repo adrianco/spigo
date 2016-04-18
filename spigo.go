@@ -4,15 +4,15 @@ package main
 
 import (
 	"flag"
-	"github.com/adrianco/spigo/archaius"     // store the config for global lookup
-	"github.com/adrianco/spigo/architecture" // run an architecture from a json definition
-	"github.com/adrianco/spigo/asgard"       // tools to create an architecture
-	"github.com/adrianco/spigo/collect"      // metrics to extvar
-	"github.com/adrianco/spigo/edda"         // log configuration state
-	"github.com/adrianco/spigo/flow"         // flow logging
-	"github.com/adrianco/spigo/fsm"          // fsm and pirates
-	"github.com/adrianco/spigo/gotocol"      // message protocol spec
-	"github.com/adrianco/spigo/migration"    // migration from LAMP to netflixoss
+	"github.com/adrianco/spigo/actors/edda"          // log configuration state
+	"github.com/adrianco/spigo/tooling/archaius"     // store the config for global lookup
+	"github.com/adrianco/spigo/tooling/architecture" // run an architecture from a json definition
+	"github.com/adrianco/spigo/tooling/asgard"       // tools to create an architecture
+	"github.com/adrianco/spigo/tooling/collect"      // metrics to extvar
+	"github.com/adrianco/spigo/tooling/flow"         // flow logging
+	"github.com/adrianco/spigo/tooling/fsm"          // fsm and pirates
+	"github.com/adrianco/spigo/tooling/gotocol"      // message protocol spec
+	"github.com/adrianco/spigo/tooling/migration"    // migration from LAMP to netflixoss
 	"log"
 	"os"
 	"runtime"

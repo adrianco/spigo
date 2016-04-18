@@ -1,0 +1,3 @@
+name: riak.*.*..iot-api00...iot-api.denominator_serv
+quantiles: [{50 0} {99 0}]
+From  To  Count  Prob  Bar

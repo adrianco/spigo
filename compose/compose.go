@@ -4,7 +4,7 @@ package compose
 
 import (
 	//"fmt"
-	"github.com/adrianco/spigo/architecture"
+	"github.com/adrianco/spigo/tooling/architecture"
 	"github.com/cloudfoundry-incubator/candiedyaml"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -195,8 +195,8 @@ func ComposeArch(name string, c *ComposeV2Yaml) {
 		}
 		var volumes []string
 		for _, nv := range v.Volumes {
-			name := strings.Split(nv, ":")[0]  // get root volume name
-			volumes = append(volumes, name)    // list of volumes this service refers to
+			name := strings.Split(nv, ":")[0] // get root volume name
+			volumes = append(volumes, name)   // list of volumes this service refers to
 		}
 		if n == "db" {
 			architecture.AddContainer(a, n, "machine", "instance", co, "process", "staash", 1, 1, volumes)
