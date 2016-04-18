@@ -30,5 +30,23 @@ $ npm run dev
 The [old README containing all the details](OLDREADME.md) is in
 process of being cut up into multiple wiki pages and README files.
 
-There are too many top level packages so a more hierachical directory
-structure is being setup.
+There were too many top level packages so a more hierachical directory
+structure was setup.
+
+```
+top level
+- spigo        # binary built for MacOS
+- spigo.go     # main program
+- actors       # code for packaged behaviors
+- tooling      # support code
+- ui           # visualization code using d3 and js
+- misc         # scripts to run all tests and regenerate output
+- json_arch    # architecture definition files
+- json         # json dependency graph output
+- json_metrics # flow, metrics and guesstimate output
+- csv_metrics  # histograms saved as tables
+- local-d3-simianviz.html # simple hackable d3 visualization
+- png          # images for readme
+- archived     # old files and packages
+- gml          # old graphml dependency graphs
+```
