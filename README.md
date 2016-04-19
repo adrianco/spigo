@@ -11,13 +11,6 @@ Simulate Protocol Interactions in Go using nanoservice actors - spigo
 
 SIMulate Interactive Actor Network VIsualiZation - simianviz - also visualize the simian army in action.
 
-Docker compose version2 yaml files can be converted to architecture json using
-```
-$ cd compose2arch; go install
-
-$ compose2arch -file myarch.yaml > json_arch/myarch.json
-```
-
 [Run the netflixoss simulation in your browser](http://simianviz.surge.sh/netflixoss)
 
 For a local installation of the above UI, with no network dependencies, you can start the service and browse localhost:8000 using:
@@ -50,3 +43,16 @@ top level
 - archived     # old files and packages
 - gml          # old graphml dependency graphs
 ```
+
+Docker compose version2 yaml files can be converted to architecture json using
+```
+$ cd compose2arch; go install
+
+$ compose2arch -file myarch.yaml > json_arch/myarch.json
+```
+
+The basic framework is in place, but more interesting behaviors, automonous running, and user input to control or stop the simulation haven't been added yet. [See the pdf for some Occam code](misc/SkypeSim07.pdf) and results for the original version of this circa 2007.
+
+Next steps include connecting the output directly to the browser over a websocket so the dynamic behavior of the graph can be seen in real time. A lot of refactoring has cleaned up the code and structure in preparation for more interesting features.
+
+Jason Brown's list of interesting Gossip papers might contain something interesting to try and implement... http://softwarecarnival.blogspot.com/2014/07/gossip-papers.html
