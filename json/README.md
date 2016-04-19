@@ -1,3 +1,9 @@
+Output json format dependency graph files
+-------
+
+Typical run including -j to write json graph files here
+
+```
 $ spigo -a netflixoss -d 5 -j
 2015/05/25 12:16:12 Loading architecture from json_arch/netflixoss_arch.json
 2015/05/25 12:16:12 netflixoss.edda: starting
@@ -30,7 +36,10 @@ $ spigo -a netflixoss -d 5 -j
 
 Migration from LAMP to NetflixOSS
 -----------
-The orchestration to create this now uses a eureka discovery service per zone and has been heavily refactored.
+
+Using the step option, multiple runs can create different outputs in a sequence that can be stepped through.
+The architecture for Migration is hard wired by the migration package for each step.
+
 [Run this simulation in your browser](http://simianviz.surge.sh/migration)
 
 Start with a monolithic LAMP stack
