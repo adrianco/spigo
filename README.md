@@ -61,6 +61,7 @@ Keynote presentation at the O'Reilly Software Architecture Conference: Monitorin
 http://www.slideshare.net/adriancockcroft/software-architecture-monitoring-microservices-a-challenge
 Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI
 
+```
 $ ./spigo -h
 Usage of ./spigo:
   -a="netflixoss": Architecture to create or read, fsm, lamp, migration, netflixoss or json/????_arch.json
@@ -77,4 +78,4 @@ Usage of ./spigo:
   -s=0:     Stop creating microservices at this step, 0 = don't stop
   -u="1s":  Polling interval for Eureka name service
   -w=1:     Wide area regions
-  
+  ```
