@@ -56,3 +56,25 @@ The basic framework is in place, but more interesting behaviors, automonous runn
 Next steps include connecting the output directly to the browser over a websocket so the dynamic behavior of the graph can be seen in real time. A lot of refactoring has cleaned up the code and structure in preparation for more interesting features.
 
 Jason Brown's list of interesting Gossip papers might contain something interesting to try and implement... http://softwarecarnival.blogspot.com/2014/07/gossip-papers.html
+
+Keynote presentation at the O'Reilly Software Architecture Conference: Monitoring Microservices - A Challenge
+http://www.slideshare.net/adriancockcroft/software-architecture-monitoring-microservices-a-challenge
+Video of the 10 minute talk: https://youtu.be/smEuX-Hq6RI
+
+$ ./spigo -h
+Usage of ./spigo:
+  -a="netflixoss": Architecture to create or read, fsm, lamp, migration, netflixoss or json/????_arch.json
+  -c=false: Collect metrics to json/<arch>_metrics.json and via http:
+  -cpuprofile="": Write cpu profile to file
+  -cpus=4:  Number of CPUs for Go runtime
+  -d=10:    Simulation duration in seconds
+  -f=false: Filter output names to simplify graph
+  -g=false: Enable GraphML logging of nodes and edges to <arch>.graphml
+  -j=false: Enable GraphJSON logging of nodes and edges to <arch>.json
+  -m=false: Enable console logging of every message
+  -p=100:   Pirate population for fsm or scale factor % for netflixoss etc.
+  -r=false: Reload json/<arch>.json to setup architecture
+  -s=0:     Stop creating microservices at this step, 0 = don't stop
+  -u="1s":  Polling interval for Eureka name service
+  -w=1:     Wide area regions
+  
