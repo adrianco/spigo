@@ -12,6 +12,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -23,15 +24,18 @@ const (
 //var mon = monitor.GetMonitors()
 //save a sample of the actual data for use by guesstimate
 var sampleMap map[metrics.Histogram][]int64
+var sampleLock sync.Mutex
 
 func NewHist(name string) metrics.Histogram {
 	var h metrics.Histogram
 	if name != "" && archaius.Conf.Collect {
 		h = expvar.NewHistogram(name, 1000, maxHistObservable, 1, []int{50, 99}...)
+		sampleLock.Lock()
 		if sampleMap == nil {
 			sampleMap = make(map[metrics.Histogram][]int64)
 		}
 		sampleMap[h] = make([]int64, 0, sampleCount)
+		sampleLock.Unlock()
 		return h
 	}
 	return nil
@@ -44,9 +48,11 @@ func Measure(h metrics.Histogram, d time.Duration) {
 		} else {
 			h.Observe(int64(d))
 		}
+		sampleLock.Lock()
 		s := sampleMap[h]
 		if s != nil && len(s) < sampleCount {
 			sampleMap[h] = append(s, int64(d))
+		sampleLock.Unlock()
 		}
 	}
 }
