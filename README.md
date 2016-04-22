@@ -27,7 +27,7 @@ $ npm run dev
 ### Running the simulation to generate new visualizations and metrics
 
 ```
-./spigo -h
+$ ./spigo -h
 Usage of ./spigo:
   -a string
     	Architecture to create or read, fsm, migration, or read from json_arch/<arch>_arch.json (default "netflixoss")
@@ -41,6 +41,8 @@ Usage of ./spigo:
   -f	Filter output names to simplify graph by collapsing instances to services
   -g	Enable GraphML logging of nodes and edges to gml/<arch>.graphml
   -j	Enable GraphJSON logging of nodes and edges to json/<arch>.json
+  -kv string
+    	Configuration key:value - chat:10ms sets default message insert rate
   -m	Enable console logging of every message
   -p int
     	Pirate population for fsm or scale factor % for other architectures (default 100)
