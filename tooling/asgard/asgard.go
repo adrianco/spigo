@@ -147,8 +147,8 @@ func SendToName(name string, msg gotocol.Message) {
 
 // Start a node using the named package, and connect it to any dependencies
 func StartNode(name string, dependencies ...string) {
-	if names.Package(name) == "eureka" {
-		eurekachan[name] = make(chan gotocol.Message, archaius.Conf.Population)
+	if names.Package(name) == EurekaPkg {
+		eurekachan[name] = make(chan gotocol.Message, archaius.Conf.Population/3) // buffer sized to a zone
 		go eureka.Start(eurekachan[name], name)
 		return
 	} else {
@@ -256,8 +256,11 @@ func ConnectEveryEureka(name string) {
 
 // Run architecture for a while then shut down
 func Run(rootservice, victim string) {
-	// tell denominator to start chatting with microservices every 0.01 secs
-	delay := fmt.Sprintf("%dms", 10)
+	// tell denominator to start chatting with microservices every 0.01 secs by default
+	delay := archaius.Key(archaius.Conf, "chat")
+	if delay == "" {
+		delay = fmt.Sprintf("%dms", 10)
+	}
 	log.Println(rootservice+" activity rate ", delay)
 	SendToName(rootservice, gotocol.Message{gotocol.Chat, nil, time.Now(), gotocol.NilContext, delay})
 	// wait until the delay has finished

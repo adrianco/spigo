@@ -19,7 +19,9 @@ func TestConf(t *testing.T) {
 	Conf.Collect = true
 	Conf.StopStep = 2
 	Conf.EurekaPoll = "1s"
+	Conf.Keyvals = "chat:0.01s"
 	fmt.Println(string(AsJson()))
 	FromJson(AsJson())
 	fmt.Println(Conf)
+	fmt.Println("chat = " + Key(Conf, "chat"))
 }

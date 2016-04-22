@@ -4,6 +4,7 @@ package archaius
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -52,6 +53,9 @@ type Configuration struct {
 
 	// Filter spec for output names to simplify graph
 	Filter bool `json:"filter",omitempty"`
+
+	// Keys and values for configuring services, passed in as one string
+	Keyvals string `json:"keyvals",omitempty"`
 }
 
 var Conf = Configuration{
@@ -63,6 +67,19 @@ var Conf = Configuration{
 		[...]string{"54.93.", "54.28.", "54.78."},     // Frankfurt eu-central-1 actual AWS IP/16 ranges plus 54.78  stolen from Ireland
 		[...]string{"54.251.", "54.254.", "54.255."},  // Singapore ap-southeast-1 actual AWS IP/16 ranges
 		[...]string{"54.252.", "54.253.", "54.206."}}, // Australia ap-southeast-2 actual AWS IP/16 ranges
+}
+
+// find a value given a key
+func Key(c Configuration, k string) string {
+	if c.Keyvals == "" {
+		return ""
+	}
+	kv := strings.Split(c.Keyvals, ":")
+	if len(kv) == 2 && kv[0] == k {
+		return kv[1]
+	} else {
+		return ""
+	}
 }
 
 // return current config as json
@@ -77,5 +94,5 @@ func FromJson(confJSON []byte) {
 
 // return formatted as string
 func (Configuration) String() string {
-	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\nRegions:    %v\nRegionNames:%v\nZoneNames:  %v\nIPRanges:   %v\nCollect:    %v\nStopStep:   %v\nEurekaPoll: %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog, Conf.Regions, Conf.RegionNames, Conf.ZoneNames, Conf.IPRanges, Conf.Collect, Conf.StopStep, Conf.EurekaPoll)
+	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\nRegions:    %v\nRegionNames:%v\nZoneNames:  %v\nIPRanges:   %v\nCollect:    %v\nStopStep:   %v\nEurekaPoll: %v\nKeyvals:    %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog, Conf.Regions, Conf.RegionNames, Conf.ZoneNames, Conf.IPRanges, Conf.Collect, Conf.StopStep, Conf.EurekaPoll, Conf.Keyvals)
 }
