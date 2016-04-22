@@ -25,18 +25,18 @@ var duration, cpucount int
 
 // main handles command line flags and starts up an architecture
 func main() {
-	flag.StringVar(&archaius.Conf.Arch, "a", "netflixoss", "Architecture to create or read, fsm, lamp, migration, netflixoss or json/????_arch.json")
-	flag.IntVar(&archaius.Conf.Population, "p", 100, "Pirate population for fsm or scale factor % for netflixoss etc.")
+	flag.StringVar(&archaius.Conf.Arch, "a", "netflixoss", "Architecture to create or read, fsm, migration, or read from json_arch/<arch>_arch.json")
+	flag.IntVar(&archaius.Conf.Population, "p", 100, "Pirate population for fsm or scale factor % for other architectures")
 	flag.IntVar(&duration, "d", 10, "Simulation duration in seconds")
-	flag.IntVar(&archaius.Conf.Regions, "w", 1, "Wide area regions")
-	flag.BoolVar(&graphmlEnabled, "g", false, "Enable GraphML logging of nodes and edges to <arch>.graphml")
-	flag.BoolVar(&graphjsonEnabled, "j", false, "Enable GraphJSON logging of nodes and edges to <arch>.json")
+	flag.IntVar(&archaius.Conf.Regions, "w", 1, "Wide area regions to replicate architecture into, defaults based on 6 AWS region names")
+	flag.BoolVar(&graphmlEnabled, "g", false, "Enable GraphML logging of nodes and edges to gml/<arch>.graphml")
+	flag.BoolVar(&graphjsonEnabled, "j", false, "Enable GraphJSON logging of nodes and edges to json/<arch>.json")
 	flag.BoolVar(&archaius.Conf.Msglog, "m", false, "Enable console logging of every message")
-	flag.BoolVar(&reload, "r", false, "Reload json/<arch>.json to setup architecture")
-	flag.BoolVar(&archaius.Conf.Collect, "c", false, "Collect metrics to json/<arch>_metrics.json and via http:")
-	flag.IntVar(&archaius.Conf.StopStep, "s", 0, "Stop creating microservices at this step, 0 = don't stop")
-	flag.StringVar(&archaius.Conf.EurekaPoll, "u", "1s", "Polling interval for Eureka name service")
-	flag.BoolVar(&archaius.Conf.Filter, "f", false, "Filter output names to simplify graph")
+	flag.BoolVar(&reload, "r", false, "Reload graph from json/<arch>.json to setup architecture")
+	flag.BoolVar(&archaius.Conf.Collect, "c", false, "Collect to json_metrics csv_metricsand via http: extvars")
+	flag.IntVar(&archaius.Conf.StopStep, "s", 0, "Sequence number to create multiple runs for ui to step through in json/<arch><s>.json")
+	flag.StringVar(&archaius.Conf.EurekaPoll, "u", "1s", "Polling interval for Eureka name service, increase for large populations")
+	flag.BoolVar(&archaius.Conf.Filter, "f", false, "Filter output names to simplify graph by collapsing instances to services")
 	flag.IntVar(&cpucount, "cpus", runtime.NumCPU(), "Number of CPUs for Go runtime")
 	runtime.GOMAXPROCS(cpucount)
 	var cpuprofile = flag.String("cpuprofile", "", "Write cpu profile to file")
@@ -71,10 +71,6 @@ func main() {
 		switch archaius.Conf.Arch {
 		case "fsm":
 			fsm.Start()
-		//case "netflixoss":  replaced by json_arch/netflixoss_arch.json
-		//	netflixoss.Start()
-		//case "lamp":  replaced by json_arch/lamp_arch.json
-		//	lamp.Start()
 		case "migration":
 			migration.Start() // step by step from lamp to netflixoss
 		default:
