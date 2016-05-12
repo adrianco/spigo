@@ -21,7 +21,6 @@ const (
 	sampleCount       = 1000    // data points will be sampled 5000 times to build a distribution by guesstimate
 )
 
-//var mon = monitor.GetMonitors()
 //save a sample of the actual data for use by guesstimate
 var sampleMap map[metrics.Histogram][]int64
 var sampleLock sync.Mutex
@@ -57,7 +56,7 @@ func Measure(h metrics.Histogram, d time.Duration) {
 	}
 }
 
-// have to pass in name because metrics.Histogram blocks expvar.Historgram.Name()
+// have to pass in name because metrics.Histogram blocks expvar.Histogram.Name()
 func SaveHist(h metrics.Histogram, name, suffix string) {
 	if archaius.Conf.Collect {
 		file, err := os.Create("csv_metrics/" + names.Arch(name) + "_" + names.Instance(name) + suffix + ".csv")
