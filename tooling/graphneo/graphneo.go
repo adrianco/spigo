@@ -34,13 +34,13 @@ func Setup(arch string) {
 
 // Write an entry to the database
 func Write(str string) {
-	//log.Println(str)
+	log.Println(str)
 	stmt, err := db.Prepare(str)
 	if err != nil {
 		log.Fatal(err)
 	}
 	stmt.Exec("")
-	log.Println(stmt)
+	//log.Println(stmt)
 	stmt.Close()
 }
 
@@ -53,7 +53,7 @@ func WriteNode(nameService string, t time.Time) {
 	fmt.Sscanf(nameService, "%s%s", &node, &pack) // space delimited
 	tstamp := t.Format(time.RFC3339Nano)
 	// node id should be unique and package indicates service type
-	Write(fmt.Sprintf("CREATE (%v_%v:Node {name:%q, package:%q, timestamp:%q, ip:%q, region:%q, zone:%q})\nRETURN %v_%v", archaius.Conf.Arch+ss, names.Instance(node), node, pack, tstamp, dhcp.Lookup(node), names.Region(node), names.Zone(node), archaius.Conf.Arch+ss, names.Instance(node)))
+	Write(fmt.Sprintf("CREATE (%v_%v:%v {instance:%q, name:%q, package:%q, timestamp:%q, ip:%q, region:%q, zone:%q})", archaius.Conf.Arch+ss, names.Instance(node), names.Service(node), names.Instance(node), node, pack, tstamp, dhcp.Lookup(node), names.Region(node), names.Zone(node)))
 }
 
 // WriteDone records that a node has gone away normally
@@ -71,7 +71,7 @@ func WriteEdge(fromTo string, t time.Time) {
 	var source, target string
 	fmt.Sscanf(fromTo, "%s%s", &source, &target) // two space delimited names
 	tstamp := t.Format(time.RFC3339Nano)
-	Write(fmt.Sprintf("CREATE (%v_%v)-[:CONNECTION {timestamp:%q}]->(%v_%v)\n", archaius.Conf.Arch+ss, names.Instance(source), tstamp, archaius.Conf.Arch+ss, names.Instance(target)))
+	Write(fmt.Sprintf("MATCH (from:%v {instance: %q}), (to:%v {instance: %q})\nCREATE (from)-[:CONNECTION {timestamp:%q}]->(to)", names.Service(source), names.Instance(source), names.Service(target), names.Instance(target), tstamp))
 }
 
 // WriteForget writes the forgotten edge to a file given a space separated edge id, from and to node names

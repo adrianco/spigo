@@ -11,8 +11,8 @@ import (
 // reader parses graphjson
 func TestGraph(t *testing.T) {
 	testNeo := `
-	  (test_mysql00:Node {name:"test.us-east-1.zoneA..mysql00...mysql.store", package:"store", timestamp:"2016-04-17T13:40:05.938437713-07:00", ip:"54.198.0.1", region:"us-east-1", zone: "zoneA"}),
-          (test_mysql01:Node {name:"test.us-east-1.zoneA..mysql01...mysql.store", package:"store", timestamp:"2016-04-17T13:40:05.938513762-07:00", ip:"54.221.0.1", region:"us-east-1", zone: "zoneA"}),
+	  CREATE (test_mysql00:mysql {instance:"mysql00", name:"test.us-east-1.zoneA..mysql00...mysql.store", package:"store", timestamp:"2016-04-17T13:40:05.938437713-07:00", ip:"54.198.0.1", region:"us-east-1", zone: "zoneA"}),
+          (test_mysql01:mysql {instance:"mysql01", name:"test.us-east-1.zoneA..mysql01...mysql.store", package:"store", timestamp:"2016-04-17T13:40:05.938513762-07:00", ip:"54.221.0.1", region:"us-east-1", zone: "zoneA"}),
           (test_mysql00)-[:CONNECTION]->(test_mysql01)
                 `
 	archaius.Conf.Arch = "test"
