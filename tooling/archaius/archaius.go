@@ -18,6 +18,9 @@ type Configuration struct {
 	// GraphjsonFile is set to a filename to turn on GraphML logging
 	GraphjsonFile string `json:"graphjsonfile,omitempty"`
 
+	// Neo4jURL is pointed at a database instance to turn on GraphML logging
+	Neo4jURL string `json:"neo4jurl,omitempty"`
+	
 	// RunDuration is the time in seconds to let the microservices chat
 	RunDuration time.Duration `json:"runduration,omitempty"`
 
@@ -94,5 +97,5 @@ func FromJson(confJSON []byte) {
 
 // return formatted as string
 func (Configuration) String() string {
-	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\nRegions:    %v\nRegionNames:%v\nZoneNames:  %v\nIPRanges:   %v\nCollect:    %v\nStopStep:   %v\nEurekaPoll: %v\nKeyvals:    %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog, Conf.Regions, Conf.RegionNames, Conf.ZoneNames, Conf.IPRanges, Conf.Collect, Conf.StopStep, Conf.EurekaPoll, Conf.Keyvals)
+	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nNeo4jURL:   %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\nRegions:    %v\nRegionNames:%v\nZoneNames:  %v\nIPRanges:   %v\nCollect:    %v\nStopStep:   %v\nEurekaPoll: %v\nKeyvals:    %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.Neo4jURL, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog, Conf.Regions, Conf.RegionNames, Conf.ZoneNames, Conf.IPRanges, Conf.Collect, Conf.StopStep, Conf.EurekaPoll, Conf.Keyvals)
 }

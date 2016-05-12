@@ -16,7 +16,7 @@ func TestGraph(t *testing.T) {
           (test_mysql00)-[:CONNECTION]->(test_mysql01)
                 `
 	archaius.Conf.Arch = "test"
-	Setup(archaius.Conf.Arch)
+	Setup("localhost:7474")
 	Write(testNeo)
 	dal0 := names.Make("test", "us-east-1", "ZoneA", "dal", "staash", 0)
 	WriteNode(dal0+" staash", time.Now())

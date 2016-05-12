@@ -7,8 +7,10 @@ import (
 	"github.com/adrianco/spigo/tooling/gotocol"
 	"github.com/adrianco/spigo/tooling/graphjson"
 	"github.com/adrianco/spigo/tooling/graphml"
+	"github.com/adrianco/spigo/tooling/graphneo"
 	"github.com/adrianco/spigo/tooling/names"
 	"log"
+	"strings"
 	"sync"
 	"time"
 )
@@ -36,8 +38,10 @@ func Start(name string) {
 		graphml.Setup(archaius.Conf.GraphmlFile)
 	}
 	if archaius.Conf.GraphjsonFile != "" {
-		graphjson.Enabled = true
 		graphjson.Setup(archaius.Conf.GraphjsonFile)
+	}
+	if archaius.Conf.Neo4jURL != "" {
+		graphneo.Setup(archaius.Conf.Neo4jURL)
 	}
 	for {
 		msg, ok = <-Logchan
@@ -55,6 +59,7 @@ func Start(name string) {
 				edges[edge] = true
 				graphml.WriteEdge(edge)
 				graphjson.WriteEdge(edge, msg.Sent)
+				graphneo.WriteEdge(strings.Replace(msg.Intention, "-", "_", -1), msg.Sent)
 			}
 		case gotocol.Put:
 			node := names.FilterNode(msg.Intention)
@@ -62,6 +67,7 @@ func Start(name string) {
 				microservices[node] = true
 				graphml.WriteNode(node + " " + names.Package(msg.Intention))
 				graphjson.WriteNode(node+" "+names.Package(msg.Intention), msg.Sent)
+				graphneo.WriteNode(strings.Replace(msg.Intention, "-", "_", -1)+" "+names.Package(msg.Intention), msg.Sent)
 			}
 		case gotocol.Forget: // forget the edge
 			// problem here in that edges may be reported multiple times from several sources

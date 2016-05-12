@@ -20,12 +20,12 @@ var ss string
 
 // Setup by opening the "arch".json file and writing a header, noting the generated architecture
 // type, version and args for the run
-func Setup(arch string) {
+func Setup(neo4jurl string) {
 	Enabled = true
 	if archaius.Conf.StopStep > 0 {
 		ss = fmt.Sprintf("%v", archaius.Conf.StopStep)
 	}
-	tmp, err := sql.Open("neo4j-cypher", "http://neo4j:"+os.Getenv("NEO4JPASSWORD")+"@localhost:7474")
+	tmp, err := sql.Open("neo4j-cypher", "http://neo4j:"+os.Getenv("NEO4JPASSWORD")+"@"+neo4jurl)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,13 +34,15 @@ func Setup(arch string) {
 
 // Write an entry to the database
 func Write(str string) {
-	log.Println(str)
+	//log.Println(str)
 	stmt, err := db.Prepare(str)
 	if err != nil {
 		log.Fatal(err)
 	}
-	stmt.Exec("")
-	//log.Println(stmt)
+	_, err = stmt.Exec("")
+	if err != nil {
+		log.Fatal(err)
+	}
 	stmt.Close()
 }
 
@@ -53,7 +55,7 @@ func WriteNode(nameService string, t time.Time) {
 	fmt.Sscanf(nameService, "%s%s", &node, &pack) // space delimited
 	tstamp := t.Format(time.RFC3339Nano)
 	// node id should be unique and package indicates service type
-	Write(fmt.Sprintf("CREATE (%v_%v:%v {instance:%q, name:%q, package:%q, timestamp:%q, ip:%q, region:%q, zone:%q})", archaius.Conf.Arch+ss, names.Instance(node), names.Service(node), names.Instance(node), node, pack, tstamp, dhcp.Lookup(node), names.Region(node), names.Zone(node)))
+	Write(fmt.Sprintf("CREATE (%v_%v:%v {name:%q, node:%q, package:%q, timestamp:%q, ip:%q, region:%q, zone:%q})", archaius.Conf.Arch+ss, names.Instance(node), names.Service(node), names.Instance(node), node, pack, tstamp, dhcp.Lookup(node), names.Region(node), names.Zone(node)))
 }
 
 // WriteDone records that a node has gone away normally
@@ -71,7 +73,7 @@ func WriteEdge(fromTo string, t time.Time) {
 	var source, target string
 	fmt.Sscanf(fromTo, "%s%s", &source, &target) // two space delimited names
 	tstamp := t.Format(time.RFC3339Nano)
-	Write(fmt.Sprintf("MATCH (from:%v {instance: %q}), (to:%v {instance: %q})\nCREATE (from)-[:CONNECTION {timestamp:%q}]->(to)", names.Service(source), names.Instance(source), names.Service(target), names.Instance(target), tstamp))
+	Write(fmt.Sprintf("MATCH (from:%v {name: %q}), (to:%v {name: %q})\nCREATE (from)-[:CONN {timestamp:%q}]->(to)", names.Service(source), names.Instance(source), names.Service(target), names.Instance(target), tstamp))
 }
 
 // WriteForget writes the forgotten edge to a file given a space separated edge id, from and to node names

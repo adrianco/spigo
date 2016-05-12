@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-var reload, graphmlEnabled, graphjsonEnabled bool
+var reload, graphmlEnabled, graphjsonEnabled, neo4jEnabled bool
 var duration, cpucount int
 
 // main handles command line flags and starts up an architecture
@@ -31,6 +31,7 @@ func main() {
 	flag.IntVar(&archaius.Conf.Regions, "w", 1, "Wide area regions to replicate architecture into, defaults based on 6 AWS region names")
 	flag.BoolVar(&graphmlEnabled, "g", false, "Enable GraphML logging of nodes and edges to gml/<arch>.graphml")
 	flag.BoolVar(&graphjsonEnabled, "j", false, "Enable GraphJSON logging of nodes and edges to json/<arch>.json")
+	flag.BoolVar(&neo4jEnabled, "n", false, "Enable Neo4j logging of nodes and edges")
 	flag.BoolVar(&archaius.Conf.Msglog, "m", false, "Enable console logging of every message")
 	flag.BoolVar(&reload, "r", false, "Reload graph from json/<arch>.json to setup architecture")
 	flag.BoolVar(&archaius.Conf.Collect, "c", false, "Collect to json_metrics csv_metricsand via http: extvars")
@@ -53,12 +54,28 @@ func main() {
 	if archaius.Conf.Collect {
 		collect.Serve(8123) // start web server at port
 	}
-	if graphjsonEnabled || graphmlEnabled {
+	if graphjsonEnabled || graphmlEnabled || neo4jEnabled {
 		if graphjsonEnabled {
 			archaius.Conf.GraphjsonFile = archaius.Conf.Arch
 		}
 		if graphmlEnabled {
 			archaius.Conf.GraphmlFile = archaius.Conf.Arch
+		}
+		if neo4jEnabled {
+			if archaius.Conf.Filter {
+				log.Fatal("Neo4j cannot be used with filtered names option -f")
+			}
+			pw := os.Getenv("NEO4JPASSWORD")
+			url := os.Getenv("NEO4JURL")
+			if pw == "" {
+				log.Fatal("Neo4j requires environment variable NEO4JPASSWORD is set")
+			}
+			if url == "" {
+				archaius.Conf.Neo4jURL = "localhost:7474"
+			} else {
+				archaius.Conf.Neo4jURL = url
+			}
+			log.Println("Graph will be written to Neo4j via NEO4JURL=" + archaius.Conf.Neo4jURL)
 		}
 		// make a buffered channel so logging can start before edda is scheduled
 		edda.Logchan = make(chan gotocol.Message, 100)
