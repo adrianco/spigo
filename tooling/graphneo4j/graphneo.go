@@ -1,5 +1,5 @@
-// Package graphneo saves architectures to neo4j
-package graphneo
+// Package graphneo4j saves architectures to neo4j
+package graphneo4j
 
 import (
 	"database/sql"
@@ -16,6 +16,7 @@ import (
 // Enabled is set via command line flags to turn on neo logging
 var Enabled bool
 var db *sql.DB
+var nodestmt, edgestmt *sql.Stmt
 var ss string
 
 // Setup by opening the "arch".json file and writing a header, noting the generated architecture
@@ -30,6 +31,10 @@ func Setup(neo4jurl string) {
 		log.Fatal(err)
 	}
 	db = tmp
+	edgestmt, err = db.Prepare("MATCH (from:{0} {name: '{1}'}), (to:{2} {name: '{3}'})\nCREATE (from)-[:CONN {timestamp:'{4}'}]->(to)")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // Write an entry to the database
@@ -55,7 +60,15 @@ func WriteNode(nameService string, t time.Time) {
 	fmt.Sscanf(nameService, "%s%s", &node, &pack) // space delimited
 	tstamp := t.Format(time.RFC3339Nano)
 	// node id should be unique and package indicates service type
-	Write(fmt.Sprintf("CREATE (%v_%v:%v {name:%q, node:%q, package:%q, timestamp:%q, ip:%q, region:%q, zone:%q})", archaius.Conf.Arch+ss, names.Instance(node), names.Service(node), names.Instance(node), node, pack, tstamp, dhcp.Lookup(node), names.Region(node), names.Zone(node)))
+	nodestmt, err := db.Prepare(fmt.Sprintf("CREATE (%v_%v:%v {name:{0}, node:{1}, package:{2}, timestamp:{3}, ip:{4}, region:{5}, zone:{6}})", archaius.Conf.Arch+ss, names.Instance(node), names.Service(node)))
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = nodestmt.Exec(names.Instance(node), node, pack, tstamp, dhcp.Lookup(node), names.Region(node), names.Zone(node))
+	if err != nil {
+		log.Fatal(err)
+	}
+	nodestmt.Close()
 }
 
 // WriteDone records that a node has gone away normally
@@ -88,5 +101,6 @@ func Close() {
 	if Enabled == false {
 		return
 	}
+	edgestmt.Close()
 	db.Close()
 }

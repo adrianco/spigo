@@ -77,8 +77,8 @@ func main() {
 			}
 			log.Println("Graph will be written to Neo4j via NEO4JURL=" + archaius.Conf.Neo4jURL)
 		}
-		// make a buffered channel so logging can start before edda is scheduled
-		edda.Logchan = make(chan gotocol.Message, 100)
+		// make a big buffered channel so logging can start before edda is scheduled
+		edda.Logchan = make(chan gotocol.Message, 1000)
 	}
 	archaius.Conf.RunDuration = time.Duration(duration) * time.Second
 	// start up the selected architecture

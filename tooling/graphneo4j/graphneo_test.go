@@ -1,5 +1,5 @@
-// graphjson tests - just make sure the json conversions work
-package graphneo
+// graphneo4j tests
+package graphneo4j
 
 import (
 	"github.com/adrianco/spigo/tooling/archaius"
