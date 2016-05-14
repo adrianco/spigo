@@ -8,6 +8,7 @@ import (
 	"github.com/adrianco/spigo/tooling/collect"
 	"github.com/adrianco/spigo/tooling/dhcp"
 	"github.com/adrianco/spigo/tooling/gotocol"
+	"github.com/adrianco/spigo/tooling/graphneo4j"
 	"github.com/go-kit/kit/metrics"
 	"log"
 	"os"
@@ -108,6 +109,12 @@ func AnnotateReceive(msg gotocol.Message, name string, received time.Time) {
 	flowlock.Lock()
 	flowmap[msg.Ctx.Trace] = append(flowmap[msg.Ctx.Trace], annotate(msg, name, received, CR, SR))
 	flowlock.Unlock()
+	if graphneo4j.Enabled {
+		trace := flowmap[msg.Ctx.Trace]
+		if len(trace) >= 2 {
+			graphneo4j.WriteFlow(strings.Replace(trace[len(trace)-2].Host, "-", "_", -1), strings.Replace(trace[len(trace)-1].Host, "-", "_", -1), trace[1].Imp, trace[1].Timestamp, msg.Ctx.Trace)
+		}
+	}
 	return
 }
 
