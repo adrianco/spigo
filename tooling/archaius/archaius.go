@@ -20,7 +20,7 @@ type Configuration struct {
 
 	// Neo4jURL is pointed at a database instance to turn on GraphML logging
 	Neo4jURL string `json:"neo4jurl,omitempty"`
-	
+
 	// RunDuration is the time in seconds to let the microservices chat
 	RunDuration time.Duration `json:"runduration,omitempty"`
 
@@ -37,13 +37,13 @@ type Configuration struct {
 	Regions int `json:"regions,omitempty"`
 
 	// RegionNames is the default names of the regions
-	RegionNames [6]string `json:"regionnames,omitempty"`
+	RegionNames []string `json:"regionnames,omitempty"`
 
 	// IPRanges maps an IP address range to each region and zone
-	IPRanges [6][3]string `json:"ipranges,omitempty"`
+	IPRanges [][]string `json:"ipranges,omitempty"`
 
 	// ZoneNames is the default names of the zones
-	ZoneNames [3]string `json:"zonenames,omitempty"`
+	ZoneNames []string `json:"zonenames,omitempty"`
 
 	// Collect turns on Metrics collection
 	Collect bool `json:"collect,omitempty"`
@@ -62,14 +62,28 @@ type Configuration struct {
 }
 
 var Conf = Configuration{
-	RegionNames: [...]string{"us-east-1", "us-west-2", "eu-west-1", "eu-central-1", "ap-southeast-1", "ap-southeast-2"},
-	ZoneNames:   [...]string{"zoneA", "zoneB", "zoneC"},
-	IPRanges: [...][3]string{[...]string{"54.198.", "54.221.", "50.19."}, // Virginia us-east-1 actual AWS IP/16 ranges
-		[...]string{"54.245.", "54.244.", "54.214."},  // Oregon us-west-2 actual AWS IP/16 ranges
-		[...]string{"54.247.", "54.246.", "54.288."},  // Ireland eu-west-1 actual AWS IP/16 ranges
-		[...]string{"54.93.", "54.28.", "54.78."},     // Frankfurt eu-central-1 actual AWS IP/16 ranges plus 54.78  stolen from Ireland
-		[...]string{"54.251.", "54.254.", "54.255."},  // Singapore ap-southeast-1 actual AWS IP/16 ranges
-		[...]string{"54.252.", "54.253.", "54.206."}}, // Australia ap-southeast-2 actual AWS IP/16 ranges
+	RegionNames: []string{"us-east-1", "us-west-2", "eu-west-1", "eu-central-1", "ap-southeast-1", "ap-southeast-2"},
+	ZoneNames:   []string{"zoneA", "zoneB", "zoneC"},
+	IPRanges: [][]string{
+		[]string{"54.198.", "54.221.", "50.19."},  // Virginia us-east-1 actual AWS IP/16 ranges
+		[]string{"54.245.", "54.244.", "54.214."}, // Oregon us-west-2 actual AWS IP/16 ranges
+		[]string{"54.247.", "54.246.", "54.288."}, // Ireland eu-west-1 actual AWS IP/16 ranges
+		[]string{"54.93.", "54.28.", "54.78."},    // Frankfurt eu-central-1 actual AWS IP/16 ranges plus 54.78  stolen from Ireland
+		[]string{"54.251.", "54.254.", "54.255."}, // Singapore ap-southeast-1 actual AWS IP/16 ranges
+		[]string{"54.252.", "54.253.", "54.206."}, // Australia ap-southeast-2 actual AWS IP/16 ranges
+	},
+}
+
+// verify the sizes of arrays above are equal at runtime
+func init() {
+    if len(Conf.RegionNames) != len(Conf.IPRanges) {
+        panic(fmt.Sprintf("RegionNames count (%d) does not match IPRanges count (%d)", len(Conf.RegionNames), len(Conf.IPRanges)))
+    }
+    for i := range Conf.IPRanges {
+        if len(Conf.ZoneNames) != len(Conf.IPRanges[i]) {
+            panic(fmt.Sprintf("ZoneNames count (%d) does not match IPRanges[%d] count (%d)", len(Conf.ZoneNames), i, len(Conf.IPRanges[i])))
+        }
+    }
 }
 
 // find a value given a key

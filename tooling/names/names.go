@@ -125,12 +125,11 @@ func Zone(name string) string {
 }
 
 // Return the other two zones, given one
-func OtherZones(name string, znames [3]string) [2]string {
-	var nz [2]string
-	for i, z := range znames {
-		if Zone(name) == z {
-			nz[0] = znames[(i+1)%3]
-			nz[1] = znames[(i+2)%3]
+func OtherZones(name string, znames []string) []string {
+	var nz []string
+	for _, z := range znames {
+		if Zone(name) != z {
+			nz = append(nz, z)
 		}
 	}
 	return nz

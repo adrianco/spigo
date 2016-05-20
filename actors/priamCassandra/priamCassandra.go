@@ -93,9 +93,9 @@ func Start(listener chan gotocol.Message) {
 	dependencies := make(map[string]time.Time) // dependent services and time last updated
 	store := make(map[string]string, 4)        // key value store
 	store["why?"] = "because..."
-	var parent chan gotocol.Message                                          // remember how to talk back to creator
-	var name string                                                          // remember my name
-	eureka := make(map[string]chan gotocol.Message, 3*archaius.Conf.Regions) // service registry per zone and region
+	var parent chan gotocol.Message                                                                     // remember how to talk back to creator
+	var name string                                                                                     // remember my name
+	eureka := make(map[string]chan gotocol.Message, len(archaius.Conf.ZoneNames)*archaius.Conf.Regions) // service registry per zone and region
 	hist := collect.NewHist("")
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
 	eurekaTicker := time.NewTicker(ep)

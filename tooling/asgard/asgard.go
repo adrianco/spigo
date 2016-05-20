@@ -35,7 +35,7 @@ var (
 func CreateChannels() {
 	listener = make(chan gotocol.Message) // listener for architecture
 	noodles = make(map[string]chan gotocol.Message, archaius.Conf.Population)
-	eurekachan = make(map[string]chan gotocol.Message, 3*archaius.Conf.Regions)
+	eurekachan = make(map[string]chan gotocol.Message, len(archaius.Conf.ZoneNames)*archaius.Conf.Regions)
 }
 
 type mapchan map[string]chan gotocol.Message
@@ -60,7 +60,7 @@ func Create(servicename, packagename string, regions, count int, dependencies ..
 			//log.Printf("Create service: " + servicename)
 			cass := make(map[string]mapchan) // for token distribution
 			for i := r * count; i < (r+1)*count; i++ {
-				name = names.Make(arch, rnames[r], znames[i%3], servicename, packagename, i)
+				name = names.Make(arch, rnames[r], znames[i%len(archaius.Conf.ZoneNames)], servicename, packagename, i)
 				//log.Println(dependencies)
 				StartNode(name, dependencies...)
 				if packagename == "priamCassandra" {
@@ -148,7 +148,7 @@ func SendToName(name string, msg gotocol.Message) {
 // Start a node using the named package, and connect it to any dependencies
 func StartNode(name string, dependencies ...string) {
 	if names.Package(name) == EurekaPkg {
-		eurekachan[name] = make(chan gotocol.Message, archaius.Conf.Population/3) // buffer sized to a zone
+		eurekachan[name] = make(chan gotocol.Message, archaius.Conf.Population/len(archaius.Conf.ZoneNames)) // buffer sized to a zone
 		go eureka.Start(eurekachan[name], name)
 		return
 	} else {
@@ -224,7 +224,7 @@ func StartNode(name string, dependencies ...string) {
 func CreateEureka() {
 	// setup name service and cross zone replication links
 	znames := archaius.Conf.ZoneNames
-	Create("eureka", EurekaPkg, archaius.Conf.Regions, 3)
+	Create("eureka", EurekaPkg, archaius.Conf.Regions, len(archaius.Conf.ZoneNames))
 	for n, ch := range eurekachan {
 		var n1, n2 string
 		switch names.Zone(n) {
