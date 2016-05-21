@@ -38,7 +38,7 @@ $ ./spigo -h
 Usage of ./spigo:
   -a string
     	Architecture to create or read, fsm, migration, or read from json_arch/<arch>_arch.json (default "netflixoss")
-  -c	Collect to json_metrics csv_metricsand via http: extvars
+  -c	Collect metrics and flows to json_metrics csv_metrics neo4j and via http: extvars
   -cpuprofile string
     	Write cpu profile to file
   -cpus int
