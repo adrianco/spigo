@@ -88,7 +88,7 @@ $ compose2arch -file myarch.yaml > json_arch/myarch.json
 ```
 
 ### Next steps, papers and presentations
-[See this paper for some Occam code](misc/SkypeSim07.pdf) and results for the original version of this idea circa 2007.
+[See this paper for some Occam code](SkypeSim07.pdf) and results for the original version of this idea circa 2007.
 
 The public launch was during a short keynote presentation at the March 2015 O'Reilly Software Architecture Conference: [Monitoring Microservices - A Challenge](
 http://www.slideshare.net/adriancockcroft/software-architecture-monitoring-microservices-a-challenge) - 
