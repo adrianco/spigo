@@ -8,11 +8,15 @@ import (
 )
 
 var (
-	allocated [6][3]int
+	allocated [][]int
 	mapped    map[string]string
 )
 
 func init() {
+	allocated = make([][]int, len(archaius.Conf.RegionNames))
+	for i := range allocated {
+		allocated[i] = make([]int, len(archaius.Conf.ZoneNames))
+	}
 	mapped = make(map[string]string, archaius.Conf.Population)
 }
 

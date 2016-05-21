@@ -15,11 +15,11 @@ import (
 // Start the elb, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
 	microservices := ribbon.MakeRouter()
-	dependencies := make(map[string]time.Time)         // dependent services and time last updated
-	var parent chan gotocol.Message                    // remember how to talk back to creator
-	requestor := make(map[string]gotocol.Routetype)    // remember where requests came from when responding
-	var name string                                    // remember my name
-	eureka := make(map[string]chan gotocol.Message, 3) // service registry per zone
+	dependencies := make(map[string]time.Time)                                    // dependent services and time last updated
+	var parent chan gotocol.Message                                               // remember how to talk back to creator
+	requestor := make(map[string]gotocol.Routetype)                               // remember where requests came from when responding
+	var name string                                                               // remember my name
+	eureka := make(map[string]chan gotocol.Message, len(archaius.Conf.ZoneNames)) // service registry per zone
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
 	eurekaTicker := time.NewTicker(ep)
 	hist := collect.NewHist("")

@@ -18,14 +18,14 @@ import (
 // Start the denominator, all configuration and state is sent via messages
 func Start(listener chan gotocol.Message) {
 	microservices := ribbon.MakeRouter()
-	dependencies := make(map[string]time.Time)                               // dependent services and time last updated
-	var parent chan gotocol.Message                                          // remember how to talk back to creator
-	var name string                                                          // remember my name
-	nethist := collect.NewHist("")                                           // don't know name yet - message network latency
-	resphist := collect.NewHist("")                                          // response time history
-	servhist := collect.NewHist("")                                          // service time history
-	rthist := collect.NewHist("")                                            // round trip history
-	eureka := make(map[string]chan gotocol.Message, 3*archaius.Conf.Regions) // service registry per zone and region
+	dependencies := make(map[string]time.Time)                                                          // dependent services and time last updated
+	var parent chan gotocol.Message                                                                     // remember how to talk back to creator
+	var name string                                                                                     // remember my name
+	nethist := collect.NewHist("")                                                                      // don't know name yet - message network latency
+	resphist := collect.NewHist("")                                                                     // response time history
+	servhist := collect.NewHist("")                                                                     // service time history
+	rthist := collect.NewHist("")                                                                       // round trip history
+	eureka := make(map[string]chan gotocol.Message, len(archaius.Conf.ZoneNames)*archaius.Conf.Regions) // service registry per zone and region
 	var chatrate time.Duration
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
 	eurekaTicker := time.NewTicker(ep)

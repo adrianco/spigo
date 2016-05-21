@@ -21,9 +21,9 @@ func Start(listener chan gotocol.Message) {
 	dependencies := make(map[string]time.Time) // dependent services and time last updated
 	store := make(map[string]string, 4)        // key value store
 	store["why?"] = "because..."
-	var netflixoss chan gotocol.Message                // remember creator and how to talk back to incoming requests
-	var name string                                    // remember my name
-	eureka := make(map[string]chan gotocol.Message, 3) // service registry per zone
+	var netflixoss chan gotocol.Message                                           // remember creator and how to talk back to incoming requests
+	var name string                                                               // remember my name
+	eureka := make(map[string]chan gotocol.Message, len(archaius.Conf.ZoneNames)) // service registry per zone
 	hist := collect.NewHist("")
 	ep, _ := time.ParseDuration(archaius.Conf.EurekaPoll)
 	eurekaTicker := time.NewTicker(ep)
