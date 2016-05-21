@@ -34,7 +34,7 @@ func main() {
 	flag.BoolVar(&neo4jEnabled, "n", false, "Enable Neo4j logging of nodes and edges")
 	flag.BoolVar(&archaius.Conf.Msglog, "m", false, "Enable console logging of every message")
 	flag.BoolVar(&reload, "r", false, "Reload graph from json/<arch>.json to setup architecture")
-	flag.BoolVar(&archaius.Conf.Collect, "c", false, "Collect to json_metrics csv_metricsand via http: extvars")
+	flag.BoolVar(&archaius.Conf.Collect, "c", false, "Collect metrics and flows to json_metrics csv_metrics neo4j and via http: extvars")
 	flag.IntVar(&archaius.Conf.StopStep, "s", 0, "Sequence number to create multiple runs for ui to step through in json/<arch><s>.json")
 	flag.StringVar(&archaius.Conf.EurekaPoll, "u", "1s", "Polling interval for Eureka name service, increase for large populations")
 	flag.StringVar(&archaius.Conf.Keyvals, "kv", "", "Configuration key:value - chat:10ms sets default message insert rate")
