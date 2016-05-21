@@ -24,6 +24,13 @@ $ npm install
 $ npm run dev
 ```
 
+With a local install of the Neo4j graph database, you can write the graph into Neo4j with -n, and additionally write the flow data with -n -c. Subsections of the graph and flows can be viewed using Neo4j queries. The default local Neo4j instance is expected to be at localhost:7474, this can be overridden by setting NEO4JURL in the environment. The password must be set in the environment as well.
+```
+$ ./spigo -n
+2016/05/21 08:50:51 Neo4j requires environment variable NEO4JPASSWORD is set
+```
+![neo4j dependency graph](tooling/graphneo4j/neo4jnetflix.png)
+
 ### Running the simulation to generate new visualizations and metrics
 
 ```
@@ -44,6 +51,7 @@ Usage of ./spigo:
   -kv string
     	Configuration key:value - chat:10ms sets default message insert rate
   -m	Enable console logging of every message
+  -n	Enable Neo4j logging of nodes and edges
   -p int
     	Pirate population for fsm or scale factor % for other architectures (default 100)
   -r	Reload graph from json/<arch>.json to setup architecture
