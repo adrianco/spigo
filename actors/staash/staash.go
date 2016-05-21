@@ -96,6 +96,7 @@ func Start(listener chan gotocol.Message) {
 						}
 					}
 				}
+				//log.Printf("%v: %v route: %v", name, msg.Context, r)
 			case gotocol.GetResponse:
 				// return path from a request, resend or send payload back up using saved span context - server send
 				r := gotocol.PickRoute(requestor, msg)
