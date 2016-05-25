@@ -42,7 +42,13 @@ func main() {
 	flag.IntVar(&cpucount, "cpus", runtime.NumCPU(), "Number of CPUs for Go runtime")
 	runtime.GOMAXPROCS(cpucount)
 	var cpuprofile = flag.String("cpuprofile", "", "Write cpu profile to file")
+	var confFile = flag.String("config", "", "Config file to read from json_arch/<config>_conf.json. This config overrides any other command-line arguments.")
+	var saveConfFile = flag.Bool("saveconfig", false, "Save config file to json_arch/<arch>_conf.json, using the arch name from -a.")
 	flag.Parse()
+
+	if *confFile != "" {
+		archaius.ReadConf(*confFile)
+	}
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)
 		if err != nil {
@@ -81,6 +87,11 @@ func main() {
 		edda.Logchan = make(chan gotocol.Message, 1000)
 	}
 	archaius.Conf.RunDuration = time.Duration(duration) * time.Second
+
+	if *saveConfFile {
+		archaius.WriteConf()
+	}
+
 	// start up the selected architecture
 	go edda.Start(archaius.Conf.Arch + ".edda") // start edda first
 	if reload {

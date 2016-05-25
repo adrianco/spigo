@@ -4,61 +4,64 @@ package archaius
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
 	"strings"
 	"time"
 )
 
 type Configuration struct {
 	// Arch names the architecture pattern being simulated
-	Arch string `json:"arch,omitempty"`
+	Arch string `json:"arch"`
 
 	// GraphmlFile is set to a filename to turn on GraphML logging
-	GraphmlFile string `json:"graphmlfile,omitempty"`
+	GraphmlFile string `json:"graphmlfile"`
 
 	// GraphjsonFile is set to a filename to turn on GraphML logging
-	GraphjsonFile string `json:"graphjsonfile,omitempty"`
+	GraphjsonFile string `json:"graphjsonfile"`
 
 	// Neo4jURL is pointed at a database instance to turn on GraphML logging
-	Neo4jURL string `json:"neo4jurl,omitempty"`
+	Neo4jURL string `json:"neo4jurl"`
 
 	// RunDuration is the time in seconds to let the microservices chat
-	RunDuration time.Duration `json:"runduration,omitempty"`
+	RunDuration time.Duration `json:"runduration"`
 
 	// Dunbar is a population scale factor
-	Dunbar int `json:"dunbar,omitempty"`
+	Dunbar int `json:"dunbar"`
 
 	// Population is the number of microservices in a network
-	Population int `json:"population,omitempty"`
+	Population int `json:"population"`
 
 	// Msglog if true, log each message received on the console
-	Msglog bool `json:"msglog",omitempty"`
+	Msglog bool `json:"msglog"`
 
 	// Regions is the number of regions to create
-	Regions int `json:"regions,omitempty"`
+	Regions int `json:"regions"`
 
 	// RegionNames is the default names of the regions
-	RegionNames []string `json:"regionnames,omitempty"`
+	RegionNames []string `json:"regionnames"`
 
 	// IPRanges maps an IP address range to each region and zone
-	IPRanges [][]string `json:"ipranges,omitempty"`
+	IPRanges [][]string `json:"ipranges"`
 
 	// ZoneNames is the default names of the zones
-	ZoneNames []string `json:"zonenames,omitempty"`
+	ZoneNames []string `json:"zonenames"`
 
 	// Collect turns on Metrics collection
-	Collect bool `json:"collect,omitempty"`
+	Collect bool `json:"collect"`
 
 	// StopStep stops building new microservices at this step, 0 means don't stop
-	StopStep int `json:"stopstep,omitempty"`
+	StopStep int `json:"stopstep"`
 
 	// EurekaPoll interval in seconds
-	EurekaPoll string `json:"eurekapoll,omitempty"`
+	EurekaPoll string `json:"eurekapoll"`
 
 	// Filter spec for output names to simplify graph
-	Filter bool `json:"filter",omitempty"`
+	Filter bool `json:"filter"`
 
 	// Keys and values for configuring services, passed in as one string
-	Keyvals string `json:"keyvals",omitempty"`
+	Keyvals string `json:"keyvals"`
 }
 
 var Conf = Configuration{
@@ -71,19 +74,23 @@ var Conf = Configuration{
 		[]string{"54.93.", "54.28.", "54.78."},    // Frankfurt eu-central-1 actual AWS IP/16 ranges plus 54.78  stolen from Ireland
 		[]string{"54.251.", "54.254.", "54.255."}, // Singapore ap-southeast-1 actual AWS IP/16 ranges
 		[]string{"54.252.", "54.253.", "54.206."}, // Australia ap-southeast-2 actual AWS IP/16 ranges
-	},
+},
+}
+
+func init() {
+	verifyConfig()
 }
 
 // verify the sizes of arrays above are equal at runtime
-func init() {
-    if len(Conf.RegionNames) != len(Conf.IPRanges) {
-        panic(fmt.Sprintf("RegionNames count (%d) does not match IPRanges count (%d)", len(Conf.RegionNames), len(Conf.IPRanges)))
-    }
-    for i := range Conf.IPRanges {
-        if len(Conf.ZoneNames) != len(Conf.IPRanges[i]) {
-            panic(fmt.Sprintf("ZoneNames count (%d) does not match IPRanges[%d] count (%d)", len(Conf.ZoneNames), i, len(Conf.IPRanges[i])))
-        }
-    }
+func verifyConfig() {
+	if len(Conf.RegionNames) != len(Conf.IPRanges) {
+		log.Fatal(fmt.Sprintf("RegionNames count (%d) does not match IPRanges count (%d)", len(Conf.RegionNames), len(Conf.IPRanges)))
+	}
+	for i := range Conf.IPRanges {
+		if len(Conf.ZoneNames) != len(Conf.IPRanges[i]) {
+			log.Fatal(fmt.Sprintf("ZoneNames count (%d) does not match IPRanges[%d] count (%d)", len(Conf.ZoneNames), i, len(Conf.IPRanges[i])))
+		}
+	}
 }
 
 // find a value given a key
@@ -99,9 +106,33 @@ func Key(c Configuration, k string) string {
 	}
 }
 
+// ReadConf parses json from a file
+func ReadConf(config string) {
+	fn := "json_arch/" + config + "_conf.json"
+	log.Println("Loading config from " + fn)
+	data, err := ioutil.ReadFile(fn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	FromJson(data)
+	verifyConfig()
+}
+
+// WriteConf saves json to a file
+func WriteConf() {
+	fn := "json_arch/" + Conf.Arch + "_conf.json"
+	log.Println("Saving config to " + fn)
+	f, err := os.Create(fn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	f.WriteString(string(AsJson()))
+	f.Close()
+}
+
 // return current config as json
 func AsJson() []byte {
-	confJSON, _ := json.Marshal(Conf)
+	confJSON, _ := json.MarshalIndent(Conf, "", "    ")
 	return confJSON
 }
 
