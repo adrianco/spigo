@@ -7,6 +7,7 @@ cd tooling/dhcp;go test;cd ../..
 cd tooling/flow;go test;cd ../..
 cd tooling/gotocol;go test;cd ../..
 cd tooling/graphjson;go test;cd ../..
+cd tooling/graphneo4j;go test;cd ../..
 cd tooling/names;go test;cd ../..
 cd tooling/ribbon;go test;cd ../..
 cd tooling/usl;go test;cd ../..
