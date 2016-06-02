@@ -95,6 +95,11 @@ $ cd compose2arch; go install
 $ compose2arch -file myarch.yaml > json_arch/myarch.json
 ```
 
+### Contributing and forking Spigo/SimianViz
+Here's a [useful guide to managing forked go programs](http://code.openark.org/blog/development/forking-golang-repositories-on-github-and-managing-the-import-path) on github. Thanks to [Kurt](https://github.com/kkemple), [Priya](https://github.com/hubayirp) and [Henri](https://github.com/hvandenb) for their initial contributions and advice.
+
+Ideas for future enhancements and interfaces have been accumulated as Issues, [please take a look there](https://github.com/adrianco/spigo/issues) and feel free to add your own comments and ideas, or go ahead and implement something.
+
 ### Next steps, papers and presentations
 [See this paper for some Occam code](SkypeSim07.pdf) and results for the original version of this idea circa 2007.
 
