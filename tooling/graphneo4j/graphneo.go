@@ -34,7 +34,7 @@ func Setup(neo4jurl string) {
 	}
 	db = tmp
 	// clean out any previous nodes and edges for this arch step
-	Write(fmt.Sprintf("MATCH (n:%v)\nOPTIONAL MATCH (n)-[r]-()\nDELETE n,r", ss))
+	Write(fmt.Sprintf("MATCH (n:%v)\nOPTIONAL MATCH (n)-[r]-() DELETE n,r", ss))
 }
 
 // Write an entry to the database
@@ -88,7 +88,7 @@ func WriteEdge(fromTo string, t time.Time) {
 	var source, target string
 	fmt.Sscanf(fromTo, "%s%s", &source, &target) // two space delimited names
 	tstamp := t.Format(time.RFC3339Nano)
-	Write(fmt.Sprintf("MATCH (from:%v:%v {name: %q}), (to:%v:%v {name: %q})\nCREATE (from)-[:CONN {arch:%q, timestamp:%q}]->(to)", ss, names.Service(source), names.Instance(source), ss, names.Service(target), names.Instance(target), ss, tstamp))
+	Write(fmt.Sprintf("MATCH (from:%v:%v {name: %q}), (to:%v:%v {name: %q}) CREATE (from)-[:CONN {arch:%q, timestamp:%q}]->(to)", ss, names.Service(source), names.Instance(source), ss, names.Service(target), names.Instance(target), ss, tstamp))
 }
 
 // record messages in neo4j as well as zipkin
@@ -99,7 +99,7 @@ func WriteFlow(source, target, call string, tnano int64, trace gotocol.TraceCont
 	if epoch == 0 {
 		epoch = tnano
 	}
-	Write(fmt.Sprintf("MATCH (from:%v:%v {name: %q}), (to:%v:%v {name: %q})\nCREATE (from)-[:%v {arch:%q, timenano:%v, trace:%v}]->(to)", ss, names.Service(source), names.Instance(source), ss, names.Service(target), names.Instance(target), call, ss, tnano-epoch, trace))
+	Write(fmt.Sprintf("MATCH (from:%v:%v {name: %q}), (to:%v:%v {name: %q}) CREATE (from)-[:%v {arch:%q, timenano:%v, trace:%v}]->(to)", ss, names.Service(source), names.Instance(source), ss, names.Service(target), names.Instance(target), call, ss, tnano-epoch, trace))
 }
 
 // WriteForget writes the forgotten edge to a file given a space separated edge id, from and to node names

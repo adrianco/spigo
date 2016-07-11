@@ -2,7 +2,7 @@
     "arch": "lamp",
     "description":"Simple LAMP stack",
     "version": "arch-0.0",
-    "victim": "webserver",
+    "victim": "",
     "services": [
         { "name": "rds-mysql",     "package": "store",       "count": 2,  "regions": 1, "dependencies": [] },
 	{ "name": "memcache",      "package": "store",       "count": 1,  "regions": 1, "dependencies": [] },
