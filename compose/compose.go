@@ -76,7 +76,7 @@ func ReadComposeV2(fn string) *ComposeV2Yaml {
 				case string:
 					c2.Version = version
 				default:
-					log.Println("Version not a string: %v", section)
+					log.Printf("Version not a string: %v", section)
 					return nil
 				}
 			case "services":
@@ -133,7 +133,7 @@ func ReadComposeV2(fn string) *ComposeV2Yaml {
 						}
 					}
 				default:
-					log.Println("Couldn't find services in %v", services)
+					log.Printf("Couldn't find services in %v", services)
 				}
 				c2.Services = cs
 			case "networks":
