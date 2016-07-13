@@ -135,7 +135,7 @@ func (msg Message) String() string {
 	return fmt.Sprintf("gotocol: %v %v %v %v", time.Since(msg.Sent), msg.Ctx, msg.Imposition, msg.Intention)
 }
 
-// Routing information from a message
+// Routetype information from a message
 type Routetype struct {
 	Ctx          Context
 	ResponseChan chan Message

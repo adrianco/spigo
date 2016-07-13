@@ -1,4 +1,4 @@
-// Package Collect throughput and response times using Go-Kit Metrics
+// Package collect throughput and response times using Go-Kit Metrics
 package collect
 
 import (
@@ -116,6 +116,7 @@ func SaveAllGuesses(name string) {
 	SaveGuess(g, "json_metrics/"+names.Arch(name))
 }
 
+// Save currently does nothing
 func Save() {
 	//	if archaius.Conf.Collect {
 	//		file, _ := os.Create("csv_metrics/" + archaius.Conf.Arch + "_metrics.csv")
@@ -127,6 +128,7 @@ func Save() {
 	//	}
 }
 
+// Serve on a port
 func Serve(port int) {
 	sock, err := net.Listen("tcp", fmt.Sprintf("localhost:%v", port))
 	if err != nil {

@@ -1,4 +1,4 @@
-// Package Ribbon is named after the NetflixOSS routing and load balancing project, functions for routing traffic
+// Package ribbon is named after the NetflixOSS routing and load balancing project, functions for routing traffic
 package ribbon
 
 import (

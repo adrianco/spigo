@@ -1,5 +1,4 @@
 // Package names creates and accesses the nanoservice naming hierarchy
-
 package names
 
 import (
@@ -32,6 +31,7 @@ func Splitter(name string, offset hier) string {
 	return ""
 }
 
+// Filters for different use cases
 const (
 	FilterDefault   = "*..*.*.*.*"
 	FilterReduce    = "*.*.*.*.."
@@ -121,7 +121,7 @@ func Zone(name string) string {
 	return Splitter(name, zone)
 }
 
-// OtherZones, given one
+// OtherZones given one
 func OtherZones(name string, znames []string) []string {
 	var nz []string
 	for _, z := range znames {

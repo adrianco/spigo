@@ -18,5 +18,5 @@ const (
 	CachePkg          = "cache"
 )
 
-//array of package names
+// Packages array of names
 var Packages = []string{EurekaPkg, PiratePkg, ElbPkg, DenominatorPkg, ZuulPkg, KaryonPkg, MonolithPkg, StaashPkg, PriamCassandraPkg, StorePkg, RiakPkg, VolumePkg, CachePkg}

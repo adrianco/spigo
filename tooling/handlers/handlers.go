@@ -21,9 +21,8 @@ func DebugContext(ctx gotocol.Context) gotocol.Context {
 		}
 		// next step of an existing trace
 		return ctx.NewParent()
-	} else {
-		return gotocol.NilContext
 	}
+	return gotocol.NilContext
 }
 
 // Inform default handler for Inform message
