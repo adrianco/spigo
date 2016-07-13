@@ -1,4 +1,4 @@
-// Collect throughput and response times using Go-Kit Metrics
+// Package Collect throughput and response times using Go-Kit Metrics
 package collect
 
 import (
@@ -25,6 +25,7 @@ const (
 var sampleMap map[metrics.Histogram][]int64
 var sampleLock sync.Mutex
 
+// NewHist creates a new histogram
 func NewHist(name string) metrics.Histogram {
 	var h metrics.Histogram
 	if name != "" && archaius.Conf.Collect {
@@ -40,6 +41,7 @@ func NewHist(name string) metrics.Histogram {
 	return nil
 }
 
+// Measure adds a measurement to a histogram collection
 func Measure(h metrics.Histogram, d time.Duration) {
 	if h != nil && archaius.Conf.Collect {
 		if d > maxHistObservable {
@@ -51,12 +53,12 @@ func Measure(h metrics.Histogram, d time.Duration) {
 		s := sampleMap[h]
 		if s != nil && len(s) < sampleCount {
 			sampleMap[h] = append(s, int64(d))
-		sampleLock.Unlock()
+			sampleLock.Unlock()
 		}
 	}
 }
 
-// have to pass in name because metrics.Histogram blocks expvar.Histogram.Name()
+// SaveHist passes in name because metrics.Histogram blocks expvar.Histogram.Name()
 func SaveHist(h metrics.Histogram, name, suffix string) {
 	if archaius.Conf.Collect {
 		file, err := os.Create("csv_metrics/" + names.Arch(name) + "_" + names.Instance(name) + suffix + ".csv")
@@ -68,6 +70,7 @@ func SaveHist(h metrics.Histogram, name, suffix string) {
 	}
 }
 
+// SaveAllGuesses writes guesses to a file
 func SaveAllGuesses(name string) {
 	if len(sampleMap) == 0 {
 		return

@@ -106,13 +106,12 @@ func ReadArch(arch string) *archV0r1 {
 		}
 		log.Printf("Architecture: %v %v\n", a.Arch, a.Description)
 		return a
-	} else {
-		log.Fatal(e)
-		return nil
 	}
+	log.Fatal(e)
+	return nil
 }
 
-// Make a new architecture object
+// MakeArch returns a new architecture object
 func MakeArch(arch, des string) *archV0r1 {
 	a := new(archV0r1)
 	a.Arch = arch
@@ -124,6 +123,7 @@ func MakeArch(arch, des string) *archV0r1 {
 	return a
 }
 
+// AddContainer creates a new container level  service
 func AddContainer(a *archV0r1, name, machine, instance, container, process, gopackage string, regions, count int, dependencies []string) {
 	var c containerV0r0
 	c.Name = name
@@ -138,6 +138,7 @@ func AddContainer(a *archV0r1, name, machine, instance, container, process, gopa
 	a.Services = append(a.Services, c)
 }
 
+// Write coverts the architecture to json and writes to stdout
 func Write(a *archV0r1) {
 	b, err := json.Marshal(a)
 	if err != nil {
@@ -147,6 +148,7 @@ func Write(a *archV0r1) {
 	}
 }
 
+// WriteFile writes the architecture to a file in json format
 func WriteFile(a *archV0r1, fn string) {
 	dfile, err := os.Create(fn + ".json")
 	if err != nil {

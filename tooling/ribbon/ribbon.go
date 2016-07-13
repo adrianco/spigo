@@ -1,4 +1,4 @@
-//Ribbon is named after the NetflixOSS routing and load balancing project, functions for routing traffic
+// Package Ribbon is named after the NetflixOSS routing and load balancing project, functions for routing traffic
 package ribbon
 
 import (
@@ -8,12 +8,13 @@ import (
 	"time"
 )
 
+// Router tracks times and channels
 type Router struct {
 	routes  map[string]chan gotocol.Message
 	updated map[string]time.Time // dependent services and time last updated
 }
 
-// Make a new Router with map initialized
+// MakeRouter with maps initialized
 func MakeRouter() *Router {
 	var r *Router
 	r = new(Router)
@@ -22,7 +23,7 @@ func MakeRouter() *Router {
 	return r
 }
 
-// Size of routing table
+// Len of routing table
 func (r *Router) Len() int {
 	return len(r.routes)
 }
@@ -42,7 +43,7 @@ func (r *Router) Remove(name string) {
 	delete(r.updated, name)
 }
 
-// Return a random channel from the routing table
+// Random channel from the routing table
 func (r *Router) Random() chan gotocol.Message {
 	lr := len(r.routes)
 	if lr == 0 {
@@ -52,14 +53,13 @@ func (r *Router) Random() chan gotocol.Message {
 	for _, c := range r.routes {
 		if n == 0 {
 			return c
-		} else {
-			n--
 		}
+		n--
 	}
 	return nil // the table was empty
 }
 
-// Return all routes that match a package
+// All routes that match a package
 func (r *Router) All(p string) *Router {
 	packroutes := MakeRouter()
 	var t time.Time
@@ -76,12 +76,12 @@ func (r *Router) Pick(p string) chan gotocol.Message {
 	return r.All(p).Random()
 }
 
-// Pick a specific entry and return that channel from the routing table
+// Named entry find and return that channel from the routing table
 func (r *Router) Named(n string) chan gotocol.Message {
 	return r.routes[n]
 }
 
-// Find the name corresponding to a channel
+// NameChan find the name corresponding to a channel
 func (r *Router) NameChan(ch chan gotocol.Message) string {
 	for n, c := range r.routes {
 		if ch == c {
@@ -91,10 +91,10 @@ func (r *Router) NameChan(ch chan gotocol.Message) string {
 	return ""
 }
 
-// Return all the names
+// Names return all
 func (r *Router) Names() (ns []string) {
 	ns = make([]string, 0, 10)
-	for n, _ := range r.routes {
+	for n := range r.routes {
 		ns = append(ns, n)
 	}
 	return ns

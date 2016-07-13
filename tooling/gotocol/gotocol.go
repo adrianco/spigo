@@ -71,10 +71,10 @@ func (imps Impositions) String() string {
 	return "Unknown"
 }
 
-// trace type needs to be exported for flow package map. For production scale use this should be 64bit, for spigo it seems ok with 32.
+// TraceContextType needs to be exported for flow package map. For production scale use this should be 64bit, for spigo it seems ok with 32.
 type TraceContextType uint32 // needs to match type conversions in func increment below
 
-// context for capturing dapper/zipkin style traces
+// Context for capturing dapper/zipkin style traces
 type Context struct {
 	Trace, Parent, Span TraceContextType
 }
@@ -84,7 +84,7 @@ func (ctx Context) String() string {
 	return fmt.Sprintf("t%vp%vs%v", ctx.Trace, ctx.Parent, ctx.Span)
 }
 
-// string formatter for routing part of context
+// Route string formatter for routing part of context
 func (ctx Context) Route() string {
 	return fmt.Sprintf("t%vp%v", ctx.Trace, ctx.Parent)
 }
@@ -97,7 +97,7 @@ func increment(tc *TraceContextType) TraceContextType {
 	return TraceContextType(atomic.AddUint32((*uint32)(tc), 1))
 }
 
-// Start a new trace using atomic increment
+// NewTrace using atomic increment
 func NewTrace() Context {
 	var ctx Context
 	//ctx.Trace = rand.Uint32()
@@ -107,19 +107,19 @@ func NewTrace() Context {
 	return ctx
 }
 
-// Updating to get a new span for an existing request and parent
+// AddSpan updates to get a new span for an existing request and parent
 func (ctx Context) AddSpan() Context {
 	ctx.Span = increment(&spanner)
 	return ctx
 }
 
-// setup the parent by promoting incoming span id, and get a new spanid
+// NewParent sets up the parent by promoting incoming span id, and get a new spanid
 func (ctx Context) NewParent() Context {
 	ctx.Parent = ctx.Span
 	return ctx.AddSpan()
 }
 
-// make an empty context, can't figure out how to make this a const
+// NilContext makes an empty context, I can't figure out how to make this a const
 var NilContext Context
 
 // Message structure used for all messages, includes a channel of itself
@@ -142,7 +142,7 @@ type Routetype struct {
 	State        int // state machine for managing responses
 }
 
-// extract routing information from a message
+// Route extracts routing information from a message
 func (msg Message) Route() Routetype {
 	var r Routetype
 	r.Ctx = msg.Ctx
@@ -150,7 +150,7 @@ func (msg Message) Route() Routetype {
 	return r
 }
 
-// use a message to extract route from routing map
+// PickRoute uses a message context to extract route from routing map
 func PickRoute(rmap map[string]Routetype, msg Message) Routetype {
 	return rmap[msg.Ctx.Route()]
 }

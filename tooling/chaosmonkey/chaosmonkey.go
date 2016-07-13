@@ -1,4 +1,4 @@
-// package chaosmonkey deletes nodes
+// Package chaosmonkey deletes nodes
 package chaosmonkey
 
 import (

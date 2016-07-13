@@ -1,4 +1,4 @@
-// package archaius holds all configuration information, named after the netflixoss project
+// Package archaius holds all configuration information, named after the netflixoss project
 package archaius
 
 import (
@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// Global configuration information for spigo
 type Configuration struct {
 	// Arch names the architecture pattern being simulated
 	Arch string `json:"arch"`
@@ -64,17 +65,18 @@ type Configuration struct {
 	Keyvals string `json:"keyvals"`
 }
 
+// Configuration data instance
 var Conf = Configuration{
 	RegionNames: []string{"us-east-1", "us-west-2", "eu-west-1", "eu-central-1", "ap-southeast-1", "ap-southeast-2"},
 	ZoneNames:   []string{"zoneA", "zoneB", "zoneC"},
 	IPRanges: [][]string{
-		[]string{"54.198.", "54.221.", "50.19."},  // Virginia us-east-1 actual AWS IP/16 ranges
-		[]string{"54.245.", "54.244.", "54.214."}, // Oregon us-west-2 actual AWS IP/16 ranges
-		[]string{"54.247.", "54.246.", "54.288."}, // Ireland eu-west-1 actual AWS IP/16 ranges
-		[]string{"54.93.", "54.28.", "54.78."},    // Frankfurt eu-central-1 actual AWS IP/16 ranges plus 54.78  stolen from Ireland
-		[]string{"54.251.", "54.254.", "54.255."}, // Singapore ap-southeast-1 actual AWS IP/16 ranges
-		[]string{"54.252.", "54.253.", "54.206."}, // Australia ap-southeast-2 actual AWS IP/16 ranges
-},
+		{"54.198.", "54.221.", "50.19."},  // Virginia us-east-1 actual AWS IP/16 ranges
+		{"54.245.", "54.244.", "54.214."}, // Oregon us-west-2 actual AWS IP/16 ranges
+		{"54.247.", "54.246.", "54.288."}, // Ireland eu-west-1 actual AWS IP/16 ranges
+		{"54.93.", "54.28.", "54.78."},    // Frankfurt eu-central-1 actual AWS IP/16 ranges plus 54.78  stolen from Ireland
+		{"54.251.", "54.254.", "54.255."}, // Singapore ap-southeast-1 actual AWS IP/16 ranges
+		{"54.252.", "54.253.", "54.206."}, // Australia ap-southeast-2 actual AWS IP/16 ranges
+	},
 }
 
 func init() {
@@ -93,7 +95,7 @@ func verifyConfig() {
 	}
 }
 
-// find a value given a key
+// Key finds a value given a key
 func Key(c Configuration, k string) string {
 	if c.Keyvals == "" {
 		return ""
@@ -101,9 +103,8 @@ func Key(c Configuration, k string) string {
 	kv := strings.Split(c.Keyvals, ":")
 	if len(kv) == 2 && kv[0] == k {
 		return kv[1]
-	} else {
-		return ""
 	}
+	return ""
 }
 
 // ReadConf parses json from a file
@@ -130,12 +131,13 @@ func WriteConf() {
 	f.Close()
 }
 
-// return current config as json
+// AsJson returns current config as json
 func AsJson() []byte {
 	confJSON, _ := json.MarshalIndent(Conf, "", "    ")
 	return confJSON
 }
 
+// FromJson imports a config from json
 func FromJson(confJSON []byte) {
 	json.Unmarshal(confJSON, &Conf)
 }

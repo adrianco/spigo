@@ -1,6 +1,7 @@
-// name definitions for packages that simulate behaviors
+// Package packagenames has name definitions for packages that simulate behaviors
 package packagenames
 
+// string names for packages
 const (
 	EurekaPkg         = "eureka"
 	PiratePkg         = "pirate"
@@ -17,4 +18,5 @@ const (
 	CachePkg          = "cache"
 )
 
-var 	Packages = []string{EurekaPkg, PiratePkg, ElbPkg, DenominatorPkg, ZuulPkg, KaryonPkg, MonolithPkg, StaashPkg, PriamCassandraPkg, StorePkg, RiakPkg, VolumePkg, CachePkg}
+//array of package names
+var Packages = []string{EurekaPkg, PiratePkg, ElbPkg, DenominatorPkg, ZuulPkg, KaryonPkg, MonolithPkg, StaashPkg, PriamCassandraPkg, StorePkg, RiakPkg, VolumePkg, CachePkg}

@@ -80,7 +80,7 @@ func Start(listener chan gotocol.Message) {
 				return
 			}
 		case <-eurekaTicker.C: // check to see if any new dependencies have appeared
-			for dep, _ := range dependencies {
+			for dep := range dependencies {
 				for _, ch := range eureka {
 					ch <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NilContext, dep}
 				}

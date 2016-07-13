@@ -13,6 +13,7 @@ import (
 	"time"
 )
 
+// Wg waitgroup to pause for termination
 var Wg sync.WaitGroup
 
 // metadata about a registered service

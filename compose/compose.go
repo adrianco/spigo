@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-// Compose V1 Attribute maps to attributes of a microservice
+// ComposeAttributes V1  maps to attributes of a microservice
 type ComposeAttributes struct {
 	Build    string   `yaml:"build,omitempty"`
 	Image    string   `yaml:"image,omitempty"`
@@ -23,10 +23,10 @@ type ComposeAttributes struct {
 	Networks []string `yaml:"networks,omitempty"`
 }
 
-// Compose type to extract interesting data from compose yaml version 1 file
+// ComposeServices type to extract interesting data from compose yaml version 1 file
 type ComposeServices map[string]ComposeAttributes
 
-// Compose type to extract interesting data from compose yaml version 2 file
+// ComposeV2Yaml type to extract interesting data from compose yaml version 2 file
 type ComposeV2Yaml struct {
 	Version  string                 `yaml:"2,omitempty"`
 	Services ComposeServices        `yaml:"services,omitempty"`
@@ -34,7 +34,7 @@ type ComposeV2Yaml struct {
 	Volumes  map[string]interface{} `yaml:"volumes,omitempty"`
 }
 
-// ReadCompose
+// ReadCompose unmarshalls services from a yaml file
 func ReadCompose(fn string) ComposeServices {
 	data, err := ioutil.ReadFile(fn)
 	if err != nil {
@@ -44,13 +44,12 @@ func ReadCompose(fn string) ComposeServices {
 	e := yaml.Unmarshal(data, &c)
 	if e == nil {
 		return c
-	} else {
-		log.Println(e)
-		return nil
 	}
+	log.Println(e)
+	return nil
 }
 
-// ReadCompose for V2
+// ReadComposeV2 unmarshalls services from a compose V2 yaml file
 func ReadComposeV2(fn string) *ComposeV2Yaml {
 	file, err := os.Open(fn)
 	if err != nil {
@@ -175,6 +174,7 @@ func ReadComposeV2(fn string) *ComposeV2Yaml {
 	return c2
 }
 
+//ComposeArch  makes an architecture from a compose V2 yaml format
 func ComposeArch(name string, c *ComposeV2Yaml) {
 	a := architecture.MakeArch(name, "compose yaml")
 	nets := make(map[string][]string)
@@ -219,10 +219,10 @@ func ComposeArch(name string, c *ComposeV2Yaml) {
 			architecture.AddContainer(a, "www-"+n, "external", "", "", "", "denominator", 0, 0, extlink)
 		}
 	}
-	for n, _ := range c.Networks {
+	for n := range c.Networks {
 		architecture.AddContainer(a, n, "network", "", "", "", "elb", 1, 0, nets[n])
 	}
-	for n, _ := range c.Volumes {
+	for n := range c.Volumes {
 		architecture.AddContainer(a, n, "volume", "", "", "", "store", 1, 0, nil)
 	}
 	architecture.WriteFile(a, name)

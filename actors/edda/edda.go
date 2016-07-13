@@ -18,6 +18,8 @@ import (
 // Logchan is a buffered channel for sending logging messages to, or nil if logging is off
 // Created before edda starts so that messages can be buffered without depending on edda schedule
 var Logchan chan gotocol.Message
+
+// Wg is a waitgroup so whoever starts edda can wait for it to finish logging before it shuts down
 var Wg sync.WaitGroup
 
 // Start edda, to listen for logging data from services

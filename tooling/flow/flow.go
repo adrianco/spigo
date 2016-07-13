@@ -1,4 +1,4 @@
-// package flow processes gotocol context information to collect and export request flows across the system
+// Package flow processes gotocol context information to collect and export request flows across the system
 package flow
 
 import (
@@ -18,9 +18,10 @@ import (
 	"time"
 )
 
-// value for zipkin span direction
+// Values for zipkin span direction
 type Values int
 
+// Zipkin annotation tags
 const (
 	CS      Values = iota // client send
 	SR                    // server receive
@@ -58,7 +59,7 @@ type spannotype struct {
 	Value     string `json:"value"`      // direction of span
 }
 
-// sortable spans
+// ByCtx sortable spans
 type ByCtx []*spannotype
 
 func (a ByCtx) Len() int             { return len(a) }
@@ -66,9 +67,8 @@ func (a ByCtx) Swap(i, j int)        { a[i], a[j] = a[j], a[i] }
 func (a ByCtx) Less(i, j int) bool { // sort by span first then time
 	if a[i].Ctx == a[j].Ctx {
 		return a[i].Timestamp < a[j].Timestamp
-	} else {
-		return a[i].Ctx < a[j].Ctx
 	}
+	return a[i].Ctx < a[j].Ctx
 }
 
 var flowmap flowmaptype
@@ -101,7 +101,7 @@ func annotate(msg gotocol.Message, name string, t time.Time, resp, others Values
 	return annotation
 }
 
-// Annotate service activity when receiving a message
+// AnnotateReceive service activity when receiving a message
 func AnnotateReceive(msg gotocol.Message, name string, received time.Time) {
 	if !archaius.Conf.Collect {
 		return
@@ -118,7 +118,7 @@ func AnnotateReceive(msg gotocol.Message, name string, received time.Time) {
 	return
 }
 
-// Annotate service sends on a flow
+// AnnotateSend service sends on a flow
 func AnnotateSend(msg gotocol.Message, name string) {
 	if !archaius.Conf.Collect {
 		return
@@ -129,7 +129,7 @@ func AnnotateSend(msg gotocol.Message, name string) {
 	return
 }
 
-// Terminate a flow, flushing output and freeing the request id to keep the map smaller
+// End a flow, flushing output and freeing the request id to keep the map smaller
 func End(msg gotocol.Message, resphist, servhist, rthist metrics.Histogram) {
 	if !archaius.Conf.Collect {
 		return
@@ -255,6 +255,7 @@ type zipkinspan struct {
 	Annotations []zipkinannotation `json:"annotations"`
 }
 
+// WriteZip stores zipkin as json
 func WriteZip(zip zipkinspan) {
 	j, err := json.Marshal(zip)
 	if err != nil {
@@ -299,7 +300,7 @@ func Flush(t gotocol.TraceContextType, trace []*spannotype) {
 	WriteZip(zip)
 }
 
-// common code for instrumenting requests
+// Instrument common code for requests
 func Instrument(msg gotocol.Message, name string, hist metrics.Histogram) {
 	received := time.Now()
 	collect.Measure(hist, received.Sub(msg.Sent))

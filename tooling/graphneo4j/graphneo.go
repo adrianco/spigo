@@ -8,7 +8,7 @@ import (
 	"github.com/adrianco/spigo/tooling/dhcp"
 	"github.com/adrianco/spigo/tooling/gotocol"
 	"github.com/adrianco/spigo/tooling/names"
-	_ "gopkg.in/cq.v1"
+	_ "gopkg.in/cq.v1" // cq used without package prefix
 	"log"
 	"os"
 	"time"
@@ -91,7 +91,7 @@ func WriteEdge(fromTo string, t time.Time) {
 	Write(fmt.Sprintf("MATCH (from:%v:%v {name: %q}), (to:%v:%v {name: %q}) CREATE (from)-[:CONN {arch:%q, timestamp:%q}]->(to)", ss, names.Service(source), names.Instance(source), ss, names.Service(target), names.Instance(target), ss, tstamp))
 }
 
-// record messages in neo4j as well as zipkin
+// WriteFlow records messages in neo4j as well as zipkin
 func WriteFlow(source, target, call string, tnano int64, trace gotocol.TraceContextType) {
 	if Enabled == false {
 		return

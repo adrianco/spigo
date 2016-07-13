@@ -1,4 +1,4 @@
-// provide individual IP addresses by name, simulating dhcp
+// Package dhcp provides individual IP addresses by name, simulating dhcp
 package dhcp
 
 import (
@@ -20,6 +20,7 @@ func init() {
 	mapped = make(map[string]string, archaius.Conf.Population)
 }
 
+// Lookup a name and return the IP address for that name
 func Lookup(name string) string {
 	ip := mapped[name]
 	if ip != "" {

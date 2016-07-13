@@ -1,4 +1,4 @@
-// package handlers contains common code used for message handling
+// Package handlers contains common code used for message handling
 package handlers
 
 import (
@@ -11,23 +11,22 @@ import (
 	"time"
 )
 
-// Turn on debug context logging for eureka and edda messages
+// DebugContext turns on debug context logging for eureka and edda messages
 func DebugContext(ctx gotocol.Context) gotocol.Context {
 	if archaius.Conf.Msglog && archaius.Conf.Collect {
 		// combination of -m and -c command line creates msglog and records flow as zipkin or (with -n) neo4j
 		if ctx == gotocol.NilContext {
 			// start of a trace
 			return gotocol.NewTrace()
-		} else {
-			// next step of an existing trace
-			return ctx.NewParent()
 		}
+		// next step of an existing trace
+		return ctx.NewParent()
 	} else {
 		return gotocol.NilContext
 	}
 }
 
-// InformHandler default handler for Inform message
+// Inform default handler for Inform message
 func Inform(msg gotocol.Message, name string, listener chan gotocol.Message) chan gotocol.Message {
 	if name == "" {
 		log.Fatal(name + "Inform message received before Hello message")
@@ -72,6 +71,7 @@ func Forget(dependencies *map[string]time.Time, router *ribbon.Router, msg gotoc
 	}
 }
 
+// Put sends a Put message to a service
 func Put(msg gotocol.Message, name string, listener chan gotocol.Message, requestor *map[string]gotocol.Routetype, router *ribbon.Router) {
 	// pass on request to a random service - client send
 	c := router.Random()
@@ -83,6 +83,7 @@ func Put(msg gotocol.Message, name string, listener chan gotocol.Message, reques
 	outmsg.GoSend(c)
 }
 
+// GetRequest sends a GetRequest message to a service
 func GetRequest(msg gotocol.Message, name string, listener chan gotocol.Message, requestor *map[string]gotocol.Routetype, router *ribbon.Router) {
 	// pass on request to a random service - client send
 	c := router.Random()
@@ -95,7 +96,7 @@ func GetRequest(msg gotocol.Message, name string, listener chan gotocol.Message,
 	outmsg.GoSend(c)
 }
 
-// Responsehandler provides generic response handling
+// GetResponse provides generic response handling
 func GetResponse(msg gotocol.Message, name string, listener chan gotocol.Message, requestor *map[string]gotocol.Routetype) {
 	ctr := msg.Ctx.Route()
 	r := (*requestor)[ctr]

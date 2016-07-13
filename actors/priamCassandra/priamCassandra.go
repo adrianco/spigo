@@ -23,7 +23,7 @@ type node struct {
 	token uint32
 }
 
-// ring of node names sorted by token
+// ByToken ring of node names sorted by token
 type ByToken []node
 
 // implement node array sortable by Token interface
@@ -36,7 +36,7 @@ func ringHash(s string) uint32 {
 	return crc32.ChecksumIEEE([]byte(s))
 }
 
-// find the node in the ring for a token
+// Find the node in the ring for a token
 func (a ByToken) Find(h uint32) int {
 	r := 0
 	for i, n := range a {
@@ -48,7 +48,7 @@ func (a ByToken) Find(h uint32) int {
 	return r
 }
 
-// distribute tokens to one zone of a cassandra cluster, this doesn't yet allow for clusters to grow or replace nodes
+// Distribute tokens to one zone of a cassandra cluster, this doesn't yet allow for clusters to grow or replace nodes
 func Distribute(cass map[string]chan gotocol.Message) string {
 	size := len(cass)
 	// each node owns a share of the full range
@@ -56,7 +56,7 @@ func Distribute(cass map[string]chan gotocol.Message) string {
 	// make a config string of the form cass1:0,cass4:1000,cass2:2000
 	i := 0
 	s := ""
-	for n, _ := range cass {
+	for n := range cass {
 		s += fmt.Sprintf("%s:%v,", n, hashrange*uint32(i))
 		i++
 	}
@@ -68,6 +68,7 @@ func Distribute(cass map[string]chan gotocol.Message) string {
 	return s // for logging and test
 }
 
+// RingConfig gets the tokens for a ring
 func RingConfig(m string) ByToken {
 	s := strings.Split(m, ",")
 	r := make(ByToken, len(s))
@@ -218,7 +219,7 @@ func Start(listener chan gotocol.Message) {
 				return
 			}
 		case <-eurekaTicker.C: // check to see if any new dependencies have appeared
-			for dep, _ := range dependencies {
+			for dep := range dependencies {
 				for _, ch := range eureka {
 					ch <- gotocol.Message{gotocol.GetRequest, listener, time.Now(), gotocol.NilContext, dep}
 				}

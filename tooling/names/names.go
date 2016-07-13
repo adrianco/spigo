@@ -1,4 +1,4 @@
-// names creates and accesses the nanoservice naming hierarchy
+// Package names creates and accesses the nanoservice naming hierarchy
 
 package names
 
@@ -23,14 +23,13 @@ const (
 	gopackage             // karyon     - go package of code to implement service, like AMI or VM
 )
 
-// Split out a component of a name
+// Splitter for a component of a name
 func Splitter(name string, offset hier) string {
 	s := strings.Split(name, ".")
 	if len(s) > int(offset) {
 		return s[offset]
-	} else {
-		return ""
 	}
+	return ""
 }
 
 const (
@@ -65,20 +64,18 @@ func Filter(name, filter string) string {
 	return strings.Join(fn[l:], ".")
 }
 
-// Filter a node
+// FilterNode to simplify its name
 func FilterNode(node string) string {
 	if archaius.Conf.Filter {
 		return Filter(node, FilterReduce)
-	} else {
-		if Container(node) == "" {
-			return Filter(node, FilterDefault)
-		} else {
-			return Filter(node, FilterContainer)
-		}
 	}
+	if Container(node) == "" {
+		return Filter(node, FilterDefault)
+	}
+	return Filter(node, FilterContainer)
 }
 
-// Filter an edge - two space separated nodes
+// FilterEdge - two space separated nodes
 func FilterEdge(fromTo string) string {
 	var source, target string
 	fmt.Sscanf(fromTo, "%s%s", &source, &target) // two space delimited names
@@ -90,22 +87,22 @@ func Make(a, r, z, s, g string, i int) string {
 	return MakeContainer(a, r, z, "", fmt.Sprintf("%v%02v", s, i), "", "", s, g)
 }
 
-// Make a container name from components and an index
+// MakeContainer name from components and an index
 func MakeContainer(a, r, z, m, i, c, p, s, g string) string {
 	return fmt.Sprintf("%v.%v.%v.%v.%v.%v.%v.%v.%v", a, r, z, m, i, c, p, s, g)
 }
 
-// Extract architecture from a name
+// Arch extract from a name
 func Arch(name string) string {
 	return Splitter(name, arch)
 }
 
-// Extract region from a name
+// Region extract from a name
 func Region(name string) string {
 	return Splitter(name, region)
 }
 
-// Return the other regions given one
+// OtherRegions given one
 func OtherRegions(name string, rnames []string) []string {
 	var nr []string
 	regions := len(rnames)
@@ -119,12 +116,12 @@ func OtherRegions(name string, rnames []string) []string {
 	return nr
 }
 
-// Extract zone from a name
+// Zone extract from a name
 func Zone(name string) string {
 	return Splitter(name, zone)
 }
 
-// Return the other two zones, given one
+// OtherZones, given one
 func OtherZones(name string, znames []string) []string {
 	var nz []string
 	for _, z := range znames {
@@ -135,42 +132,42 @@ func OtherZones(name string, znames []string) []string {
 	return nz
 }
 
-// Extract the region and zone together
+// RegionZone together
 func RegionZone(name string) string {
 	return Splitter(name, region) + ". " + Splitter(name, zone)
 }
 
-// Extract the machine from a name
+// Machine from a name
 func Machine(name string) string {
 	return Splitter(name, machine)
 }
 
-// Extract the instance from a name
+// Instance from a name
 func Instance(name string) string {
 	return Splitter(name, instance)
 }
 
-// Extract the container from a name
+// Container from a name
 func Container(name string) string {
 	return Splitter(name, container)
 }
 
-// Extract the process from a name
+// Process from a name
 func Process(name string) string {
 	return Splitter(name, process)
 }
 
-// Extract the service from a name
+// Service from a name
 func Service(name string) string {
 	return Splitter(name, service)
 }
 
-// Extract the AMI from a name
+// AMI from a name
 func AMI(name string) string {
 	return Splitter(name, gopackage)
 }
 
-// Extract the package (same as AMI) from a name
+// Package (same as AMI) from a name
 func Package(name string) string {
 	return AMI(name)
 }

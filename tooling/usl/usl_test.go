@@ -11,8 +11,8 @@ func TestUSL(t *testing.T) {
 		fmt.Printf("Kappa: %.5f Max: %.2f\n", k, ThroughputMax(0.05, k))
 	}
 	lambda := 1800.0
-	sigma := []float64{0.0, 0.05, 0.00, 0.05}  // 0.05
-	kappa := []float64{0.0, 0.0, 0.02, 0.02} // 0.02
+	sigma := []float64{0.0, 0.05, 0.00, 0.05} // 0.05
+	kappa := []float64{0.0, 0.0, 0.02, 0.02}  // 0.02
 	for i := 0; i < len(sigma); i++ {
 		fmt.Printf("BaseLambda: %v ContentionSigma: %v CrosstalkKappa: %v MaxThroughput:%.2f\n", lambda, sigma[i], kappa[i], ThroughputMax(sigma[i], kappa[i]))
 		for n := 0.0; n <= 20.0; n += 1.0 {
