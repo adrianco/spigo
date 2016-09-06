@@ -60,5 +60,11 @@ func TestGraph(t *testing.T) {
 	//ReadArch("testBadPackage")
 	a := ReadArch("test")
 	fmt.Println(a)
+	var services []string
+	var deps []Connection
+	ListDependencies(a, &services, &deps)
+	fmt.Println("Services and Dependencies")
+	fmt.Println(services)
+	fmt.Println(deps)
 	Start(a)
 }

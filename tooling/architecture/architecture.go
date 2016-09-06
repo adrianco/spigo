@@ -62,6 +62,21 @@ func Start(a *archV0r1) {
 	asgard.Run(r, a.Victim) // run the last service in the list, and point chaos monkey at the victim
 }
 
+// Connection
+type Connection struct {
+	Source, Dest string
+}
+
+// Extract dependencies from an architecture
+func ListDependencies(a *archV0r1, nodes *[]string, dependencies *[]Connection) {
+	for _, s := range a.Services {
+		*nodes = append(*nodes, s.Name)
+		for _, d := range s.Dependencies {
+			*dependencies = append(*dependencies, Connection{s.Name, d})
+		}
+	}
+}
+
 // ReadArch parses archjson
 func ReadArch(arch string) *archV0r1 {
 	fn := "json_arch/" + arch + "_arch.json"
