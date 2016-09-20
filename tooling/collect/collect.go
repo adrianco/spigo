@@ -6,8 +6,9 @@ import (
 	. "github.com/adrianco/goguesstimate/guesstimate"
 	"github.com/adrianco/spigo/tooling/archaius"
 	"github.com/adrianco/spigo/tooling/names"
-	"github.com/go-kit/kit/metrics"
-	"github.com/go-kit/kit/metrics/expvar"
+	//"github.com/go-kit/kit/metrics"
+	//"github.com/go-kit/kit/metrics/expvar"
+	"github.com/go-kit/kit/metrics/generic"
 	"log"
 	"net"
 	"net/http"
@@ -22,17 +23,17 @@ const (
 )
 
 //save a sample of the actual data for use by guesstimate
-var sampleMap map[metrics.Histogram][]int64
+var sampleMap map[*generic.Histogram][]int64
 var sampleLock sync.Mutex
 
 // NewHist creates a new histogram
-func NewHist(name string) metrics.Histogram {
-	var h metrics.Histogram
+func NewHist(name string) *generic.Histogram {
+	var h *generic.Histogram
 	if name != "" && archaius.Conf.Collect {
-		h = expvar.NewHistogram(name, 1000, maxHistObservable, 1, []int{50, 99}...)
+		h = generic.NewHistogram(name, 100)
 		sampleLock.Lock()
 		if sampleMap == nil {
-			sampleMap = make(map[metrics.Histogram][]int64)
+			sampleMap = make(map[*generic.Histogram][]int64)
 		}
 		sampleMap[h] = make([]int64, 0, sampleCount)
 		sampleLock.Unlock()
@@ -42,12 +43,12 @@ func NewHist(name string) metrics.Histogram {
 }
 
 // Measure adds a measurement to a histogram collection
-func Measure(h metrics.Histogram, d time.Duration) {
+func Measure(h *generic.Histogram, d time.Duration) {
 	if h != nil && archaius.Conf.Collect {
 		if d > maxHistObservable {
-			h.Observe(int64(maxHistObservable))
+			h.Observe(float64(maxHistObservable))
 		} else {
-			h.Observe(int64(d))
+			h.Observe(float64(d))
 		}
 		sampleLock.Lock()
 		s := sampleMap[h]
@@ -59,13 +60,14 @@ func Measure(h metrics.Histogram, d time.Duration) {
 }
 
 // SaveHist passes in name because metrics.Histogram blocks expvar.Histogram.Name()
-func SaveHist(h metrics.Histogram, name, suffix string) {
+func SaveHist(h *generic.Histogram, name, suffix string) {
 	if archaius.Conf.Collect {
 		file, err := os.Create("csv_metrics/" + names.Arch(name) + "_" + names.Instance(name) + suffix + ".csv")
 		if err != nil {
 			log.Printf("%v: %v\n", name, err)
 		}
-		metrics.PrintDistribution(file, h)
+		//metrics.PrintDistribution(file, h)
+		h.Print(file)
 		file.Close()
 	}
 }
@@ -95,7 +97,7 @@ func SaveAllGuesses(name string) {
 		g.Space.Graph.Metrics = append(g.Space.Graph.Metrics, GuessMetric{
 			ID:         seq[row] + seq[col],
 			ReadableID: seq[row] + seq[col],
-			Name:       h.Name(),
+			Name:       h.Name,
 			Location:   GuessMetricLocation{row, col},
 		})
 		g.Space.Graph.Guesstimates = append(g.Space.Graph.Guesstimates, Guesstimate{

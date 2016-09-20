@@ -9,7 +9,7 @@ import (
 	"github.com/adrianco/spigo/tooling/dhcp"
 	"github.com/adrianco/spigo/tooling/gotocol"
 	"github.com/adrianco/spigo/tooling/graphneo4j"
-	"github.com/go-kit/kit/metrics"
+	"github.com/go-kit/kit/metrics/generic"
 	"log"
 	"os"
 	"sort"
@@ -130,7 +130,7 @@ func AnnotateSend(msg gotocol.Message, name string) {
 }
 
 // End a flow, flushing output and freeing the request id to keep the map smaller
-func End(msg gotocol.Message, resphist, servhist, rthist metrics.Histogram) {
+func End(msg gotocol.Message, resphist, servhist, rthist *generic.Histogram) {
 	if !archaius.Conf.Collect {
 		return
 	}
@@ -301,7 +301,7 @@ func Flush(t gotocol.TraceContextType, trace []*spannotype) {
 }
 
 // Instrument common code for requests
-func Instrument(msg gotocol.Message, name string, hist metrics.Histogram) {
+func Instrument(msg gotocol.Message, name string, hist *generic.Histogram) {
 	received := time.Now()
 	collect.Measure(hist, received.Sub(msg.Sent))
 	if archaius.Conf.Msglog {
