@@ -64,7 +64,7 @@ func SaveHist(h *generic.Histogram, name, suffix string) {
 	if archaius.Conf.Collect {
 		file, err := os.Create("csv_metrics/" + names.Arch(name) + "_" + names.Instance(name) + suffix + ".csv")
 		if err != nil {
-			log.Printf("%v: %v\n", name, err)
+			log.Fatal("Save histogram %v: %v\n", name, err)
 		}
 		//metrics.PrintDistribution(file, h)
 		h.Print(file)

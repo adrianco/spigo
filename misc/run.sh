@@ -16,13 +16,14 @@
 ./spigo -a container -j -d 4 -s 1
 ./spigo -a container -j -d 4 -s 2 -p 200
 ./spigo -a container -j -d 4 -s 3 -p 150 -w 2
+./spigo -a edge -d 2 -j
 ./spigo -a fsm -d 10 -j -w 2
 ./spigo -a fsm -d 30 -j -p 100 -s 1
 ./spigo -a fsm -d 10 -j -p 200 -s 2
 ./spigo -a fsm -d 10 -j -p 300 -s 3
 ./spigo -a fsm -d 10 -j -p 400 -s 4
 ./spigo -a fsm -d 10 -j -p 500 -s 5
-./spigo -a lamp -d 2 -j -c
+./spigo -d 10 -a lamp -j
 ./spigo -a lamp -d 1 -j -s 1
 ./spigo -a lamp -d 5 -j -p 200 -s 2
 ./spigo -a lamp -d 5 -j -p 300 -s 3
