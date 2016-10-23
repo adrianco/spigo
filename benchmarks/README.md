@@ -150,4 +150,42 @@ $ time ./spigo.1.6.2 -d=0 -p=100000 -a fsm -cpuprofile fsm.go162.profile
 real	0m5.569s
 user	0m9.481s
 sys	0m1.327s
+
+$ cp ../spigo spigo.1.7.1
+$ time ./spigo.1.7.1 -d=0 -p=100000 -a fsm -cpuprofile fsm.go171.profile
+2016/10/17 20:14:29 fsm: population 100000 pirates
+2016/10/17 20:14:30 fsm: Talk amongst yourselves for 0s
+2016/10/17 20:14:35 fsm: Delivered 500000 messages in 5.162939826s
+2016/10/17 20:14:35 fsm: Shutdown
+2016/10/17 20:14:36 fsm: Exit
+2016/10/17 20:14:36 spigo: complete
+
+real	0m6.893s
+user	0m9.721s
+sys	0m2.762s
+
+$ time ./spigo.1.7.1 -d=0 -p=100000 -a fsm -cpuprofile fsm.go171.profile
+2016/10/17 20:14:49 fsm: population 100000 pirates
+2016/10/17 20:14:50 fsm: Talk amongst yourselves for 0s
+2016/10/17 20:14:54 fsm: Delivered 500000 messages in 4.043763355s
+2016/10/17 20:14:54 fsm: Shutdown
+2016/10/17 20:14:54 fsm: Exit
+2016/10/17 20:14:54 spigo: complete
+
+real	0m5.403s
+user	0m7.860s
+sys	0m2.638s
+
+$ time ./spigo.1.7.1 -d=0 -p=100000 -a fsm -cpuprofile fsm.go171.profile
+2016/10/17 20:15:20 fsm: population 100000 pirates
+2016/10/17 20:15:22 fsm: Talk amongst yourselves for 0s
+2016/10/17 20:15:26 fsm: Delivered 500000 messages in 4.154568125s
+2016/10/17 20:15:26 fsm: Shutdown
+2016/10/17 20:15:26 fsm: Exit
+2016/10/17 20:15:26 spigo: complete
+
+real	0m5.525s
+user	0m8.732s
+sys	0m2.243s
+
 ```
