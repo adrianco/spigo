@@ -4,18 +4,19 @@ package flow
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/adrianco/spigo/tooling/archaius"
-	"github.com/adrianco/spigo/tooling/collect"
-	"github.com/adrianco/spigo/tooling/dhcp"
-	"github.com/adrianco/spigo/tooling/gotocol"
-	"github.com/adrianco/spigo/tooling/graphneo4j"
-	"github.com/go-kit/kit/metrics/generic"
 	"log"
 	"os"
 	"sort"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/adrianco/spigo/tooling/archaius"
+	"github.com/adrianco/spigo/tooling/collect"
+	"github.com/adrianco/spigo/tooling/dhcp"
+	"github.com/adrianco/spigo/tooling/gotocol"
+	"github.com/adrianco/spigo/tooling/graphneo4j"
+	"github.com/go-kit/kit/metrics/generic"
 )
 
 // Values for zipkin span direction
@@ -77,6 +78,8 @@ var flowlock sync.Mutex // lock changes to the maps
 
 // file to log flow data to
 var file *os.File
+
+var collector *KafkaCollector
 
 // Common Annotation code
 func annotate(msg gotocol.Message, name string, t time.Time, resp, others Values) *spannotype {
@@ -166,6 +169,19 @@ func Shutdown() {
 	if !archaius.Conf.Collect {
 		return
 	}
+
+	// Try to add Kafka collector if configured to do so
+	if len(archaius.Conf.Kafka) > 0 {
+		log.Printf("Flushing flows to Kafka Collector %#v\n", archaius.Conf.Kafka)
+		var err error
+		collector, err = NewKafkaCollector(archaius.Conf.Kafka)
+		if err != nil {
+			log.Printf("Unable to start Kafka Collector: %#v\n", err)
+		} else {
+			defer collector.Close()
+		}
+	}
+
 	flowlock.Lock()
 	defer flowlock.Unlock()
 	f, err := os.Create("json_metrics/" + archaius.Conf.Arch + "_flow.json")
@@ -185,7 +201,7 @@ func Shutdown() {
 		}
 		Flush(c, f)
 	}
-	file.WriteString("]\n")
+	file.WriteString("\n]\n")
 	file.Close()
 }
 
@@ -257,11 +273,14 @@ type zipkinspan struct {
 
 // WriteZip stores zipkin as json
 func WriteZip(zip zipkinspan) {
-	j, err := json.Marshal(zip)
+	j, err := json.Marshal([]*zipkinspan{&zip})
 	if err != nil {
 		log.Fatal(err)
 	}
-	file.WriteString(fmt.Sprintf("%v\n", string(j)))
+	if collector != nil {
+		collector.Collect(j)
+	}
+	file.Write(j[1 : len(j)-1])
 }
 
 // Flush the spans for a request in zipkin format
@@ -275,7 +294,7 @@ func Flush(t gotocol.TraceContextType, trace []*spannotype) {
 		if ctx != a.Ctx { // new span
 			if ctx != "" { // not the first
 				WriteZip(zip)
-				file.WriteString(",")
+				file.WriteString(",\n")
 				zip.Annotations = nil
 			}
 			n++
