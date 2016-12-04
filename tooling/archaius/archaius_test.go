@@ -18,6 +18,7 @@ func TestConf(t *testing.T) {
 	Conf.Msglog = true
 	Conf.Regions = 2
 	Conf.Collect = true
+	Conf.Kafka = []string{"localhost:9092"}
 	Conf.StopStep = 2
 	Conf.EurekaPoll = "1s"
 	Conf.Keyvals = "chat:0.01s"

@@ -52,6 +52,9 @@ type Configuration struct {
 	// Collect turns on Metrics collection
 	Collect bool `json:"collect"`
 
+	// Kafka turns on Zipkin compatible Flow export if array of host:port strings is not empty
+	Kafka []string `json:"kafka"`
+
 	// StopStep stops building new microservices at this step, 0 means don't stop
 	StopStep int `json:"stopstep"`
 
@@ -144,5 +147,5 @@ func FromJson(confJSON []byte) {
 
 // return formatted as string
 func (Configuration) String() string {
-	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nNeo4jURL:   %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\nRegions:    %v\nRegionNames:%v\nZoneNames:  %v\nIPRanges:   %v\nCollect:    %v\nStopStep:   %v\nEurekaPoll: %v\nKeyvals:    %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.Neo4jURL, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog, Conf.Regions, Conf.RegionNames, Conf.ZoneNames, Conf.IPRanges, Conf.Collect, Conf.StopStep, Conf.EurekaPoll, Conf.Keyvals)
+	return fmt.Sprintf("Arch:       %v\nGraphML:    %v\nGraphJSON:  %v\nNeo4jURL:   %v\nRunDuration:%v\nDunbar:     %v\nPopulation: %v\nMsglog:     %v\nRegions:    %v\nRegionNames:%v\nZoneNames:  %v\nIPRanges:   %v\nCollect:    %v\nKafka:      %v\nStopStep:   %v\nEurekaPoll: %v\nKeyvals:    %v\n", Conf.Arch, Conf.GraphmlFile, Conf.GraphjsonFile, Conf.Neo4jURL, Conf.RunDuration, Conf.Dunbar, Conf.Population, Conf.Msglog, Conf.Regions, Conf.RegionNames, Conf.ZoneNames, Conf.IPRanges, Conf.Collect, Conf.Kafka, Conf.StopStep, Conf.EurekaPoll, Conf.Keyvals)
 }

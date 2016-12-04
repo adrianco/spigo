@@ -4,6 +4,13 @@ package main
 
 import (
 	"flag"
+	"log"
+	"os"
+	"runtime"
+	"runtime/pprof"
+	"strings"
+	"time"
+
 	"github.com/adrianco/spigo/actors/edda"          // log configuration state
 	"github.com/adrianco/spigo/tooling/archaius"     // store the config for global lookup
 	"github.com/adrianco/spigo/tooling/architecture" // run an architecture from a json definition
@@ -13,13 +20,9 @@ import (
 	"github.com/adrianco/spigo/tooling/fsm"          // fsm and pirates
 	"github.com/adrianco/spigo/tooling/gotocol"      // message protocol spec
 	"github.com/adrianco/spigo/tooling/migration"    // migration from LAMP to netflixoss
-	"log"
-	"os"
-	"runtime"
-	"runtime/pprof"
-	"time"
 )
 
+var addrs string
 var reload, graphmlEnabled, graphjsonEnabled, neo4jEnabled bool
 var duration, cpucount int
 
@@ -35,6 +38,7 @@ func main() {
 	flag.BoolVar(&archaius.Conf.Msglog, "m", false, "Enable console logging of every message")
 	flag.BoolVar(&reload, "r", false, "Reload graph from json/<arch>.json to setup architecture")
 	flag.BoolVar(&archaius.Conf.Collect, "c", false, "Collect metrics and flows to json_metrics csv_metrics neo4j and via http: extvars")
+	flag.StringVar(&addrs, "k", "", "Send Zipkin spans to Kafka if Collect is enabled. Provide list of comma separated host:port addresses")
 	flag.IntVar(&archaius.Conf.StopStep, "s", 0, "Sequence number to create multiple runs for ui to step through in json/<arch><s>.json")
 	flag.StringVar(&archaius.Conf.EurekaPoll, "u", "1s", "Polling interval for Eureka name service, increase for large populations")
 	flag.StringVar(&archaius.Conf.Keyvals, "kv", "", "Configuration key:value - chat:10ms sets default message insert rate")
@@ -45,6 +49,13 @@ func main() {
 	var confFile = flag.String("config", "", "Config file to read from json_arch/<config>_conf.json. This config overrides any other command-line arguments.")
 	var saveConfFile = flag.Bool("saveconfig", false, "Save config file to json_arch/<arch>_conf.json, using the arch name from -a.")
 	flag.Parse()
+
+	kafkaAddrs := strings.Split(addrs, ",")
+	for _, addr := range kafkaAddrs {
+		if len(addr) > 0 {
+			archaius.Conf.Kafka = append(archaius.Conf.Kafka, addr)
+		}
+	}
 
 	if *confFile != "" {
 		archaius.ReadConf(*confFile)
