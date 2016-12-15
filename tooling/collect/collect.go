@@ -120,7 +120,6 @@ func SaveAllGuesses(name string) {
 	if file != nil {
 		json.Unmarshal(file, &archObject)
 	}
-	file.Close()
 
 	row := 1
 	col := 1
