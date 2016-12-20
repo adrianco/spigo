@@ -15,6 +15,9 @@ import (
 	"os"
 	"sync"
 	"time"
+	"io/ioutil"
+	"strings"
+	"encoding/json"
 )
 
 const (
@@ -22,6 +25,21 @@ const (
 	sampleCount       = 1000    // data points will be sampled 5000 times to build a distribution by guesstimate
 )
 
+type ArchObject struct {
+	Arch string `json:"arch"`
+	Version string `json:"version"`
+	Args string `json:"args"`
+	Services []struct {
+		Name string `json:"name"`
+		Package string `json:"package"`
+		Regions int `json:"regions"`
+		Count int `json:"count"`
+		Dependencies []string `json:"dependencies"`
+		UseCustomGuesstimate bool `json:"useCustomGuesstimate,omitempty"`
+		GuesstimateType string `json:"guesstimateType,omitempty"`
+		GuesstimateValue string `json:"guesstimateValue,omitempty"`
+	} `json:"services"`
+}
 //save a sample of the actual data for use by guesstimate
 var sampleMap map[*generic.Histogram][]int64
 var sampleLock sync.Mutex
@@ -30,7 +48,7 @@ var sampleLock sync.Mutex
 func NewHist(name string) *generic.Histogram {
 	var h *generic.Histogram
 	if name != "" && archaius.Conf.Collect {
-		h = generic.NewHistogram(name, 100)
+		h = generic.NewHistogram(name, 100) // 1000, maxHistObservable, 1, []int{50, 99}...)
 		sampleLock.Lock()
 		if sampleMap == nil {
 			sampleMap = make(map[*generic.Histogram][]int64)
@@ -90,20 +108,53 @@ func SaveAllGuesses(name string) {
 			},
 		},
 	}
+
+	var archObject ArchObject
+
+	file, e := ioutil.ReadFile("./json_arch/" + names.Arch(name) + "_arch.json")
+	if e != nil {
+		log.Printf("File error: %v\n", e)
+		os.Exit(1)
+	}
+
+	if file != nil {
+		json.Unmarshal(file, &archObject)
+	}
+
 	row := 1
 	col := 1
 	seq := []string{"", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"}
 	for h, data := range sampleMap {
+
+		UseCustomGuesstimate := false
+		GuesstimateType := "DATA"
+		GuesstimateValue := ""
+
+		if(archObject.Arch != ""){
+			for _, e := range archObject.Services {
+				if(strings.Contains(h.Name, e.Name)){
+					UseCustomGuesstimate = e.UseCustomGuesstimate
+					GuesstimateType = e.GuesstimateType
+					GuesstimateValue = e.GuesstimateValue
+				}
+			}
+		}
+
+		if UseCustomGuesstimate {
+			data = nil
+		}
+
 		g.Space.Graph.Metrics = append(g.Space.Graph.Metrics, GuessMetric{
 			ID:         seq[row] + seq[col],
 			ReadableID: seq[row] + seq[col],
 			Name:       h.Name,
 			Location:   GuessMetricLocation{row, col},
 		})
+		
 		g.Space.Graph.Guesstimates = append(g.Space.Graph.Guesstimates, Guesstimate{
 			Metric:          seq[row] + seq[col],
-			Expression:      "",
-			GuesstimateType: "DATA",
+			Expression:           GuesstimateValue,
+			GuesstimateType: GuesstimateType,
 			Data:            data,
 		})
 		row++
