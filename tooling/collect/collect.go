@@ -102,7 +102,7 @@ func SaveAllGuesses(name string) {
 		})
 		g.Space.Graph.Guesstimates = append(g.Space.Graph.Guesstimates, Guesstimate{
 			Metric:          seq[row] + seq[col],
-			Input:           "",
+			Expression:      "",
 			GuesstimateType: "DATA",
 			Data:            data,
 		})
